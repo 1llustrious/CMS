@@ -1,0 +1,126 @@
+{extend name="layouts/main" /}
+{block name="css"}
+<script type="text/javascript">
+	/*
+	用到的API
+	file-->继承自-->Blob
+	Blob有slice方法,可以截取二进制对象的一部分.
+	思路:
+	截取10M, 上传
+	判断文件有没有截取完毕
+	用定时器,不断调用上传方法
+	*/
+	var xhr = new XMLHttpRequest();
+	var clock = null;
+	function fire() {
+		$("#progress").show();
+		$("input[name='mov']").hide();
+		clock = window.setInterval(sendfile, 1000);
+	}
+	// 闭包计数器
+	var sendfile = (function () {
+		const LENGTH = 10 * 1024 * 1024; //每次切10M
+		var sta = 0;
+		var end = sta + LENGTH;
+		var sending = false; // 标志正在上传中
+		var blob = null;
+		var fd = null;
+		// 百分比
+		var percent = 0;
+		return (function () {
+			if (sending == true) {
+				return;
+			}
+			var mov = document.getElementsByName('mov')[0].files[0]; //文件对象
+			var filename = document.getElementsByName('mov')[0].files[0].name;
+			var curdir = document.getElementsByName('curdir')[0].value;
+			// 如果sta>mov.size,就结束了
+			if (sta > mov.size) {
+				clearInterval(clock);
+				setTimeout(function () {
+					window.location.reload();
+				}, 1500);
+				return;
+			}
+			blob = mov.slice(sta, end);
+			fd = new FormData();
+			fd.append('part', blob); //添加数据到fd对象中
+			fd.append('filename', filename); //获取文件的名称
+			fd.append('curdir', curdir); //存储路径
+			up(fd);
+			sta = end;
+			end = sta + LENGTH;
+			sending = false; // 上传完了
+			percent = 100 * end / mov.size;
+			if (percent > 100) {
+				percent = 100;
+			}
+			document.getElementById('bar').style.width = percent + '%';
+			document.getElementById('bar').innerHTML = parseInt(percent) + '%';
+		});
+	})();
+	function up(fd) {
+		xhr.open('POST', "{:url('upload_max_file')}", false);
+		xhr.send(fd);
+	}
+</script>
+<style>
+	form{
+		margin: 10px 15px;
+	}
+	#progress {
+		width: 500px;
+		height: 30px;
+		border: 1px solid green;
+		display: none;
+	}
+	#bar {
+		width: 0%;
+		height: 100%;
+		background: green;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>文件管理</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote>
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post" enctype="multipart/form-data">
+						<div class="layui-form-item">
+							<a href="javascript:window.history.back();" class="layui-btn layui-btn-primary">返回</a>
+							<span class="layui-btn layui-btn-danger">当前目录：{$curdir}</span>
+						</div>
+						<input type="hidden" name="curdir" value="{$curdir}">
+						<div id="progress">
+							<div id="bar"></div>
+						</div>
+						<input type="file" name="mov" onchange="fire();" />
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(".upload-file").change(function(e){
+		var arrs = $(this).val().split('\\');
+		var filename = arrs[arrs.length - 1];
+		// console.log(arrs);
+		$(this).parent().next().html(filename);
+	});
+</script>
+{/block}

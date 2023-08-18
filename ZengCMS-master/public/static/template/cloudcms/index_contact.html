@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta name="applicable-device" content="pc,wap">
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>{$nav.typename}_{$get_config.WEB_SITE_NAME}</title>
+    <meta name="keywords" content="{$nav.keywords|default=$get_config.WEB_SITE_KEYWORDS}"/>
+    <meta name="description" content="{$nav.description|default=$get_config.WEB_SITE_DESCRIPTION}"/>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/cloud.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.min.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.animate.min.css">
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/cloud.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/Superslide.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/wow.min.js"></script>
+</head>
+<body>
+    {include file="cloudcms/z-head"}
+    <div class="yunu_page_banner clearfix" style="background: url(https://fakeimg.pl/1496x316) no-repeat top;">
+        <div class="center">
+            <div class="text wow fadeInUp">
+                <span>{$nav.typename} </span>
+                <p></p>
+            </div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="page_box clearfix">
+            <div class="center">
+                <div class="box clearfix">
+                    <div class="fl wow fadeInLeft">
+                        <div class="page_menu clearfix">
+                            <h3>{:get_nav(get_top_nav_id(),'title')}</h3>
+                            <ul>
+                                {volist name=":tag_nav($typeid=get_top_nav_id(),$type='son',$thisclass='on')" id="vo"}
+                                <li>
+                                    <a href="{$vo.typeurl}" class="{$vo.thisclass} hvr-underline-from-left" target="{$vo.target}" rel="{$vo.rel}">
+                                        <span>{$vo.typename}</span>
+                                    </a>
+                                </li>
+                                {/volist}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fr wow fadeInRight">
+                        <div class="currson clearfix">
+                            <div class="text">
+                                <a href="/">首页</a>
+                                &gt;&gt;
+                                {volist name=":tag_pos($nav.id)" id="vo" key="k"}
+                                {if condition="$k neq 1"}
+                                &gt;&gt; 
+                                {/if}
+                                <a href="{$vo.typeurl}" target="{$vo.target}" rel="{$vo.rel}">{$vo.typename}</a>
+                                {/volist}
+                            </div>
+                        </div>
+                        {$nav.content}
+                        <!-- 百度地图调用 -->
+                        <div class="map"></div>
+                        <div class="map2"></div>
+                        <!-- 百度地图调用 -->
+                        {:qq_map($nav.map, '10', '100%', '400', '0', '', 'map')}
+                        {:baidu_map($nav.map, 17, '100%', '400', '', 'map2', $get_config.WEB_ADDRESS)}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="cloudcms/z-footer"}
+</body>
+</html>

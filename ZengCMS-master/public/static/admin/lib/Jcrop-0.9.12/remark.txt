@@ -1,0 +1,2 @@
+﻿图片裁剪插件
+下载地址http://code.ciaoca.com/jquery/jcrop/demo/crop

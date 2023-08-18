@@ -1,0 +1,106 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<form class="layui-form layui-form-pane" action="" lay-filter="example">
+						<div class="layui-form-item">
+							<label class="layui-form-label">选择栏目：</label>
+							<div class="layui-input-block">
+								<select name="category_id" lay-verify="required" class="upload-select">
+									<option value="0" selected="">更新所有栏目...</option>
+									{volist name="allArctypeRes" id="category"}
+									<option value="{$category.id}"><?php if($category['level']!==0){echo '|';} echo str_repeat('-',$category['level']*5);?>{$category.typename}</option>
+									{/volist}
+								</select>
+								<span class="sysval"><em class="zerocopy">category_id</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane>
+							<label class="layui-form-label" title="是否更新子栏目">是否更新子栏目：</label>
+							<div class="layui-input-block">
+								<input type="radio" name="update_children" value="1" title="更新子级栏目" lay-filter="update_children" checked>
+								<input type="radio" name="update_children" value="0" title="仅更新所选栏目" lay-filter="update_children">
+								<span class="sysval"><em class="zerocopy">update_children</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">分页页码</label>
+								<div class="layui-input-inline" style="width: 200px;">
+									<input type="text" name="start_page" placeholder="起始页码" autocomplete="off" class="layui-input" value="1">
+									<span class="sysval"><em class="zerocopy">start_page</em></span>
+								</div>
+								<div class="layui-form-mid">-</div>
+								<div class="layui-input-inline" style="width: 200px;">
+									<input type="text" name="end_page" placeholder="结束页码" autocomplete="off" class="layui-input" value="1">
+									<span class="sysval"><em class="zerocopy">end_page</em></span>
+								</div>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text" id="info" style="display: none">
+							<label class="layui-form-label">返回信息</label>
+							<div class="layui-input-block">
+								<textarea placeholder="" rows="" class="layui-textarea" name="info"></textarea>
+							</div>
+						</div>
+						<div id="update" style="text-align: left;padding:20px 0;display: none">
+                            <img src="__STATIC__/admin/images/loading-1.gif"><span>更新中......</span>
+                        </div>
+						<div class="layui-form-item">
+							<button class="layui-btn" type="button" lay-submit lay-filter="demo2" id="execute">开始生成HTML</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	//点击执行
+	$("#execute").on('click', function(event) {
+		var update_children = $(":radio[name=update_children]:checked").val();
+		var category_id = $("select[name='category_id']").val();
+		var start_page = $("input[name='start_page']").val();
+		var end_page = $("input[name='end_page']").val();
+		$.ajax({
+			type:"POST",
+			data:{update_children:update_children,category_id:category_id,start_page:start_page,end_page:end_page},
+			url:"{:url('category')}",
+			dataType:"json",
+			beforeSend:function(){
+                $("#info").hide();
+                $("#update").show();
+            },
+			success:function(res){
+				$("#update").hide();
+           		$("#info").show();
+				if(res.code == 1){
+					// $("#info").fadeIn();
+					$("textarea[name='info']").val(res.msg);
+					/*setTimeout(function () {
+					  $("textarea[name='info']").val('');
+					}, 3000);*/
+				}else{
+					// $("#info").fadeIn();
+					$("textarea[name='info']").val(res.msg);
+				}
+			},
+			error: function (e) {
+				$("textarea[name='info']").val('更新失败！');
+			}
+		});
+	});
+</script>
+{/block}

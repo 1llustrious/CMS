@@ -1,0 +1,285 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<link rel="stylesheet" href="__STATIC__/admin/css/setting.css" media="all">
+<!-- kindeditor编辑器 -->
+<link rel="stylesheet" href="__STATIC__/admin/lib/kindeditor/themes/default/default.css" />
+<link rel="stylesheet" href="__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css" />
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/kindeditor-all.js"></script>
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/lang/zh-CN.js"></script>
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/plugins/code/prettify.js"></script>
+<script>
+	KindEditor.ready(function(K) {
+		/* var editor1 = K.create('textarea[name="description3"]', {
+			// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+			cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+			// 指定上传文件的服务器端程序。
+			uploadJson : GV.kindeditor_upload_url,
+			// 指定浏览远程图片的服务器端程序。
+			fileManagerJson : GV.kindeditor_file_manager_url,
+			filterMode : false, //关闭过滤模式
+			wellFormatMode : false, //true时美化HTML数据。false关闭美化
+			newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+			pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+			allowFileManager : true, //true时显示浏览远程服务器按钮。
+			// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+			// 默认值：空
+			// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+			// urlType:'domain',
+			// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+			width : '100%',
+			// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+			height : '390px',
+			afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+			afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+			// 设置编辑器创建后执行的回调函数。
+			afterCreate : function() {
+				var self = this;
+				K.ctrl(document, 13, function() {
+					self.sync();
+					K('form[name=example]')[0].submit();
+				});
+				K.ctrl(self.edit.doc, 13, function() {
+					self.sync();
+					K('form[name=example]')[0].submit();
+				});
+			},
+			// 编辑器工具
+			items:[
+				'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+				'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+				'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+				// 'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+				// 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+				// 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+				// 'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+				// 'anchor', 'link', 'unlink', '|', 'about'
+			],
+			// 上面的filterMode为true时以下就是要保留的标签
+			htmlTags:{
+				font : ['color', 'size', 'face', '.background-color'],
+				span : [
+					'.color', '.background-color', '.font-size', '.font-family', '.background',
+					'.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.line-height'
+				],
+				div : [
+					'align', '.border', '.margin', '.padding', '.text-align', '.color',
+					'.background-color', '.font-size', '.font-family', '.font-weight', '.background',
+					'.font-style', '.text-decoration', '.vertical-align', '.margin-left'
+				],
+				table: [
+					'border', 'cellspacing', 'cellpadding', 'width', 'height', 'align', 'bordercolor',
+					'.padding', '.margin', '.border', 'bgcolor', '.text-align', '.color', '.background-color',
+					'.font-size', '.font-family', '.font-weight', '.font-style', '.text-decoration', '.background',
+					'.width', '.height', '.border-collapse'
+				],
+				'td,th': [
+					'align', 'valign', 'width', 'height', 'colspan', 'rowspan', 'bgcolor',
+					'.text-align', '.color', '.background-color', '.font-size', '.font-family', '.font-weight',
+					'.font-style', '.text-decoration', '.vertical-align', '.background', '.border'
+				],
+				a : ['href', 'target', 'name'],
+				embed : ['src', 'width', 'height', 'type', 'loop', 'autostart', 'quality', '.width', '.height', 'align', 'allowscriptaccess'],
+				img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
+				'p,ol,ul,li,blockquote,h1,h2,h3,h4,h5,h6' : [
+				'align', '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.background',
+				'.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.text-indent', '.margin-left'
+				],
+				pre : ['class'],
+				hr : ['class', '.page-break-after'],
+				'br,tbody,tr,strong,b,sub,sup,em,i,u,strike,s,del' : []
+			}
+		});
+		prettyPrint(); */
+		var editor2 = K.create('textarea[name="content"]', {
+			// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+			cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+			// 指定上传文件的服务器端程序。
+			uploadJson : GV.kindeditor_upload_url,
+			// 指定浏览远程图片的服务器端程序。
+			fileManagerJson : GV.kindeditor_file_manager_url,
+			filterMode : false, //关闭过滤模式
+			wellFormatMode : false, //true时美化HTML数据。false关闭美化
+			newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+			pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+			allowFileManager : true, //true时显示浏览远程服务器按钮。
+			// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+			// 默认值：空
+			// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+			// urlType:'domain',
+			// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+			width : '100%',
+			// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+			height : '390px',
+			afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+			afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+			// 上面的filterMode为true时以下就是要保留的标签
+			/* htmlTags:{
+				div : [
+					'align', '.border', '.margin', '.padding', '.text-align', '.color',
+					'.background-color', '.font-size', '.font-family', '.font-weight', '.background',
+					'.font-style', '.text-decoration', '.vertical-align', '.margin-left'
+				],
+				table: [
+					'border', 'cellspacing', 'cellpadding', 'width', 'height', 'align', 'bordercolor',
+					'.padding', '.margin', '.border', 'bgcolor', '.text-align', '.color', '.background-color',
+					'.font-size', '.font-family', '.font-weight', '.font-style', '.text-decoration', '.background',
+					'.width', '.height', '.border-collapse'
+				],
+				img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
+				'p,ol,ul,li,blockquote,h1,h2,h3,h4,h5,h6' : [
+				'align', '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.background',
+				'.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.text-indent', '.margin-left'
+				],
+			} */
+		});
+		prettyPrint();
+		var editor3 = K.create('textarea[name="content_en"]', {
+			// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+			cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+			// 指定上传文件的服务器端程序。
+			uploadJson : GV.kindeditor_upload_url,
+			// 指定浏览远程图片的服务器端程序。
+			fileManagerJson : GV.kindeditor_file_manager_url,
+			filterMode : false, //关闭过滤模式
+			wellFormatMode : false, //true时美化HTML数据。false关闭美化
+			newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+			pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+			allowFileManager : true, //true时显示浏览远程服务器按钮。
+			// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+			// 默认值：空
+			// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+			// urlType:'domain',
+			// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+			width : '100%',
+			// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+			height : '390px',
+			afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+			afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+		});
+		prettyPrint();
+	});
+</script>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post" enctype="multipart/form-data">
+						<div class="layui-form-item">
+							<label class="layui-form-label">所属碎片位</label>
+							<div class="layui-input-block">
+								<select name="posid" class="upload-select">
+									<option value="" selected="">请选择</option>
+									{volist name="DebrisPosRes" id="vo"}
+									<option value="{$vo.id}">{$vo.name}</option>
+									{/volist}
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 所属碎片位 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">posid</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">碎片标题</label>
+							<div class="layui-input-block">
+								<input type="text" name="title" value="{$info.title|default=''}" autocomplete="off" placeholder="请输入碎片标题" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 碎片标题 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">title</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">链接地址</label>
+							<div class="layui-input-block">
+								<input type="text" name="url" value="{$info.url|default=''}" autocomplete="off" placeholder="请输入链接地址" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 链接地址 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">url</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">缩略图</label>
+								<div class="layui-input-block">
+									<input type="file" filename="thumb" filetype="one" isajax="1" uploadparam="name=debris&iswater=1" iscrop="0" class="upload-file thumb" style="display: none">
+									<input type="text" name="thumb" value="{$info.thumb|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('thumb');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'thumb'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'thumb'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="裁剪" onclick="caijian('thumb');" class="layui-btn layui-btn-primary">
+									<input type="button" value="thumb" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+								</div>
+							</div>
+							{if condition="$info['thumb']"}
+							<div class="layui-inline thumb_list" id="thumb">
+								<span>
+									<img src="{$info.thumb|get_file_path=###}" alt="" height="100px;" width="100px" class="showimg">
+									<button type="button" filename="thumb" filevalue="{$info.thumb}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="thumb">
+							</div>
+							{/if}
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">描述<span class="sysval"><em class="zerocopy">description</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="description" placeholder="请输入内容" class="layui-textarea upload-text">{$info.description|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 描述 ]
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label">内容</label> -->
+							<div class="layui-input-block" style="margin-left:0px;">
+								<textarea name="content" placeholder="" class="layui-textarea upload-text">{$info.content|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 内容&nbsp;字段名:{content} ]
+								</span>
+								<span class="sysval"><em class="zerocopy">content</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">状态</label>
+							<div class="layui-input-block">
+								<input type="radio" name="status" value="1" class="upload-radio" title="显示" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>显示</div></div>
+								<input type="radio" name="status" value="0" class="upload-radio" title="隐藏"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>隐藏</div></div>
+								<span class="sysval"><em class="zerocopy">status</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline">
+								<input type="text" name="sort" value="{$info.sort|default=0}" lay-verify="required" placeholder="请输入数字" autocomplete="off" class="layui-input upload-text">
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<!-- 提交保存 -->
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}" class="upload-text">
+								<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal">提交保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$("select[name='posid']").val({$info.posid|default = $posid});
+	$("input[name=status][value={$info.status|default = 1}]").attr("checked","checked");
+</script>
+{/block}

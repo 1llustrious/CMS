@@ -1,0 +1,216 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="css"}
+<style>
+	.layui-form-item {
+		margin-bottom: -8px;
+	}
+	.layui-form-item .layui-input-inline {
+		width: 186px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>操作日志</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item">
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}" placeholder="请输入用户名" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="start_date" value="{:input('start_date')}" id="date" placeholder="开始日期" autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="end_date" value="{:input('end_date')}" id="date1" placeholder="结束日期" autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-input-inline">
+											<select name="type" lay-verify="">
+												<option value="" selected>全部操作类型</option>
+												<option value="1">新增</option>
+												<option value="2">修改</option>
+												<option value="3">删除</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<select name="table_name" lay-verify="">
+												<option value="" selected>全部表</option>
+												<?php foreach($tableList as $k=>$v):?>
+												<option value="<?php echo $v;?>"><?php echo $v;?></option>
+												<?php endforeach;?>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<select name="status" lay-verify="">
+												<option value="" selected>全部状态</option>
+												<option value="0">未恢复</option>
+												<option value="1">已恢复</option>
+											</select>
+										</div>
+										<div class="layui-input-inline" style="width:0px">
+											<button class="layui-btn " lay-submit="" lay-filter="formSet" id="search"><i class="layui-icon"></i></button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1%">
+										<col width="5%">
+										<col width="10%">
+										<col>
+										<col width="10%">
+										<col width="10%">
+										<col width="10%">
+										<col width="15%">
+										<col width="18%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" name="" id="allChoose" lay-skin="primary" lay-filter="allChoose">
+											</th>
+											<th>ID</th>
+											<th>表名</th>
+											<th>表名注释</th>
+											<th>操作人</th>
+											<th>操作类型</th>
+											<th>主键值</th>
+											<th>操作时间</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{if condition="$list"}
+										{volist name="list" id="info"}
+										<tr>
+											<td>
+												<input type="checkbox" name="ids[]" value="{$info.id}" class="ids" lay-skin="primary" lay-filter="c_one">
+											</td>
+											<td>{$info.id}</td>
+											<td>{$info.table_name}</td>
+											<td>{$info.comment}</td>
+											<td>{$info.admin_name}</td>
+											<td>{$info.type_text}</td>
+											<td>{$info.table_pk_id}</td>
+											<td>{$info.dtime|date="Y-m-d H:i:s"}</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs" href="javascript:;" onclick="x_admin_show('查看详情','{:url('log_content',array('id'=>$info['id']))}','','',0)">查看详情</a>
+												</div>
+												<?php if($info['status']==0 && ($info['type']==2||$info['type']==3)):?>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('recover',array('ids'=>$info['id']))}">恢复</a>
+												</div>
+												<?php elseif($info['status']==1 && ($info['type']==2||$info['type']==3)):?>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs" disabled="disabled" href="javascript:;">已恢复</a>
+												</div>
+												<?php endif;?>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',array('ids'=>$info['id']))}"><i class="layui-icon layui-icon-delete"></i> 删除</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+										{else /}
+										<tr><td colspan="8"> aOh! 暂时还没有内容! </td></tr>
+										{/if}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline"> <a class="layui-btn layui-btn-sm layui-btn-warm confirm ajax-post" target-form="ids" url="{:url('del')}">删除</a> </div>
+												<div class="layui-inline"> <a class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-get" url="{:url('clear_log')}">清空</a> </div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<!-- <div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										<span>共 2 页/31条记录 </span>
+										<span class="indexPage">首页 </span>
+										<strong>1</strong>
+										<a href="#">2</a>
+										<a class="nextPage" href="#">下页</a>
+										<a class="endPage" href="#">末页</a>
+									</div>
+								</div>
+							</div> -->
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$list|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='status']").val({$status|default = ''});
+        $("select[name='type']").val({$type|default = ''});
+        $("select[name='table_name']").val("{$table_name|default = ''}");
+        // 搜索功能
+        $("#search").click(function() {
+        	var url = '';
+        	var query = $('.search-form').find('input,select').serialize();
+        	query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        	query = query.replace(/^&/g, '');
+        	if (url.indexOf('?') > 0) {
+        		url += '&' + query;
+        	} else {
+        		url += '?' + query;
+        	}
+        	window.location.href = url;
+        });
+        // 回车搜索
+        $(".search-input").keyup(function(e) {
+        	if (e.keyCode === 13) {
+        		$("#search").click();
+        		return false;
+        	}
+        });
+    });
+</script>
+<script type="text/javascript">
+	layui.use(['form','laydate','jquery'], function(){
+		var form = layui.form //表单
+		,laydate = layui.laydate //日期
+		,$ = layui.jquery;
+		// 日期
+		laydate.render({
+			elem: '#date'
+			,type: 'datetime'
+		});
+		laydate.render({
+			elem: '#date1'
+			,type: 'datetime'
+		});
+	});
+</script>
+{/block}

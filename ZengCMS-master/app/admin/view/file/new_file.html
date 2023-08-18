@@ -1,0 +1,98 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<link rel="stylesheet" href="__STATIC__/admin/css/setting.css" media="all">
+<!-- codemirror -->
+<link rel="stylesheet" href="__STATIC__/admin/lib/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="__STATIC__/admin/lib/codemirror/theme/eclipse.css">
+<script src="__STATIC__/admin/lib/codemirror/lib/codemirror.js"></script>
+{/block}
+{block name="css"}
+<style>
+	form{
+		margin: 10px 15px;
+	}
+	.CodeMirror{
+		border: 1px solid #EEE;
+		height: 500px;
+		margin-top: 10px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>文件管理</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote>
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post">
+						<div class="layui-form-item">
+							<button class="layui-btn">保存</button>
+							<a href="javascript:window.history.back();" class="layui-btn layui-btn-primary">返回</a>
+							<span class="layui-btn layui-btn-danger">当前目录：{$curdir}</span>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">文件名称</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="hidden" name="curdir" value="{$curdir}">
+								<input type="hidden" name="filename" value="{:input('filename')}">
+								<input type="text" name="file" value="" autocomplete="off" placeholder="请输入新文件名称" class="layui-input">
+								<span class="sysval"><em class="zerocopy">{curdir}</em></span>
+							</div>
+						</div>
+						<textarea name="code" id="code" placeholder="请输入内容" class="layui-textarea" style="height: 550px;"></textarea>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<!-- 编辑器插件 -->
+<script src="__STATIC__/admin/lib/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="__STATIC__/admin/lib/codemirror/mode/css/css.js"></script>
+<script src="__STATIC__/admin/lib/codemirror/mode/javascript/javascript.js"></script>
+<script src="__STATIC__/admin/lib/codemirror/mode/php/php.js"></script>
+<script src="__STATIC__/admin/lib/codemirror/mode/xml/xml.js"></script>
+<script src="__STATIC__/admin/lib/codemirror/mode/clike/clike.js"></script>
+<!-- 编辑器插件 -->
+<script type="text/javascript">
+	var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
+		lineNumbers: true //行号
+		,theme:"eclipse" //主题
+		// ,mode:"htmlmixed" //语法高亮
+	});
+	// myCodeMirror.setValue('请输入内容');
+	var mode = "";
+	switch ("php") {
+		case ".PHP":
+			mode = "php";
+			break;
+		case ".HTML":
+			mode = "htmlmixed";
+			break;
+		case ".CSS":
+			mode = "css";
+			break;
+		case ".JS":
+			mode = "javascript";
+			break;
+		case ".XML":
+			mode = "xml";
+			break;
+		default:
+			mode = "php";
+			break;
+	}
+	myCodeMirror.setOption('mode',mode);//单独配置
+</script>
+{/block}

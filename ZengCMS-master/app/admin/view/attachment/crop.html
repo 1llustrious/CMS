@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Basic Handler | Jcrop Demo</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <script src="__STATIC__/admin/lib/Jcrop-0.9.12/js/jquery.min.js"></script>
+    <script src="__STATIC__/admin/lib/Jcrop-0.9.12/js/jquery.Jcrop.js"></script>
+    <script type="text/javascript">
+        jQuery(function ($) {
+            var jcrop_api;
+            $('#target').Jcrop({
+                onChange: showCoords,
+                onSelect: showCoords,
+                onRelease: clearCoords
+            }, function () {
+                jcrop_api = this;
+            });
+            $('#coords').on('change', 'input', function (e) {
+                var x1 = $('#x1').val(),
+                    x2 = $('#x2').val(),
+                    y1 = $('#y1').val(),
+                    y2 = $('#y2').val();
+                jcrop_api.setSelect([x1, y1, x2, y2]);
+            });
+        });
+        // Simple event handler, called from onChange and onSelect
+        // event handlers, as per the Jcrop invocation above
+        function showCoords(c) {
+            $('#x1').val(c.x);
+            $('#y1').val(c.y);
+            $('#x2').val(c.x2);
+            $('#y2').val(c.y2);
+            $('#w').val(c.w);
+            $('#h').val(c.h);
+        };
+        function clearCoords() {
+            $('#coords input').val('');
+        };
+        // 第一种确认方法
+        /* function ReturnImg(reimg) {
+            var backObj = window.opener.parent.document.form1.image;
+            var prvObj = window.opener.parent.document.getElementById('divpicview');
+            backObj.value = reimg;
+            if (prvObj) {
+                prvObj.style.width = '150px';
+                prvObj.innerHTML = "<img src='__STATIC__/" + reimg + "?" + Math.random() + "' width='150' />";
+            }
+            if (document.all) {
+                window.opener = true;
+            }
+            window.close();
+        } */
+        // 第二种确认方法
+        function ReturnImg(filevalue, filename,type) {
+            /* var backObj = window.opener.parent.document.form1.image;
+            var prvObj = window.opener.parent.document.getElementById('divpicview');
+            backObj.value = filevalue;
+            if (prvObj) {
+                prvObj.style.width = '150px';
+                prvObj.innerHTML = "<img src='__STATIC__/" + filevalue + "?" + Math.random() + "' width='150' />";
+            } */
+            /* window.opener.parent.return_img(filevalue, filename);
+            // window.opener.location.href = window.opener.location.href;//刷新父
+            if (document.all) {
+                window.opener = true;
+            }
+            window.close(); */
+            if(!type){
+                parent.return_img(filevalue, filename);
+            }else{
+                // 刷新父
+                parent.location.href = parent.location.href;
+            }
+            x_admin_close(); //关闭弹出框
+        }
+        // 关闭弹出框口
+        function x_admin_close() {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        }
+    </script>
+    <link rel="stylesheet" href="__STATIC__/admin/lib/Jcrop-0.9.12/demos/demo_files/main.css" type="text/css" />
+    <link rel="stylesheet" href="__STATIC__/admin/lib/Jcrop-0.9.12/demos/demo_files/demos.css" type="text/css" />
+    <link rel="stylesheet" href="__STATIC__/admin/lib/Jcrop-0.9.12/css/jquery.Jcrop.css" type="text/css" />
+</head>
+<body>
+    <div class="container" style=" overflow:scroll;height:600px;">
+        <div class="row">
+            <div class="span12">
+                <div class="jc-demo-box">
+                    <div class="page-header">
+                        <ul class="breadcrumb first">
+                            <li>
+                                <a href="__STATIC__/admin/lib/Jcrop-0.9.12/index.html">Jcrop</a>
+                                <span class="divider">/</span>
+                            </li>
+                            <li>
+                                <a href="__STATIC__/admin/lib/Jcrop-0.9.12/index.html">Demos</a>
+                                <span class="divider">/</span>
+                            </li>
+                            <li class="active">Basic Handler</li>
+                        </ul>
+                        <h1>Basic Handler</h1>
+                    </div>
+                    <!-- This is the image we're attaching Jcrop to -->
+                    <img src="__STATIC__/{$filevalue|default=input('filevalue')}" id="target" alt="[Jcrop Example]" />
+                    <!-- This is the form that our event handler fills -->
+                    <form id="coords" class="coords" action="" method="post">
+                        <div class="inline-labels">
+                            <label>X1 <input type="text" size="4" id="x1" name="x1" /></label>
+                            <label>Y1 <input type="text" size="4" id="y1" name="y1" /></label>
+                            <label>X2 <input type="text" size="4" id="x2" name="x2" /></label>
+                            <label>Y2 <input type="text" size="4" id="y2" name="y2" /></label>
+                            <label>W  <input type="text" size="4" id="w"  name="w" /></label>
+                            <label>H  <input type="text" size="4" id="h"  name="h" /></label>
+                        </div>
+                        <input type="hidden" name="filevalue" value="{$filevalue|default=input('filevalue')}" />
+                        <input type="submit" value="裁剪" class="btn btn-large btn-inverse" style="width: 5em;" />
+                        <input type="button" value="确定" onClick="ReturnImg('{$filevalue|default=input('filevalue')}','{:input('filename')}','{:input('type')}')" class="btn btn-large btn-inverse" style="width: 5em;" />
+                    </form>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{$doc.title} 演示站</title>
+    <meta name="keywords" content="{$doc.keywords}" />
+    <meta name="description" content="模板名称：{$doc.title} 模板介绍：{$doc.description}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__TEMPLATE__/static/demo/css/livedemo.css" type="text/css" />
+    <script src="__TEMPLATE__/static/demo/2.0/js/jquery-min-1.7.js" type="text/javascript"></script>
+    <link href="__TEMPLATE__/static/demo/css/style.css" rel="stylesheet" type="text/css" />
+    <style>
+        .none {
+            display: none !important
+        }
+        @media screen and (max-width: 640px) {
+            #mobileFrame {
+                display: none !important;
+            }
+        }
+        .qrcode {
+            width: 290px;
+            height: 300px;
+            background: #f7f7f7;
+            padding-top: 100px;
+        }
+        .qrcode table {
+            vertical-align: middle;
+            text-align: center;
+            margin: 0px auto;
+            width: 200px;
+            padding: 1px;
+            border: 1px solid #ccc;
+            background: #fff;
+        }
+        .qrcode p {
+            text-align: center;
+            height: 36px;
+            font-size: 15px;
+            font-family: "微软雅黑 Light";
+            color: #ff0000;
+            line-height: 36px;
+        }
+        @media screen and (min-width: 640px) {
+            .coright {
+                position: absolute;
+                bottom: 0px;
+                height: 24px;
+                line-height: 24px;
+                color: #666;
+                text-align: center;
+                background: #fff;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body id="demo-page" class="is-responsive">
+    <div class="relative js-demo-upper-menu js-template-id" id="headerlivedemo">
+        <div id="advanced">
+            <div class="bg">
+                <div class="top_container live-container">
+                    <a id="brand_livedemo" class="brand brand_livedemo" href="/"></a>
+                    <div class="name_template">
+                        <h1 title="{$doc.title} 演示站">
+                            <a href="{$doc.arturl}">{$doc.title} 演示站</a>
+                        </h1>
+                    </div>
+                    <div class="js-demo-bar-phone demo-bar-phone block-hidden">
+                        <a class="js-popup-open" data-popupi="js-popupi-1"><span class="phone-inner">联系客服</span></a>
+                        <div class="box-drop js-popup-content js-popupi-1">
+                            <ul class="list-drop">
+                                <li class="js-demo-list-li"><a>{$get_config.QQ}</a></li>
+                                <li class="js-demo-list-li"><a>{$get_config.QQ}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="responsive-block">
+                        <ul id="responsivator">
+                            <li class="response active" id="desktop"></li>
+                            <li class="response" id="tablet-portrait"></li>
+                            <li class="response" id="tablet-landscape"></li>
+                            <li class="response" id="iphone-portrait"></li>
+                            <li class="response" id="iphone-landscape"></li>
+                            <li id="qr" class="qr">
+                                <div class="_slide-down1 view_options">
+                                    <div id="qr-open" class="js-popup-open" data-popupi="js-popupi-2">
+                                        <span></span>
+                                    </div>
+                                    <div id="qr-content" class="clearfix js-popup-content js-popupi-2" style="display:none">
+                                        <div class="img-wrapper">
+                                            <div class="tm-icon icon-cross icon-close"></div>
+                                            <span id="qrcode"></span>
+                                        </div>
+                                        <div id="qr-text">移动设备预览</div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="topbar_info">
+                        <div class="btn-group buy_now">
+                            <a href="{$doc.arturl}">
+                                <!-- <span class="button btn-important tm-icon icon-download js-demo-buy-button js-btn" id="livedemo-buy-now-variant-regular"> -->
+                                <a href="http://wpa.qq.com/msgrd?v=3&amp;uin={$get_config.QQ}&amp;site=qq&amp;menu=yes" target="_blank">
+                                    <span class="button btn-important tm-icon js-demo-buy-button js-btn" id="livedemo-buy-now-variant-regular">
+                                        <span class="btn-inner">立即咨询</span>
+                                    </span>
+                                </a>
+                            </a>
+                        </div>
+                        <!-- <div style="width: 500px;"></div> -->
+                        <!-- <div id="livedemo-offer-trigger" class="price-wrapper regular js-offer-trigger js-popup-open dropdown-arrow" data-popupi="js-popupi-3">
+                        <span class="price-title">查看其它价格方案
+                            <span id="buy-button" class="icon-arrow-small-down" data-toggle="dropdown"></span>
+                        </span>
+                        <span class="price  js-price js-price-topbar hide-price">&yen;1600</span>
+                        </div>
+                        <div class="box-drop js-popup-content js-popupi-3" id="dropdown">
+                            <ul class="list-drop">
+                                <li id="livedemo-licence-regular" class="js-demo-list-li" data-variant="regular">
+                                    <span class="js-drop">安装服务
+                                        <span class="price js-price hide-price">&yen;1000.00</span>
+                                    </span>
+                                    <div class="popover rd-popover rd-popover-bottom rd-popover-grey">
+                                        <div class="popover-content">选择此项，如果您是新手那么购买后将得到安装服务</div>
+                                    </div>
+                                </li>
+                                <li id="livedemo-licence-exclusive" class="js-demo-list-li">
+                                    <span class="js-drop">修改服务
+                                        <span class="price js-price hide-price">&yen;3000.00</span>
+                                    </span>
+                                    <div class="popover rd-popover rd-popover-bottom rd-popover-grey">
+                                        <div class="popover-content">选择此项，您将得到修改的业务支持</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div> -->
+                        <div class="clear" style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <span id="livedemo-toolbar-toggle" class="trigger icon-arrow-small-up"></span>
+    </div>
+    <div id="iframelive" class="">
+        <div id="frameWrapper">
+            <!-- <iframe id="iframe" src="http://demoall.adashuo.com/18009/" frameborder="0"  width="100%"></iframe> -->
+            <iframe id="frame" src="{$doc.yanshi}" frameborder="0" width="100%"></iframe>
+            <!--需要判断的部分 start-->
+            <div id="mobileFrame" class="" style="position: absolute; z-index: 999; width: 297px; height: 420px; right: 40px; bottom: 20px; padding: 32px 8px; padding-left:9px; padding-right:6px; background-image: url(&quot;__TEMPLATE__/static/demo/images/small_phone.png&quot;);">
+                <div id="hidemobile">×</div>
+                <div class="qrcode">
+                    <div id="qrcodeTable"></div>
+                    <p>扫一扫看WAP演示</p>
+                </div>
+            </div>
+            <div id="showmobile" style="position: absolute; right: 16px; bottom: 200px; z-index: 999; width: 47px; height: 60px; cursor: pointer; display: none; background-image: url(&quot;__TEMPLATE__/static/demo/images/phoneTip_right.png&quot;);"></div>
+            <!--end-->
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#qrcodeTable").qrcode({
+                        render: "table",
+                        // text : "http://demoall.adashuo.com/18009/",
+                        text: "{$doc.yanshi}",
+                        width: "200",
+                        height: "200"
+                    });
+                });
+            </script>
+            <script>
+                window.onload = function () {
+                    var hidemobilebtn = document.getElementById("hidemobile");
+                    var showmobilebtn = document.getElementById("showmobile");
+                    var mobileframe = document.getElementById("mobileFrame");
+                    if (!hidemobilebtn) return false;
+                    if (!showmobilebtn) return false;
+                    if (!mobileframe) return false;
+                    hidemobilebtn.onclick = function () {
+                        mobileframe.style.display = "none";
+                        showmobilebtn.style.display = "block";
+                    }
+                    showmobilebtn.onclick = function () {
+                        this.style.display = "none";
+                        mobileframe.style.display = "";
+                    }
+                }
+                // document.getElementById("mobileFrame").getElementsByTagName("frame")[0].onload=function(){this.style.width="301px";}
+            </script>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $("#hidemobile").click(function () {
+                        $("#mobileFrame").slideToggle();
+                    });
+                });
+            </script>
+            <p class="coright" style="color: red;">本网页内容、图片、视频为模板演示数据，如有涉及侵犯版权，请联系我们提供书面反馈，我们核实后会立即删除。</p>
+        </div>
+    </div>
+    <script src="__TEMPLATE__/static/demo/js/livedemo.js" type="text/javascript"></script>
+    <script src="__TEMPLATE__/static/demo/2.0/qrcode/jquery/jquery.qrcode.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        jQuery('#qrcode').qrcode({
+            width: 182,
+            height: 182,
+            text: $("#frame").attr("src")
+        });
+    </script>
+</body>
+</html>

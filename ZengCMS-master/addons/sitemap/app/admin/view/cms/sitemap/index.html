@@ -1,0 +1,218 @@
+{extend name="layouts/main" /}
+{block name="css"}
+<style>
+    a.ui_tips {
+        background: url(__STATIC__/admin/images/ui_tip.png) no-repeat;
+        opacity: 0.5;
+        background-size: 100%;
+        display: inline-block;
+        text-indent: -999px;
+        width: 18px;
+        height: 21px;
+        vertical-align: bottom;
+        margin-left: -8px;
+        margin-top: 1px;
+    }
+    p.notic {
+        line-height: 12px;
+        line-height: 18px;
+        color: #AAA;
+        margin-top: 4px;
+        clear: both;
+        display: none;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+    <div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-main">
+                <div id="LAY_preview">
+                    <blockquote class="layui-elem-quote layui-text">
+                        <i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+                    </blockquote>
+                    {if isset($make_xml_time)}<blockquote class="layui-elem-quote">sitemap.xml:修改时间：{$make_xml_time}&nbsp;&nbsp;</blockquote>{/if}
+                    {if isset($make_html_time)}<blockquote class="layui-elem-quote">sitemap.html:修改时间：{$make_html_time}&nbsp;&nbsp;</blockquote>{/if}
+                    {if isset($make_txt_time)}<blockquote class="layui-elem-quote">sitemap.txt:修改时间：{$make_txt_time}&nbsp;&nbsp;</blockquote>{/if}
+                    <form class="layui-form layui-form-pane" action="" lay-filter="example">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">更新频率：</label>
+                                <div class="layui-form-mid">&nbsp;首页</div>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <select name="sitemap_changefreq_index">
+                                        <option value="always" selected="true">经常</option>
+                                        <option value="hourly">每小时</option>
+                                        <option value="daily">每天</option>
+                                        <option value="weekly">每周</option>
+                                        <option value="monthly">每月</option>
+                                        <option value="yearly">每年</option>
+                                        <option value="never">从不</option>
+                                    </select>
+                                    <span class="sysval"><em class="zerocopy">{sitemap_changefreq_index}</em></span>
+                                </div>
+                                <div class="layui-form-mid">列表页</div>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <select name="sitemap_changefreq_list">
+                                        <option value="always">经常</option>
+                                        <option value="hourly" selected="true">每小时</option>
+                                        <option value="daily">每天</option>
+                                        <option value="weekly">每周</option>
+                                        <option value="monthly">每月</option>
+                                        <option value="yearly">每年</option>
+                                        <option value="never">从不</option>
+                                    </select>
+                                    <span class="sysval"><em class="zerocopy">{sitemap_changefreq_list}</em></span>
+                                </div>
+                                <div class="layui-form-mid">内容页</div>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <select name="sitemap_changefreq_view">
+                                        <option value="always">经常</option>
+                                        <option value="hourly">每小时</option>
+                                        <option value="daily" selected="true">每天</option>
+                                        <option value="weekly">每周</option>
+                                        <option value="monthly">每月</option>
+                                        <option value="yearly">每年</option>
+                                        <option value="never">从不</option>
+                                    </select>
+                                    <span class="sysval"><em class="zerocopy">{sitemap_changefreq_view}</em></span>
+                                </div>
+                                <div class="layui-form-mid">
+                                    <a class="ui_tips" href="javascript:void(0);" onmouseover="layer_tips = layer.tips($(this).parent().find('p.notic').html(), this, {time:100000});" onmouseout="layer.close(layer_tips);"></a>
+                                    <p class="notic">XML地图文件使用，你输入的网站的网页内容更新的频率。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">优先级别：</label>
+                                <div class="layui-form-mid">&nbsp;首页</div>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <select name="sitemap_priority_index">
+                                        <option value="0.1">0.1</option>
+                                        <option value="0.2">0.2</option>
+                                        <option value="0.3">0.3</option>
+                                        <option value="0.4">0.4</option>
+                                        <option value="0.5">0.5</option>
+                                        <option value="0.6">0.6</option>
+                                        <option value="0.7">0.7</option>
+                                        <option value="0.8">0.8</option>
+                                        <option value="0.9">0.9</option>
+                                        <option value="1.0" selected="true">1.0</option>
+                                    </select>
+                                    <span class="sysval"><em class="zerocopy">{sitemap_priority_index}</em></span>
+                                </div>
+                                <div class="layui-form-mid">列表页</div>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <select name="sitemap_priority_list">
+                                        <option value="0.1">0.1</option>
+                                        <option value="0.2">0.2</option>
+                                        <option value="0.3">0.3</option>
+                                        <option value="0.4">0.4</option>
+                                        <option value="0.5">0.5</option>
+                                        <option value="0.6">0.6</option>
+                                        <option value="0.7">0.7</option>
+                                        <option value="0.8" selected="true">0.8</option>
+                                        <option value="0.9">0.9</option>
+                                        <option value="1.0">1.0</option>
+                                    </select>
+                                    <span class="sysval"><em class="zerocopy">{sitemap_priority_list}</em></span>
+                                </div>
+                                <div class="layui-form-mid">内容页</div>
+                                <div class="layui-input-inline" style="width: 250px;">
+                                    <select name="sitemap_priority_view">
+                                        <option value="0.1">0.1</option>
+                                        <option value="0.2">0.2</option>
+                                        <option value="0.3">0.3</option>
+                                        <option value="0.4">0.4</option>
+                                        <option value="0.5" selected="true">0.5</option>
+                                        <option value="0.6">0.6</option>
+                                        <option value="0.7">0.7</option>
+                                        <option value="0.8">0.8</option>
+                                        <option value="0.9">0.9</option>
+                                        <option value="1.0">1.0</option>
+                                    </select>
+                                    <span class="sysval"><em class="zerocopy">{sitemap_priority_view}</em></span>
+                                </div>
+                                <div class="layui-form-mid">
+                                    <a class="ui_tips" href="javascript:void(0);" onmouseover="layer_tips = layer.tips($(this).parent().find('p.notic').html(), this, {time:100000});" onmouseout="layer.close(layer_tips);"></a>
+                                    <p class="notic">XML地图文件使用，所抓取页面在您网站的重要性，告诉搜索引擎抓取的优先级。数值越大，优先级越高。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label" title="内容链接数量">内容链接数量</label>
+								<div class="layui-input-inline" style="width: 200px;">
+									<input type="text" name="num" placeholder="每个栏目的内容链接数量" autocomplete="off" class="layui-input" value="500">
+                                    <span class="sysval"><em class="zerocopy">num</em></span>
+								</div>
+							</div>
+						</div>
+                        <div class="layui-form-item layui-form-text" id="info" style="display: none">
+                            <label class="layui-form-label">返回信息</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="" rows="" class="layui-textarea" name="info"></textarea>
+                            </div>
+                        </div>
+                        <div id="update" style="text-align: left;padding:20px 0;display: none">
+                            <img src="__STATIC__/admin/images/loading-1.gif"><span>更新中......</span>
+                        </div>
+                        <div class="layui-form-item">
+                            <a href="/sitemap.xml" target="_blank" class="layui-btn">预览sitemap.xml地图</a>
+                            <a href="/sitemap.html" target="_blank" class="layui-btn">预览sitemap.html地图</a>
+                            <a href="/sitemap.txt" target="_blank" class="layui-btn">预览sitemap.txt地图</a>
+                            <button class="layui-btn" type="button" lay-submit lay-filter="demo2" id="execute">
+                                开始更新
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    //点击执行开始更新
+    $("#execute").on('click', function (event) {
+        var sitemap_changefreq_index = $("select[name='sitemap_changefreq_index']").val();//更新首页频率
+        var sitemap_changefreq_list = $("select[name='sitemap_changefreq_list']").val();//更新列表页频率
+        var sitemap_changefreq_view = $("select[name='sitemap_changefreq_view']").val();//更新内容页频率
+
+        var sitemap_priority_index = $("select[name='sitemap_priority_index']").val();//首页优先级
+        var sitemap_priority_list = $("select[name='sitemap_priority_list']").val();//列表页优先级
+        var sitemap_priority_view = $("select[name='sitemap_priority_view']").val();//内容页优先级
+
+        var num = $("input[name='num']").val();//内容链接数量
+        $.ajax({
+            type: "POST",
+            data: {sitemap_changefreq_index:sitemap_changefreq_index,sitemap_changefreq_list:sitemap_changefreq_list,sitemap_changefreq_view:sitemap_changefreq_view,sitemap_priority_index:sitemap_priority_index,sitemap_priority_list:sitemap_priority_list,sitemap_priority_view:sitemap_priority_view,num:num},
+            url: "{:url('index')}",
+            dataType: "json",
+            beforeSend:function(){
+                $("#info").hide();
+                $("#update").show();
+            },
+            success: function (res) {
+                $("#update").hide();
+                $("#info").show();
+                if (res.code == 1) {
+                    $("textarea[name='info']").val(res.msg);
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 3000);
+                } else {
+                    $("textarea[name='info']").val(res.msg);
+                }
+            }
+        });
+    });
+</script>
+{/block}

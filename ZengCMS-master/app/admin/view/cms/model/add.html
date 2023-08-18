@@ -1,0 +1,121 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">模型名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="title"  value=""  placeholder="模型名称" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 请输入模型的名称，长度不能超过30个字符 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">title</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">模型标识</label>
+							<div class="layui-input-block">
+								<input type="text" name="name"  value=""  placeholder="模型标识" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 请输入文档模型标识，即表名，只能使用英文且不能重复 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">模型性质</label>
+							<div class="layui-input-block">
+								<select  name="extend" lay-verify="required">
+									<!-- <option value="1" selected>文档模型</option> -->
+									<option value="1" selected><?php if(get_document_model(1,'title')){echo get_document_model(1,'title');}else{echo '文档模型';}?>
+									</option>
+									<option value="0">独立模型</option>
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 目前仅支持文档模型，继承基础文档或独立模型 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">extend</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">系统模型</label>
+							<div class="layui-input-block">
+								<input type="radio" name="is_system" value="1" title="是">
+								<div class="layui-unselect layui-form-radio">
+									<i class="layui-anim layui-icon"></i>
+									<div>是</div>
+								</div>
+								<input type="radio" name="is_system" value="0" title="否" checked="">
+								<div class="layui-unselect layui-form-radio layui-form-radioed">
+									<i class="layui-anim layui-icon"></i>
+									<div>否</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">is_system</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">引擎类型</label>
+							<div class="layui-input-block">
+								<select  name="engine_type" lay-verify="required">
+									<option value="MyISAM" selected>MyISAM</option>
+									<option value="InnoDB">InnoDB</option>
+									<option value="MEMORY">MEMORY</option>
+									<option value="BLACKHOLE">BLACKHOLE</option>
+									<option value="MRG_MYISAM">MRG_MYISAM</option>
+									<option value="ARCHIVE">ARCHIVE</option>
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 引擎类型 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">engine_type</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">添加主键</label>
+							<div class="layui-input-block">
+								<input type="radio" name="need_pk" value="1" title="是" checked="">
+								<div class="layui-unselect layui-form-radio">
+									<i class="layui-anim layui-icon"></i>
+									<div>是</div>
+								</div>
+								<input type="radio" name="need_pk" value="0" title="否">
+								<div class="layui-unselect layui-form-radio layui-form-radioed">
+									<i class="layui-anim layui-icon"></i>
+									<div>否</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">need_pk</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">简介<span class="sysval"><em class="zerocopy">remark</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="remark" placeholder="" class="layui-textarea upload-text">{$info.remark|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 简介 ]
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-block">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" required="" lay-verify="required" placeholder="排序" autocomplete="off" class="layui-input">
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

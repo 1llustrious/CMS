@@ -1,0 +1,186 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<form class="layui-form layui-form-pane" action="" lay-filter="example">
+						<div class="layui-form-item">
+							<label class="layui-form-label">表信息</label>
+							<div class="layui-input-inline">
+								<select name="table">
+									<option value="" selected>请选择表</option>
+									{volist name="list" id="vo"}
+									<option value="{$vo.name}">{$vo.name} ({$vo.comment})</option>
+									{/volist}
+								</select>
+								<span class="sysval"><em class="zerocopy">table</em></span>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(1);" class="layui-btn">优化选择表</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(2);" class="layui-btn">优化全部表</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(3);" class="layui-btn">修复选中表</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(4);" class="layui-btn">修复全部表</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(5);" class="layui-btn">查看表结构</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(6);" class="layui-btn">清空表数据</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="sql(7);" class="layui-btn">删除数据表</a>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text" id="sql_table" style="display: none;">
+							<label class="layui-form-label">表结构</label>
+							<div class="layui-input-block">
+								<textarea placeholder="" rows="10" class="layui-textarea" name="sql_table"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text" id="sql_insert" style="display: none;">
+							<label class="layui-form-label">表数据</label>
+							<div class="layui-input-block">
+								<textarea placeholder="" rows="10" class="layui-textarea" name="sql_insert"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item" pane>
+							<label class="layui-form-label">运行sql命令行</label>
+							<div class="layui-input-block">
+								<input type="radio" name="type" value="1" title="单行命令(支持简单查询)" lay-filter="sex" checked>
+								<input type="radio" name="type" value="2" title="多行命令" lay-filter="sex">
+								<span class="sysval"><em class="zerocopy">type</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">SQL命令</label>
+							<div class="layui-input-block">
+								<textarea placeholder="" rows="" class="layui-textarea" name="sql_query"></textarea>
+								<span class="sysval"><em class="zerocopy">sql_query</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text" id="info" style="display: none;">
+							<label class="layui-form-label">返回信息</label>
+							<div class="layui-input-block">
+								<textarea placeholder="" rows="" class="layui-textarea" name="info"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<button class="layui-btn" type="button" lay-submit lay-filter="demo2" id="execute">执行</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	// 点击按钮
+	function sql($type){
+		var table = $("select[name='table']").val();
+		if($type == 1){ //优化单表
+			if(table == ''){
+				alert('请选择表');
+				return false;
+			}
+		    $.post("{:url('admin/Data/optimize')}",{tablename:table},function(res){
+		    	layer.msg(res.msg,{time:1000});
+		    },'json');
+		}
+		if($type == 2){ //优化所有表
+		    $.post("{:url('admin/Data/optimizeAll')}",{tablename:table},function(res){
+		    	layer.msg(res.msg,{time:1000});
+		    },'json');
+		}
+		if($type == 3){ //修复单表
+			if(table == ''){
+				alert('请选择表');
+				return false;
+			}
+			$.post("{:url('admin/Data/repair')}",{tablename:table},function(res){
+				layer.msg(res.msg,{time:1000});
+			},'json');
+		}
+		if($type == 4){ //修复所有表
+			$.post("{:url('admin/Data/repairAll')}",{tablename:table},function(res){
+				layer.msg(res.msg,{time:1000});
+			},'json');
+		}
+		if($type == 5){ //查看表结构
+			if(table == ''){
+				alert('请选择表');
+				return false;
+			}
+			$.ajax({
+				type:"POST",
+				data:{table:table},
+				url:"{:url('admin/Data/get_table_insert')}",
+				dataType:"json",
+				success:function(res){
+					$("#sql_table").fadeIn();
+					$("textarea[name='sql_table']").val(res.sql_table);
+					$("#sql_insert").fadeIn();
+					$("textarea[name='sql_insert']").val(res.sql_insert);
+				}
+			});
+		}
+		if($type == 6){ //清空表数据
+			layer.confirm('确认清空表数据?', {icon: 3, title:'提示'}, function(index){
+				//do something
+				$.post("{:url('admin/Data/clear_table_data')}",{tablename:table},function(res){
+					layer.msg(res.msg,{time:1000});
+				},'json');
+				layer.close(index);
+			});
+		}
+		if($type == 7){ //删除表
+			layer.confirm('确认删除数据表?', {icon: 3, title:'提示'}, function(index){
+				//do something
+				$.post("{:url('admin/Data/del_table')}",{tablename:table},function(res){
+					layer.msg(res.msg,{time:2000},function(){
+						window.location.reload();
+					});
+				},'json');
+
+				layer.close(index);
+			});
+		}
+	}
+	// 点击执行
+	$("#execute").on('click', function(event) {
+		var type = $(":radio[name=type]:checked").val();
+		var sql_query = $("textarea[name='sql_query']").val();
+		$.ajax({
+			type:"POST",
+			data:{type:type,sql_query:sql_query},
+			url:"{:url('admin/Data/sql_query')}",
+			dataType:"json",
+			success:function(res){
+				if(res.code == 1){
+					$("#info").fadeIn();
+					$("textarea[name='info']").val(res.msg);
+				}else{
+					$("#info").fadeIn();
+					$("textarea[name='info']").val(res.msg);
+				}
+			}
+		});
+	});
+</script>
+{/block}

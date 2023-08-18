@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="site-demo-overflow">
+<head>
+	<meta charset="utf-8">
+	<title>{$meta_title}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="__STATIC__/admin/lib/layui-master/dist/css/layui.css" media="all">
+	<script src="__STATIC__/admin/js/jquery-1.11.3.min.js"></script>
+	<script src="__STATIC__/admin/lib/layer/layer.js"></script>
+	<script src="__STATIC__/admin/lib/layui-master/dist/layui.js" charset="utf-8"></script>
+	<!-- notice 通知控件 -->
+	<link rel="stylesheet" href="__STATIC__/admin/lib/layui_exts/layuinotice/dist/notice.css">
+	<link rel="stylesheet" href="__STATIC__/admin/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+	<!-- 阿里巴巴矢量图标引入方式一： -->
+	<link rel="stylesheet" href="__STATIC__/admin/lib/iconfont/iconfont.css">
+	<!-- 第二步：挑选相应图标并获取类名，应用于页面： -->
+	<!-- <span class="iconfont iconxxx"></span> -->
+	<!-- 阿里巴巴矢量图标引入方式二： -->
+	<script src="__STATIC__/admin/lib/iconfont/iconfont.js"></script>
+	<script type="text/javascript">
+        // 全局变量
+        var GV = {
+			// kindeditor上传地址
+			// "kindeditor_upload_url":"__STATIC__/admin/lib/kindeditor/php/upload_json.php",
+			"kindeditor_upload_url":"{:url('admin/Attachment/kindeditor_upload')}",
+			// kindeditor图片管理空间
+			"kindeditor_file_manager_url":"{:url('admin/Attachment/kindeditor_file_manager')}",
+			// kindeditor图片删除地址
+			"kindeditor_image_del_url":"{:url('admin/Attachment/kindeditor_image_del')}",
+			// Markdown图片上传
+			"markdown_image_upload_url":"{:url('admin/Attachment/markdown_image_upload')}",
+			// 获取城市
+			"ajax_get_city":"{:url('admin/Base/ajaxGetCity')}",
+			// 根据省获取城市
+			"get_city":"{:url('admin/Base/get_city')}",
+			// 静态url
+			"static_url":"__STATIC__",
+			// 上传地址
+			"upload_url":"{:url('admin/Attachment/native_upload')}",
+			// 图片裁剪
+			"crop_url":"{:url('admin/Attachment/crop')}",
+			// 删除地址
+			"delete_url":"{:url('admin/Attachment/delimg')}",
+        };
+    </script>
+	{block name="link"}
+	<link rel="stylesheet" href="__STATIC__/admin/css/setting.css" media="all">
+	{/block}
+	<link rel="stylesheet" href="__STATIC__/admin/css/common.css" media="all">
+	<style>
+		/* 阿里巴巴矢量图标引入方式二：*/
+		/* 第二步：加入通用 CSS 代码（引入一次就行）： */
+		.my-icon {
+			width: 1em; height: 1em;
+			vertical-align: -0.15em;
+			fill: currentColor;
+			overflow: hidden;
+			font-size:30px;
+		}
+		/* 第三步：挑选相应图标并获取类名，应用于页面： */
+		/* <svg class="my-icon" aria-hidden="true">
+		<use xlink:href="#icon-xxx"></use>
+		</svg> */
+	</style>
+	{block name="css"}
+	<style></style>
+	{/block}
+</head>
+<body>
+<!-- 主体 开始 -->
+<div class="layui-layout layui-layout-admin">
+	<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+	<!--[if lt IE 9]>
+	<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+	<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- 右侧内容 开始 -->
+	{block name="content"}
+	<!-- content -->
+	{/block}
+	<!-- 右侧内容 结束 -->
+	<!-- 底部 开始 -->
+	<!-- 第一种方法 -->
+	{/* include file="layouts/footer" */}
+	<!-- 第二种方法 -->
+	{block name="footer"}
+	<div class="layui-footer footer" style="left:0px;text-align: center;">
+		<p>© Powered by ZengCMS v{$ZENGCMS_VERSION}</p>
+	</div>
+	{/block}
+	<!-- 底部 结束 -->
+	<script src="__STATIC__/admin/layuimini/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+	<script type="text/javascript">
+		layui.use(['layer','jquery','miniTab'], function () {
+			var $ = layui.jquery,
+			layer = layui.layer,
+			miniTab = layui.miniTab;
+			miniTab.listen();
+		});
+	</script>
+	<!-- notice 通知控件 -->
+	<script src="__STATIC__/admin/lib/layui_exts/layuinotice/dist/notice.js"></script>
+	<!-- 图片拖动 开始 -->
+	<script src="__STATIC__/admin/lib/jquerydrag/js/jquery-ui-1.11.0.js"></script>
+	<!-- 图片拖动 结束 -->
+	<!-- 点击复制 开始 -->
+	<script type="text/javascript">
+		var cfg = {
+			path: "__STATIC__/admin/lib/zeroclipboard/zeroclipboard.swf",
+			copy: function(){
+			return $(this).text();
+			},
+			beforeCopy:function(){
+				$(this).css("color","orange");
+			},
+			afterCopy:function(){
+				layer.msg('复制成功', {icon: 1,time: 1000});
+			}
+		};
+		$(".zerocopy").mouseover(function(){
+			$(this).css("color","blue");
+			if(!$(this).data('init')){$(this).zclip(cfg);$(this).data('init',true)}
+		});
+		$(".zerocopy").mouseout(function(){
+			$(this).css("color","");
+		});
+	</script>
+	<script type="text/javascript" src="__STATIC__/admin/lib/zeroclipboard/zeroclipboard.js"></script>
+	<!-- 点击复制 结束 -->
+	<script src="__STATIC__/admin/js/images.js"></script>
+	<script src="__STATIC__/admin/js/common.js"></script>
+	<!-- 滚动js 开始 -->
+	{block name="scroll"}
+	<script type="text/javascript">
+		layui.use(['layer','jquery','util'], function () {
+			var $ = layui.jquery,
+			layer = layui.layer,
+			util = layui.util;
+			// 固定Bar
+			util.fixbar({
+				bar2: '&#xe625;'
+				, css: { right: 15, bottom: 35}
+				, bgcolor: '#009688 !important;display:block;'
+				,showHeight:100
+				, click: function (type) {
+					if (type === 'top') {
+						$('.layui-body').animate({ //主要代码
+							scrollTop: 0
+						}, 200);
+					}else{
+						$('.layui-body').animate({ //主要代码
+							scrollTop: 1000000000
+						}, 200);
+					}
+				}
+			});
+		});
+	</script>
+	{/block}
+	<!-- 滚动js 结束 -->
+	{block name="js"}
+	<!-- js -->
+	{/block}
+</div>
+<!-- 主体 结束 -->
+</body>
+</html>

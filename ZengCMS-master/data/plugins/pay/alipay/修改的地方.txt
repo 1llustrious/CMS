@@ -1,0 +1,25 @@
+﻿一. 修改 pay/alipay/alipayapi.php  33和37和41和45行代码
+二. pay/alipay/lib/alipay_submit.class.php 107行注释掉；106行把style='display:none;'去掉；
+
+三.给按钮加样式
+1.在pay/alipay/lib/alipay_submit.class.php106行加上class='paybtn'
+2.在flow4.htm 加
+<style type="text/css">
+.paybtn{
+  width: 100px;
+  height: 40px;
+  background-color: orange;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: bold;
+}
+</style>
+
+四.修改pay/alipay/alipay.config.php 
+19行$alipay_config['partner']       = '2088421658592550';
+26行$alipay_config['key']            = 'aqs0q9ywu0fd87j78mzcoqw3199wkczq';
+30行$alipay_config['notify_url'] = "http://127.0.0.1/shop/index.php/index/Flow/aliNotify";  //支付成功异步处理订单状态
+34行$alipay_config['return_url'] = "http://127.0.0.1/shop/index.php/index/Flow/paySuccess";  //支付成功同步跳转地方
+
+五.修改pay/notify_url.php 54和66行
+

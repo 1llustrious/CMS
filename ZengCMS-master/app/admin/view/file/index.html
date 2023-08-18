@@ -1,0 +1,543 @@
+{extend name="layouts/main" /}
+{block name="link"}
+{/block}
+{block name="css"}
+<style>
+	.layui-inline{
+		padding-bottom: 3px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;margin-top: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>文件列表</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<button class="layui-btn layui-btn-sm layui-btn-primary">
+											<i class="layui-icon">
+												<a href="?currdir={$curdir|pre_dir=###}&filename={:input('filename')}">
+													上级目录
+												</a>
+											</i>
+										</button>
+										<a class="layui-btn layui-btn-sm layui-btn-primary" href="javascript:;" onclick="javascript:location.replace(location.href);">
+											<i class="layui-icon">&#x1002;</i>
+										</a>
+										<button class="layui-btn layui-btn-sm layui-btn-danger" type="button">当前路径：{$curdir}</button>
+										<span class="layui-btn layui-btn-sm layui-btn-success">共{$num.dir}个目录，{$num.file}个文件</span>
+										<a class="layui-btn layui-btn-sm layui-btn-success" href="?currdir={$PROJECT_PATH}public/static/template/">
+											模板管理
+										</a>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form form-horizontal" action="" method="post">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1%">
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col >
+									</colgroup>
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" class="check-all" lay-skin="primary" id="allChoose" lay-filter="allChoose">
+											</th>
+											<th>文件名</th>
+											<th>文件大小</th>
+											<th>缩略图</th>
+											<th>创建时间</th>
+											<th>最后修改时间</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="$dirs" id="v"}
+										<tr>
+											<td>
+												<input type="checkbox" class="ids" name="ids[]" value="{$v.currdir}" lay-skin="primary" lay-filter="c_one">
+											</td>
+											<td>
+												<!-- 图标开始 -->
+												<svg class="my-icon" aria-hidden="true">
+													<use xlink:href="{$v.icon}"></use>
+												</svg>
+												<!-- 图标结束 -->
+												<a href="<?php if($v['flag']){echo '?currdir='.$v['currdir'].'&filename='.input('filename');}else{echo 'javascript:;';}?>" 
+													{eq name="v.flag" value="0"}onclick="ReturnImg('{$v.filevalue}','{:input('filename')}');"{/eq}>{$v.name}
+												</a>
+											</td>
+											<td>
+												{:sizeFormat($v.size,2)}
+												<!-- {:size_format($v.size,2)} -->
+												{if condition="$v['flag'] eq 1"}
+													({$v.dircount}个目录,{$v.count}个文件)
+												{/if}
+											</td>
+											<td>
+												<?php if(in_array($v['ext'],array("gif","jpg","jpeg","png"))):?>
+													<img src="<?php echo getpic(urlencode($v['currdir']));?>" height="45px" width="45px" title="点击查看图片" alt="点击查看图片" class="showimg">
+												<?php endif;?>
+											</td>
+											<td>{$v.ctime|date="Y-m-d"}</td>
+											<td>{$v.mtime|date="Y-m-d"}</td>
+											<td>
+												<!-- 选择 -->
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-danger" href="<?php if($v['flag']){echo '?currdir='.$v['currdir'].'&filename='.input('filename');}else{echo 'javascript:;';}?>" {eq name="v.flag" value="0"}onclick="ReturnImg('{$v.filevalue}','{:input('filename')}');"{/eq}>
+														<i class="layui-icon layui-icon-set-fill"></i> 选择
+													</a>
+												</div>
+												<!-- 编辑 -->
+												{eq name="v.flag" value="0"}
+												<?php if(in_array($v['ext'],array("php","css","js","xml","html","htaccess","txt"))):?>
+													<div class="layui-inline">
+														<a class="layui-btn layui-btn-xs" href="{:url('edit')}?file={$v.currdir|urlencode=###}&filename={:input('filename')}">
+															<i class="layui-icon layui-icon-edit"></i> 编辑
+														</a>
+													</div>
+												<?php endif;?>
+												{/eq}
+												{if condition="$v['flag'] eq 1"} <!-- 复制文件夹 -->
+												<div class="layui-inline">
+													<a  class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="copy_folder('{$v.currdir}')">
+														<i class="layui-icon layui-icon-set-fill"></i> 复制
+													</a>
+												</div>
+												{else /} <!-- 复制文件 -->
+												<div class="layui-inline">
+													<a  class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="copy_file('{$v.currdir}','{:dirname($v['currdir'])}')">
+														<i class="layui-icon layui-icon-set-fill"></i> 复制
+													</a>
+												</div>
+												{/if}
+												{if condition="$v['flag'] eq 1"} <!-- 剪切文件夹 -->
+												<div class="layui-inline">
+													<a  class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="cut_folder('{$v.currdir}')">
+														<i class="layui-icon layui-icon-set-fill"></i> 剪切
+													</a>
+												</div>
+												{else /} <!-- 剪切文件 -->
+												<div class="layui-inline">
+													<a  class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="cut_file('{$v.currdir}','{:dirname($v['currdir'])}')">
+														<i class="layui-icon layui-icon-set-fill"></i> 剪切
+													</a>
+												</div>
+												{/if}
+												<!-- 命名 -->
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-normal" href="javascript:;" onclick="ReName('{$v.currdir|urlencode=###}','{$v.currdir|basenamecn=###}')">
+														<i class="layui-icon layui-icon-release"></i> 命名
+													</a>
+												</div>
+												<!-- 下载 -->
+												{eq name="v.flag" value="0"}
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-warm" href="{:url('download')}?currdir={$v.currdir|urlencode=###}">
+														<i class="layui-icon layui-icon-set-fill"></i> 下载
+													</a>
+												</div>
+												{/eq}
+												<!-- 裁剪 -->
+												{eq name="v.flag" value="0"}
+												<?php if(in_array($v['ext'],array("gif","jpg","jpeg","png"))):?>
+												<div class="layui-inline">
+													<input type="hidden" filename="{$v.name_md5}">
+													<input type="hidden" name="{$v.name_md5}" value="{$v.filevalue}">
+													<a class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="caijian('{$v.name_md5}','file');">
+														<i class="layui-icon layui-icon-set-fill"></i> 裁剪
+													</a>
+												</div>
+												<?php endif;?>
+												{/eq}
+												<!-- 删除 -->
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',['ids'=>urlencode($v['currdir'])])}">
+														<i class="layui-icon layui-icon-delete"></i> 删除
+													</a>
+												</div>
+												<!-- 解压 -->
+												<?php if(in_array($v['ext'],array("zip","rar")) && $v['flag'] == 0):?>
+												<div class="layui-inline">
+													<a  class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="decompression_file('{$v.currdir}','{:dirname($v['currdir'])}')">
+														<i class="layui-icon layui-icon-set-fill"></i> 解压
+													</a>
+												</div>
+												<?php endif;?>
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="11" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline">
+													<a href="?currdir={$PROJECT_PATH}&filename={:input('filename')}" class="layui-btn layui-btn-sm" title="根目录">根目录</a> 
+												</div>
+												<div class="layui-inline"> 
+													<a onclick="new_folder('{$curdir|urlencode=###}')" class="layui-btn layui-btn-sm" title="新建文件夹">新建文件夹</a> 
+												</div>
+												<div class="layui-inline"> 
+													<a href="{:url('new_file')}?curdir={$curdir|urlencode=###}&filename={:input('filename')}" class="layui-btn layui-btn-sm" title="新建文件">新建文件</a> 
+												</div>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-sm" href="{:url('upload_file')}?curdir={$curdir|urlencode=###}&filename={:input('filename')}" title="文件上传">文件上传</a>
+												</div>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-sm" href="{:url('upload_max_file')}?curdir={$curdir|urlencode=###}&filename={:input('filename')}" title="大文件上传">大文件上传</a>
+												</div>
+												<div class="layui-inline">
+													<a  class="layui-btn layui-btn-sm" href="javascript:;" onclick="return compress()">压缩</a>
+												</div>
+												<div class="layui-inline"> 
+													<a class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-post" target-form="ids" url="{:url('del')}">删除</a> 
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										<!-- 分页 -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	layui.use(['form','jquery','laypage','layer'], function(){
+		var form = layui.form
+		,laypage = layui.laypage //分页组件
+	    ,layer = layui.layer//弹框组件
+		,$ = layui.jquery;//jquery
+		//执行一个laypage实例
+		laypage.render({
+		    elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+		    ,count: {$page.count} //数据总数，从服务端得到
+		    ,limit: {$page.limit} //每页显示的条数。laypage将会借助 count 和 limit 计算出分页数，从服务端得到
+			,limits:[5,10,20,30,40,50,60,70,80,90,100] //每页条数的选择项。如果 layout 参数开启了 limit，则会出现每页条数的select选择框
+		    ,curr: {$page.curr} //起始页。一般用于刷新类型的跳页以及HASH跳页，从服务端得到
+		    ,groups:5   //连续出现的页码个数
+		    ,layout:['count','prev', 'page', 'next','skip','limit','refresh']      //自定义排版。可选值有：count（总条目输区域）、prev（上一页区域）、page（分页区域）、next（下一页区域）、limit（条目选项区域）、refresh（页面刷新区域。注意：layui 2.3.0 新增） 、skip（快捷跳页区域）
+		    ,jump: function(obj, first){
+			    // obj包含了当前分页的所有参数，比如：
+			    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+			    console.log(obj.limit); //得到每页显示的条数
+			    // 首次不执行
+			    if(!first){
+			        <?php $path = $curdir.'/';?>
+			        location.href = "?currdir={$path|urlencode=###}&filename={:input('filename')}&page="+obj.curr+"&limit="+obj.limit;
+			    }
+			}
+		});
+	});
+	// 复制文件夹
+	function copy_folder(curdir){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: curdir,
+			// title: '请输入目标文件夹',
+			title: '请输入目标文件夹',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('copy_folder')}",
+				data:{'curdir':curdir,'folder':value},
+				success:function(data){
+					// layer.msg(data.msg,{icon: 1,time:1000},function(){
+					layer.msg(data.msg,{time:1000},function(){
+						/* if(data.code == 1){
+							window.location.reload();
+						} */
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 复制文件
+	function copy_file(curdir,folder){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: folder,
+			// title: '请输入目标文件夹',
+			title: '请输入目标文件夹',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('copy_file')}",
+				data:{'curdir':curdir,'folder':value},
+				success:function(data){
+					// layer.msg(data.msg,{icon: 1,time:1000},function(){
+					layer.msg(data.msg,{time:1000},function(){
+						/* if(data.code == 1){
+							window.location.reload();
+						} */
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 剪切文件夹
+	function cut_folder(curdir){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: curdir,
+			// title: '请输入目标文件夹',
+			title: '请输入目标文件夹',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('cut_folder')}",
+				data:{'curdir':curdir,'folder':value},
+				success:function(data){
+					// layer.msg(data.msg,{icon: 1,time:1000},function(){
+					layer.msg(data.msg,{time:1000},function(){
+						if(data.code == 1){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 剪切文件
+	function cut_file(curdir,folder){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: folder,
+			// title: '请输入目标文件夹',
+			title: '请输入目标文件夹',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('cut_file')}",
+				data:{'curdir':curdir,'folder':value},
+				success:function(data){
+					// layer.msg(data.msg,{icon: 1,time:1000},function(){
+					layer.msg(data.msg,{time:1000},function(){
+						if(data.code == 1){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 文件或文件夹(即目录)重命名，file要重命名文件或目录的绝对路径,filename文件或文件夹名
+	function ReName(file,filename){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: filename,
+			title: '请输入新的文件名',
+			// 自定义文本域宽高
+			// area: ['800px', '350px']
+		},function(value, index, elem){
+			// alert(value);//得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('renames')}",
+				data:{'file':file,'filename':value},
+				success:function(data){
+					layer.msg(data.msg,{time:1500},function(){
+						if(data.code == 1){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 新建文件夹
+	function new_folder(curdir){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: '新建文件夹',
+			title: '请输入文件夹名称',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('new_folder')}",
+				data:{'curdir':curdir,'folder':value},
+				success:function(data){
+					// layer.msg(data.msg,{icon: 1,time:1000},function(){
+					layer.msg(data.msg,{time:1000},function(){
+						if(data.code == 1){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 压缩文件
+	function compress(){
+		var arr = [];
+        $("input:checkbox[name='ids[]']:checked").each(function(i){
+	         arr.push($(this).val());
+        });
+		var ids = '';
+		var ids=arr.join(",");
+		if(!ids){
+			layer.msg('请选择要压缩的文件！', {icon: 2,time:1500});
+			return;
+		}
+		var now = new Date();
+		var Y = now.getFullYear();
+		var m = getRealTime(now.getMonth()+1);
+		var d = getRealTime(now.getDate());
+		var H = getRealTime(now.getHours());
+		var i = getRealTime(now.getMinutes());
+		var s = getRealTime(now.getSeconds());
+		var filename = Y +'-'+ m +'-'+ d +'-'+ H +'-'+ i +'-'+ s;
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: filename,
+			title: '请输入文件名',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			//加载层-默认风格
+			layer.load();
+			$.ajax({
+				type:"post",
+				url:"{:url('compress')}",
+				data:{'ids':ids,'filename':value},
+				success:function(data){
+					// 此处演示关闭
+					layer.closeAll('loading');
+					layer.msg(data.msg,{time:1000},function(){
+						if(data.code == 1){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 时间处理函数
+	function getRealTime(str){
+		if(str < 10){
+			return '0'+str;
+		}
+		return str;
+	}
+	// 解压文件
+	function decompression_file(curdir,folder){
+		// layer.prompt(options, yes) - 输入层
+		layer.prompt({
+			// formType: 2,
+			// value: '初始值',
+			value: folder,
+			// title: '请输入目标文件夹',
+			title: '请输入目标文件夹',
+			// area: ['800px', '350px'] //自定义文本域宽高
+		},function(value, index, elem){
+			// alert(value); //得到value
+			$.ajax({
+				type:"post",
+				url:"{:url('decompression_file')}",
+				data:{'curdir':curdir,'folder':value},
+				success:function(data){
+					// layer.msg(data.msg,{icon: 1,time:1000},function(){
+					layer.msg(data.msg,{time:1000},function(){
+						if(data.code == 1){
+							window.location.reload();
+						}
+					});
+				}
+			});
+			layer.close(index);
+		});
+	}
+	// 站内选择
+	// 方法一
+    /* function ReturnImg(reimg){
+        var backObj = window.opener.parent.document.form1.image;
+        var prvObj = window.opener.parent.document.getElementById('divpicview');
+        backObj.value = reimg;
+        if(prvObj){
+            prvObj.style.width = '150px';
+            prvObj.innerHTML = "<img src='__STATIC__/"+reimg+"?"+Math.random()+"' width='150' height='100' id='picview' name='picview'/>";
+        }
+        if(document.all) {
+            window.opener=true;
+        }
+        window.close();
+    } */
+    // 方法二
+    function ReturnImg(filevalue,filename){
+        /* var backObj = window.opener.parent.document.form1.image;
+	    var prvObj = window.opener.parent.document.getElementById('divpicview');
+	    backObj.value = filevalue;
+	    if(prvObj){
+	        prvObj.style.width = '150px';
+	        prvObj.innerHTML = "<img src='__STATIC__/"+filevalue+"?"+Math.random()+"' width='150' />";
+	    } */
+	    /* window.opener.parent.return_img(filevalue,filename);
+	    if(document.all) {
+	    	window.opener=true;
+	    }
+	    window.close(); */
+		parent.return_img(filevalue,filename);
+		x_admin_close();
+	}
+</script>
+{/block}

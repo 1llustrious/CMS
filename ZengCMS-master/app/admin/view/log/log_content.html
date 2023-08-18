@@ -1,0 +1,146 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<!-- <blockquote class="layui-elem-quote layui-text" style="margin-bottom: 5px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a href="{:url('index')}">操作日志</a>
+							<a><cite></cite></a>
+						</span>
+						&nbsp;
+						<a href="javascript:;" onclick="history.go(-1);" title="点击返回"><i class="fa fa-reply"></i></a>
+					</blockquote> -->
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-card" style="overflow-y: hidden;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="5%">
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+									</colgroup>
+									<thead>
+										<tr>
+											<th colspan="6">
+												用户：{$info.admin_name}&nbsp;&nbsp;&nbsp;
+												操作类型：{$info.type_text}&nbsp;&nbsp;&nbsp;
+												操作表：{$info.comment}{$info.table_name}&nbsp;&nbsp;&nbsp;
+												操作时间：{$info.dtime|date="Y-m-d H:i:s"}
+											</th>
+										</tr>
+										<tr>
+											<th>ID</th>
+											<th>字段</th>
+											<th>名称</th>
+											<th>数据类型</th>
+											<th>旧值</th>
+											<th>新值</th>
+										</tr>
+									</thead>
+									<tbody>
+										{if condition="$list"}
+										{volist name="list" id="info"}
+										<tr>
+											<td>{$info.id}</td>
+											<td>{$info.field_name}</td>
+											<td>{$info.comment}</td>
+											<td>{$info.field_type}</td>
+											<td>{$info.field_value}</td>
+											<td>{$info.current_field_value}</td>
+										</tr>
+										{/volist}
+										{else /}
+                                        <tr><td colspan="6"> aOh! 暂时还没有内容! </td></tr>
+                                        {/if}
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	layui.use(['form', 'layedit', 'laydate','layer', 'table', 'element','jquery'], function(){
+		var form = layui.form //表单
+		,table = layui.table //表格
+		,element = layui.element //元素操作
+		,layer = layui.layer //弹层
+		,layedit = layui.layedit //编辑器
+		,laydate = layui.laydate //日期
+		,$ = layui.jquery;
+		// 日期
+		laydate.render({
+			elem: '#date'
+		});
+		laydate.render({
+			elem: '#date1'
+		});
+	    /* //创建一个编辑器
+	    var editIndex = layedit.build('LAY_demo_editor');
+	    //自定义验证规则
+	    form.verify({
+	    	title: function(value){
+	    		if(value.length < 5){
+	    			return '标题至少得5个字符啊';
+	    		}
+	    	}
+	    	,pass: [
+	    	/^[\S]{6,12}$/
+	    	,'密码必须6到12位，且不能出现空格'
+	    	]
+	    	,content: function(value){
+	    		layedit.sync(editIndex);
+	    	}
+	    });
+	    //监听指定开关
+	    form.on('switch(switchTest)', function(data){
+	    	layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+	    		offset: '6px'
+	    	});
+	    	layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+	    });
+	    //监听提交
+	    form.on('submit(formSet)', function(data){
+	    	layer.alert(JSON.stringify(data.field), {
+	    		title: '最终的提交信息'
+	    	})
+	    	return false;
+	    }); */
+	    // 更新
+	    $("#update").click(function(data){
+	    	var url = $(this).attr('href');
+	    	var arr = [];
+	        $("input:checkbox[name='aid']:checked").each(function(i){
+            	arr.push($(this).val());
+	        });
+	    	console.log(arr);
+	    	layer.msg("URL:"+url+" data:"+arr.join(","));
+	    	return false;
+	    });
+	    // 表单初始赋值
+	    form.val('example', {
+		    "username": "贤心" // "name": "value"
+		    ,"password": "123456"
+		    ,"interest": 1
+		    ,"like[write]": true //复选框选中状态
+		    ,"close": true //开关状态
+		    ,"sex": "女"
+		    ,"desc": "我爱 layui"
+		})
+	});
+</script>
+{/block}

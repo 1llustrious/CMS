@@ -1,0 +1,305 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<script>
+	function selfile() {
+		// 获取日期目录
+		/* var d = new Date();
+		var year = d.getFullYear();
+		var month = d.getMonth()+1;
+		var month = month.toString();
+		if(month.length == 1){
+			month = '0'+''+ month;
+		}
+		var date = d.getDate();
+		var dir = year+''+month+''+date; */
+		const LENGTH = 1024 * 1024 * 10; //每次上传的大小
+		var file = document.getElementById('uploadMaxFile').files[0]; //文件对象
+		var filename = document.getElementById('uploadMaxFile').files[0].name;
+		// var filepath = dir+'/'+uuid()+getType(filename);
+		var ext = getType(filename);//文件后缀
+		var filepath = uuid() + '.' + ext;
+		var totalSize = file.size; //文件总大小
+		var start = 0; //每次上传的开始字节
+		var end = start + LENGTH; //每次上传的结尾字节
+		var fd = null //创建表单数据对象
+		var blob = null; //二进制对象
+		var xhr = null; //xhr对象
+		while (start < totalSize) {
+			fd = new FormData();//每一次需要重新创建
+			xhr = new XMLHttpRequest();//需要每次创建并设置参数
+			xhr.open('POST', "{:url('upload_max_file')}?totalsize="+totalSize+"&end="+end+"&ext="+ext, false);
+			blob = file.slice(start, end);//根据长度截取每次需要上传的数据
+			fd.append('part', blob);//添加数据到fd对象中
+			fd.append('filepath', filepath);//获取文件的名称
+			fd.append('group_id', "{:input('group_id',0)}");//分组
+			xhr.send(fd);//将fd数据上传
+			// 重新设置开始和结尾
+			start = end;
+			end = start + LENGTH;
+		}
+		window.location.reload();
+	}
+	// 获取唯一字符串
+	function uuid() {
+		var s = [];
+		var hexDigits = "0123456789abcdef";
+		for (var i = 0; i < 36; i++) {
+			s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+		}
+		s[14] = "4";//bits 12-15 of the time_hi_and_version field to 0010
+		s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);//bits 6-7 of the clock_seq_hi_and_reserved to 01
+		s[8] = s[13] = s[18] = s[23] = "-";
+		var uuid = s.join("");
+		return uuid;
+	}
+	// 获取文件后缀
+	function getType(file){
+		// 获取最后一个.的位置
+		var index= file.lastIndexOf(".");
+		// 获取后缀
+		var ext = file.substr(index+1);
+		return ext;
+	}
+</script>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form add-user" action="{:url('')}" method="post" enctype="application/x-www-form-urlencoded">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline" style="width:85px">
+											<button class="layui-btn" type="button" onclick="upload_file()">上传文件</button>
+											<input type="file" id="uploadFile" style="display: none;" onchange="upload()">
+										</div>
+										<div class="layui-input-inline" style="width:85px;" id="scdwj">
+											<button class="layui-btn" type="button" onclick="upload_max_file()">上传大文件</button>
+											<input type="file" id="uploadMaxFile" style="display: none;" onchange="selfile()">
+										</div>
+										<div class="layui-input-inline" style="margin-left: 17px;width:123px;display: none;" id="scz">
+											<img src="__STATIC__/admin/images/loading-1.gif"><span>上传中...</span>
+										</div>
+										<div class="layui-input-inline" style="margin-left: 22px;width: 128px;">
+											<select name="group" lay-verify="required" lay-filter="group">
+												<option value="">移动</option>
+												{volist name="grouplist" id="vo"}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{/volist}
+											</select>
+										</div>
+										<div class="layui-input-inline" style="margin-left: 0px;width: 128px;">
+											<select name="group_id"  lay-verify="required" lay-filter="group_id">
+												<option value="">选择分组</option>
+												{volist name="grouplist" id="vo"}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{/volist}
+											</select>
+										</div>
+										<div class="layui-input-inline" style="width: 128px;">
+											<select name="file_type" lay-verify="required">
+												<option value="">选择文件类型</option>
+												<option value="image">图片</option>
+												<option value="video">视频</option>
+												<option value="file">文件</option>
+											</select>
+										</div>
+										<div class="layui-input-inline" style="margin-right: 5px;">
+											<input type="text" name="title" value="{:input('title')}" placeholder="搜索关键词" autocomplete="off" class="layui-input">
+											<input type="hidden" name="filename" value="{:input('filename')}"  autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-input-inline" style="width:51px;margin-left: -1px;">
+											<button class="layui-btn " id="search"><i class="layui-icon"></i></button>
+										</div>
+										<div class="layui-input-inline" style="width:68px;padding-right: 5px;">
+											<a href="javascript:;" class="layui-btn" href="javascript:;" onclick="x_admin_show('分组','{:url('AttachmentGroup/index')}','','',1)" data-icon="fa fa-audio-description">分组</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form form-horizontal" action="{:url()}" method="post">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1%">
+										<col width="5%">
+										<col width="6%">
+										<col>
+										<col width="22%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" name="" lay-skin="primary" id="allChoose" lay-filter="allChoose">
+											</th>
+											<th>ID</th>
+											<th>序号</th>
+											<th>文件</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td>
+												<input type="checkbox" lay-skin="primary" lay-filter="c_one" class="ids" name="ids[]" value="{$info.id}">
+											</td>
+											<td>{$info.id}</td>
+											<td>
+												<input type="text" name="sort[{$info.id}]" value="{$info.sort}" class="layui-input sort" lay-filter="weight">
+											</td>
+											<td>
+												{if condition="$info['file_type'] eq 'image'"}
+												<img src="{$info.filepath}" width="100px" height="100px" class="showimg">
+												{elseif condition="$info['file_type'] eq 'video'" /}
+												<!-- <video width="80" height="80" controls="controls" autoplay="autoplay"> -->
+												<video width="100px" height="100px" controls="controls">
+													<source src="{$info.filepath}" type="video/mp4">
+												</video>
+												{elseif condition="$info['file_type'] eq 'file'" /}
+													<div class="upload-pre-file">
+														<i class="fa fa-paperclip"></i> {$info.file_name}
+													</div>
+												{/if}
+											</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-normal" href="javascript:;" onclick="ReturnImg('{$info.filevalue}','{:input('filename')}');">
+														<i class="layui-icon layui-icon-release"></i> 选择
+													</a>
+												</div>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',array('ids'=>$info['id']))}">
+														<i class="layui-icon layui-icon-delete"></i> 删除
+													</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm ajax-post" target-form="sort" url="{:url('sort')}">&nbsp;排序&nbsp;</a>
+												</div>
+												<div class="layui-inline"> 
+													<a href="" class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-post" target-form="ids" url="{:url('del')}">删除</a> 
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$list|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$("select[name='group_id']").val({$group_id|default = ''}); 	
+	$("select[name='file_type']").val("{$file_type|default = ''}"); 
+	layui.use(['form','jquery'], function(){
+		var form = layui.form
+		,$ = layui.jquery;
+		// 下拉菜单改变值触发事件
+		form.on('select(group)', function(data){
+			$("select[name='group']").val(data.value); 
+			var formData = $.param({group_id:data.value})+'&'+$(".ids").serialize();
+			// location.href = data.value;
+			$.ajax({
+				url: "{:url('move')}",
+				type: 'GET',
+				data: formData,//上传formdata封装的数据
+				dataType: 'JSON',
+				cache: false,//不缓存
+				async: false,
+				processData: false,//jQuery不要去处理发送的数据
+				contentType: false,//jQuery不要去设置Content-Type请求头
+				success: function (data) { //成功回调
+					if(data.code == 1){
+						window.location.reload();
+					}else{
+						layer.msg(data.msg);
+					}
+				},
+			});
+		});
+	});
+	// 大文件
+	function upload_max_file() {
+		$("#uploadMaxFile").click(); 
+		style="display: none;"
+		document.getElementById("scdwj").style.display="none";//隐藏
+		document.getElementById("scz").style.display="";//显示
+	}
+	// 普通文件
+	function upload_file() {
+		$("#uploadFile").click(); 
+	}
+	function upload(){
+		if ($("#uploadFile").val() == '') {
+            return;
+		}
+		// 上传文件
+		var formData = new FormData();
+		formData.append('file', document.getElementById('uploadFile').files[0]);
+		formData.append('group_id', "{:input('group_id',0)}");
+		$.ajax({
+			url: "{:url('upload_file')}",
+			type: 'POST',
+			data: formData,//上传formdata封装的数据
+			dataType: 'JSON',
+			cache: false,//不缓存
+			async: false,
+			processData: false,//jQuery不要去处理发送的数据
+			contentType: false,//jQuery不要去设置Content-Type请求头
+			success: function (data) { //成功回调
+				if (data.code == 0) {
+					// location.href = data.url;
+					window.location.reload();
+				} else {
+					alert(data.msg);
+					setTimeout(function () {
+						if (data.url) {
+							location.href = data.url;
+						}
+					}, 1500);
+				}
+			},
+		});
+	}
+	// 选择
+	function ReturnImg(filevalue,filename){
+        /* var backObj = window.opener.parent.document.form1.image;
+	    var prvObj = window.opener.parent.document.getElementById('divpicview');
+	    backObj.value = filevalue;
+	    if(prvObj){
+	        prvObj.style.width = '150px';
+	        prvObj.innerHTML = "<img src='__STATIC__/"+filevalue+"?"+Math.random()+"' width='150' />";
+	    } */
+	    /* window.opener.parent.return_img(filevalue,filename);
+	    if(document.all) {
+	    	window.opener=true;
+	    }
+	    window.close(); */
+		parent.return_img(filevalue,filename);
+		x_admin_close();
+	}
+</script>
+{/block}

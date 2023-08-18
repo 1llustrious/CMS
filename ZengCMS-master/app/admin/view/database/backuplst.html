@@ -1,0 +1,253 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<blockquote class="layui-elem-quote layui-text">
+    <i class="fa fa-home"></i>
+    <span class="layui-breadcrumb">
+        <a><cite>系统主页</cite></a>
+        <a href="javascript:;" onclick="x_admin_close()">数据库备份</a>
+        <a><cite>还原数据库(共有数据：{$list|count} 条)</cite></a>
+    </span>
+</blockquote>
+<div class="layui-fluid">
+    <div class="layui-set">
+        <div class="layui-inline">
+            <a href="" class="layui-btn layui-btn-sm layui-btn-danger delall" title="删除">删除</a>
+        </div>
+        <div class="layui-inline">
+            <a href="javascript:;" id="export" table="{$table}" class="layui-btn layui-btn-sm" title="备份">备份</a>
+        </div>
+        <div class="layui-inline">
+            <input type="file" class="upload-file" name="backup_file" style="display: none">
+            <a href="javascript:;" onclick="upload();" class="layui-btn layui-btn-sm" title="上传">上传</a>
+        </div>
+    </div>
+    <div class="layui-card">
+        <form class="layui-form" action="{:url('export')}" method="post" id="form">
+            <table class="layui-table" lay-filter="tableEvent">
+                <colgroup>
+                    <col width="1%">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                    <col width="22%">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" class="check-all" lay-skin="primary" id="allChoose" lay-filter="allChoose">
+                    </th>
+                    <th>备份时间</th>
+                    <th>备份名称</th>
+                    <th>文件大小</th>
+                    <th>卷数</th>
+                    <th>类型</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="list" id="data"}
+                <tr>
+                    <td>
+                        <input type="checkbox" lay-skin="primary" lay-filter="c_one" class="ids" name="times[]" value="{$data.time}" id="checkbox">
+                    </td>
+                    <td>{$data.time|date="Y/m/d H:i:s"}</td>
+                    <td>{$data.filename}</td>
+                    <td>{:format_bytes($data.size)}</td>
+                    <td>{$data.part}</td>
+                    <td>{$data.compress}</td>
+                    <td>-</td>
+                    <td>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-xs" href="{:url('download',['t'=>$table,'time'=>$data.time])}">
+                                <i class="layui-icon layui-icon-ok"></i> 下载
+                            </a>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-xs layui-btn-normal db-import" href="{:url('restore',array('time'=>$data['time'],'table'=>$table))}">
+                                <i class="layui-icon layui-icon-release"></i> 还原
+                            </a>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-xs layui-btn-danger confirm" href="javascript:;" onclick="del('{$table}','{$data.time}')">
+                                <i class="layui-icon layui-icon-delete"></i> 删除
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <!-- 右侧内容结束 -->
+    <script src="__STATIC__/admin/js/jquery-1.11.3.min.js"></script>
+    <script src="__STATIC__/admin/lib/layer/layer.js"></script> <!-- 弹框提示js -->
+    <script src="__STATIC__/admin/lib/layui-master/dist/layui.js" charset="utf-8"></script>
+</div>
+{/block}
+{block name="js"}
+<!-- 主体结束 -->
+<script type="text/javascript">
+    // 备份删除
+    function del(tablename, time) {
+        $.get("{:url('del')}", {table: tablename, time: time}, function (res) {
+            layer.msg(res.msg, {time: 1000}, function () {
+                location.reload();
+            });
+        }, 'json');
+    }
+    // 备份
+    var url = "{:url('dbbackup')}", $export = $("#export");
+    var table = $export.attr('table');
+    var tableArr = table.split(',');
+    $export.click(function () {
+        $(".layui-btn").prop("disabled", true);
+        $export.html("正在发送备份请求...");
+        $.post(
+            url,
+            {tables: tableArr},
+            function (data) {
+                if (data.code) {
+                    console.log(data);
+                    tables = data.data.tables;
+                    $export.html(data.msg + "开始备份，请不要关闭本页面！");
+                    backup(data.data.tab);
+                    window.onbeforeunload = function () {
+                        return "正在备份数据库，请不要关闭！"
+                    }
+                } else {
+                    alert(data.msg);
+                    $(".layui-btn").prop("disabled", false);
+                    $export.html("立即备份");
+                }
+            },
+            "json"
+        );
+        return false;
+    });
+    function backup(tab, code) {
+        console.log(tab);
+        code && showmsg(tab.id, "开始备份...(0%)");
+        $.get(url, tab, function (data) {
+            if (data.code) {
+                showmsg(tab.id, data.msg);
+                if (!$.isPlainObject(data.data.tab)) {
+                    $(".layui-btn").prop("disabled", false);
+                    $export.html("备份完成，点击重新备份");
+                    window.onbeforeunload = function () {
+                        return null
+                    }
+                    layer.msg("备份完成，点击重新备份", {time: 2000}, function () {
+                        window.location.reload();
+                    });
+                    return;
+                }
+                backup(data.data.tab, tab.id != data.data.tab.id);
+            } else {
+                alert(data.msg);
+                $(".layui-btn").prop("disabled", false);
+                $export.html("立即备份");
+            }
+        }, "json");
+    }
+    function showmsg(id, msg) {
+        layer.msg(tables[id] + msg, {time: 1000});
+    }
+    // 还原备份
+    $(".db-import").click(function () {
+        var self = this, status = ".";
+        $.get(self.href, success, "json");
+        window.onbeforeunload = function () {
+            return "正在还原数据库，请不要关闭！"
+        }
+        return false;
+        function success(data) {
+            if (data.code) {
+                if (data.gz) {
+                    data.msg += status;
+                    if (status.length === 5) {
+                        status = ".";
+                    } else {
+                        status += ".";
+                    }
+                }
+                $(self).parent().parent().prev().text(data.msg);
+                // layer.msg(data.msg,{time:1000});
+                if (data.data.part) {
+                    $.get(self.href,
+                        {"part": data.data.part, "start": data.data.start},
+                        success,
+                        "json"
+                    );
+                } else {
+                    window.onbeforeunload = function () {
+                        return null;
+                    }
+                }
+            } else {
+                alert(data.msg);
+            }
+        }
+    });
+    // 批量删除
+    $(".delall").click(function (event) {
+        /* Act on the event */
+        var url = "{:url('delall')}"
+        var table = "{$table}";
+        var arr = [];
+        $("input:checkbox[name='times[]']:checked").each(function (i) {
+            arr.push($(this).val());
+        });
+        times = arr.join(",");
+        $.get(url,
+            {"times": times, "table": table},
+            function (data) {
+                if (data.code) {
+                    layer.msg(data.msg, {time: 1000}, function () {
+                        location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {time: 1000});
+                }
+            },
+            "json"
+        );
+    });
+    // 上传
+    function upload() {
+        $(".upload-file").click();
+    }
+    // ajax上传文件
+    $(".upload-file").change(function (event) {
+        var filename = $(this).attr('name');
+        // 上传文件
+        var formData = new FormData();
+        formData.append(filename, $(this)[0].files[0]);
+        formData.append('table', "{$table}");
+        $.ajax({
+            url: "{:url('upload')}",
+            type: 'POST',
+            data: formData,                    // 上传formdata封装的数据
+            dataType: 'JSON',
+            cache: false,                      // 不缓存
+            async: false,
+            processData: false,                // jQuery不要去处理发送的数据
+            contentType: false,                // jQuery不要去设置Content-Type请求头
+            success: function (data) {           //成功回调
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time: 1000}, function () {
+                        location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {time: 1000});
+                }
+            },
+        });
+    });
+</script>
+{/block}

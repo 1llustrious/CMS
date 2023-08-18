@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta name="applicable-device" content="pc,wap">
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>{$doc.title}_{$get_config.WEB_SITE_NAME}</title>
+    <meta name="keywords" content="{$doc.keywords|default=$get_config.WEB_SITE_KEYWORDS}">
+    <meta name="description" content="{$doc.description|default=$get_config.WEB_SITE_DESCRIPTION}">
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/cloud.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.min.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.animate.min.css">
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/cloud.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/Superslide.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/wow.min.js"></script>
+</head>
+<body>
+    {include file="cloudcms/z-head"}
+    <div class="yunu_page_banner clearfix" style="background: url(https://fakeimg.pl/1496x316) no-repeat;">
+        <div class="center">
+            <div class="text">
+                <span>选择适合自己的主题</span>
+                <p>超过100+个主题模板，覆盖几乎所有行业，现在就开始吧</p>
+            </div>
+        </div>
+    </div>
+    <div class="yunu_main">
+        <div class="show_pro_box clearfix">
+            <div class="center">
+                <div class="currson clearfix">
+                    <div class="text">
+                        <a href="/">首页</a>
+                        &gt;&gt;
+                        {volist name="$pos" id="vo"}
+                        {if condition="$key neq 0"}
+                        &gt;&gt;
+                        {/if}
+                        <a href="{$vo.typeurl}" target="{$vo.target}" rel="{$vo.rel}">{$vo.typename}</a> 
+                        {/volist}
+                    </div>
+                </div>
+                <div class="wrap clearfix">
+                    <div class="show_pro_text1 clearfix">
+                        <div class="pic scroll_pic">
+                            <img src="https://fakeimg.pl/488x1933">
+                        </div>
+                        <div class="info">
+                            <div class="spro_title clearfix">
+                                <p>{$doc.title}</p>
+                            </div>
+                            <ul>
+                                <li>上架时间： {$doc.create_time|date="Y-m-d H:i:s"}</li>
+                                <li>浏览数量： {$doc.view|default=100}</li>
+                            </ul>
+                            <div class="more clearfix">
+                                <a class="buy mr5" href="{:get_download_url($nav.id,$doc.id)}" target="_blank">立即下载</a>
+                                <a class="see" id="see" href="{:get_demo_url($nav.id,$doc.id)}" target="_blank" title="{$doc.title}">查看演示</a>
+                                <a class="see" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin={$get_config.QQ}&site=qq&menu=yes">立即咨询</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="cloudcms/z-footer"}
+</body>
+</html>

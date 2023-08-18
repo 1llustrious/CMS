@@ -1,0 +1,46 @@
+<header id="header">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header navbar-logo">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-mobile">
+					<span class="sr-only">{$get_config.WEB_SITE_TITLE}_{$get_config.WEB_SITE_NAME}</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="{:jump_by_lang('','index')}">
+					<img alt="Brand" src="https://fakeimg.pl/200x60" title="{$get_config.WEB_SITE_TITLE}">
+				</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar-mobile">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="{:jump_by_lang('','index')}" >网站首页</a></li>
+					{volist name=":tag_nav($typeid='',$type='',$thisclass='on')" id="vo"}
+					<li>
+						<a href="{$vo.typeurl}" target="{$vo.target}" rel="{$vo.rel}" class="{$vo.thisclass}">{$vo.typename}</a>
+						{in name="1" value="$vo.sign"}<span class="hot"></span>{/in}
+						<i></i>
+						<dl>
+							{volist name="$vo.children" id="vo2"}
+                  			<dd class="">
+								<a href="{$vo2.typeurl}" target="{$vo2.target}" rel="{$vo2.rel}" class="{$vo2.thisclass}">{$vo2.typename}</a>
+							</dd>
+                  			{/volist}
+             			 </dl>
+					</li>
+					{/volist}
+					<div style="display: inline-block;vertical-align: middle;padding-top: 15px;">
+						<li ><a href="{:jump_by_lang('en')}" class="">EN</a></li>
+					</div>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>
+<script>
+$(function(){
+    $("#header .navbar-nav li i").click(function(){
+        $(this).parent().find("dl").slideToggle();
+    });
+});
+</script>

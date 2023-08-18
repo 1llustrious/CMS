@@ -1,0 +1,1 @@
+drop table if exists `__PREFIX__ems`;

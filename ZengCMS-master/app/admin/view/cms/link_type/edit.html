@@ -1,0 +1,57 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">类型名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="name" value="{$info.name|default=''}" autocomplete="off" placeholder="请输入" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 类型名称 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">描述<span class="sysval"><em class="zerocopy">description</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="description" placeholder="请输入内容" class="layui-textarea">{$info.description|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 描述 ]
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" class="layui-input upload-text" lay-verify="required" placeholder="请输入数字" autocomplete="off">
+								<span class="layui-form-mid layui-word-aux">
+									[ 排序 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}">
+								<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<!-- <a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("input[name=status][value={$info.status|default = 1}]").attr("checked","checked"); //设置 状态 选中项
+</script>
+{/block}

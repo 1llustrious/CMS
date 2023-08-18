@@ -1,0 +1,361 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<script src="__STATIC__/admin/js/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/lib/nestable/jquery.nestable.css" />
+<link rel="stylesheet" href="__STATIC__/admin/css/setting.css" media="all">
+{/block}
+{block name="css"}
+<style>
+	.nestable_list{
+		display: inline-block;
+		border: 1px solid #cdcdcd;
+		color: #404040;
+		line-height: 35px;
+		width: 100%;
+		height: 395px;
+	}
+	.nestable_list .dd{
+		padding: 0 5px;
+		overflow-y: scroll;
+		height: 350px;
+	}
+	.nestable_list label{width: 100%;
+		border-bottom: 1px solid #ccc;
+		padding: 0px 7px;
+		color: #7A7676;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<ul class="layui-tab-title site-demo-title">
+		<li class="layui-this">基础设置</li>
+		<li>字段设置</li>
+		<li>模板设置</li>
+		<!-- <li>
+			<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+		</li> -->
+	</ul>
+	<div class="layui-body layui-tab-content site-demo site-demo-body form-horizontal" style="left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<!-- <blockquote class="layui-elem-quote layui-text">
+						鉴于小伙伴的普遍反馈，先温馨提醒两个常见“问题”：1. <a href="/doc/base/faq.html#form" target="_blank">为什么select/checkbox/radio没显示？</a> 2. <a href="/doc/modules/form.html#render" target="_blank">动态添加的表单元素如何更新？</a>
+					</blockquote>
+					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+						<legend>表单集合演示</legend>
+					</fieldset> -->
+					<form class="layui-form layui-form-pane" action="{:url('')}">
+						<input type="hidden" name="id" value="{$info.id|default=''}" class="upload-text">
+						<div class="layui-form-item">
+							<label class="layui-form-label">模型名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="title"  value="{$info.title}"  placeholder="模型名称" autocomplete="off" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 请输入模型的名称，长度不能超过30个字符 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">title</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">模型标识</label>
+							<div class="layui-input-block">
+								<input type="text" name="name"  value="{$info.name}"  placeholder="模型标识" autocomplete="off" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 请输入文档模型标识，即表名，只能使用英文且不能重复 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">模型性质</label>
+							<div class="layui-input-block">
+								<select  name="extend" lay-verify="required" class="upload-select">
+									<option value="1" selected><?php if(get_document_model(1,'title')){echo get_document_model(1,'title');}else{echo '文档模型';}?></option>
+									<option value="0">独立模型</option>
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 目前仅支持文档模型，继承基础文档或独立模型 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">extend</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">系统模型</label>
+							<div class="layui-input-block">
+								<input type="radio" name="is_system" value="1" title="是" class="upload-radio">
+								<div class="layui-unselect layui-form-radio">
+									<i class="layui-anim layui-icon"></i>
+									<div>是</div>
+								</div>
+								<input type="radio" name="is_system" value="0" title="否" class="upload-radio">
+								<div class="layui-unselect layui-form-radio layui-form-radioed">
+									<i class="layui-anim layui-icon"></i>
+									<div>否</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">is_system</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">引擎类型</label>
+							<div class="layui-input-block">
+								<select  name="engine_type" lay-verify="required" class="upload-select">
+									<option value="MyISAM" selected>MyISAM</option>
+									<option value="InnoDB">InnoDB</option>
+									<option value="MEMORY">MEMORY</option>
+									<option value="BLACKHOLE">BLACKHOLE</option>
+									<option value="MRG_MYISAM">MRG_MYISAM</option>
+									<option value="ARCHIVE">ARCHIVE</option>
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 引擎类型 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">engine_type</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">添加主键</label>
+							<div class="layui-input-block">
+								<input type="radio" name="need_pk" value="1" title="是" class="upload-radio">
+								<div class="layui-unselect layui-form-radio">
+									<i class="layui-anim layui-icon"></i>
+									<div>是</div>
+								</div>
+								<input type="radio" name="need_pk" value="0" title="否" class="upload-radio">
+								<div class="layui-unselect layui-form-radio layui-form-radioed">
+									<i class="layui-anim layui-icon"></i>
+									<div>否</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">need_pk</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">简介<span class="sysval"><em class="zerocopy">remark</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="remark" placeholder="" class="layui-textarea upload-text">{$info.remark|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 简介 ]
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-block">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" required="" lay-verify="required" placeholder="排序" autocomplete="off" class="layui-input upload-text">
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="layui-tab-item">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form" action="">
+						<div class="layui-form-item">
+							<div class="col-lg-12">
+								<label>
+									<strong>字段排序</strong>
+									<span>&nbsp;&nbsp;
+										[
+										<a href="javascript:;" onclick="x_admin_show('新增-{$info.title}-字段','{:url('cms.Attribute/add',['model_id'=>$info['id']])}','100%','100%',1)">新增</a> |
+										<a href="javascript:;" onclick="x_admin_show('{$info.title}-字段列表','{:url('cms.Attribute/index',['model_id'=>$info['id']])}','100%','100%',1)">管理</a>
+										]
+									</span>
+								</label>
+							</div>
+							{if condition="$fields"}
+							{volist name="fields" id="list"}
+							<div class="layui-inline">
+								<div class="nestable_list">
+									<label>{:get_field_group($key)}</label>
+									<div class="dd" id="nestable_list_{$key}">
+										<ol class="dd-list">
+											{volist name="list" id="vo"}
+											<li class="dd-item dd3-item" data-id="{$vo.id}">
+												<div class="dd-handle">
+													{$vo.title} [{$vo.name}]
+												</div>
+											</li>
+											{/volist}
+										</ol>
+									</div>
+								</div>
+							</div>
+							{/volist}
+							{/if}
+							<!-- <div class="layui-inline">
+								<div class="nestable_list">
+									<label>拓展设置</label>
+									<div class="dd" id="nestable_list_2">
+										<ol class="dd-list">
+											<li class="dd-item dd3-item" data-id="8">
+												<div class="dd-handle">
+													跳转网址 [redirecturl]
+												</div>
+											</li>
+											<li class="dd-item dd3-item" data-id="10">
+												<div class="dd-handle">
+													可见性 [display]
+												</div>
+											</li>
+										</ol>
+									</div>
+								</div>
+							</div> -->
+							<div class="row" style="display: none;">
+								<textarea id="nestable_list_1_output" name="fields" class="layui-textarea upload-text"></textarea>
+								<textarea id="nestable_list_2_output" name="fields2" class="layui-textarea upload-text"></textarea>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+								<!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+								<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="layui-tab-item">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane" action="">
+						<div class="layui-form-item">
+							<label class="layui-form-label">列表模板</label>
+							<div class="layui-input-block">
+								<input type="text" name="list_template" value="{$info.list_template|default=''}" autocomplete="off" placeholder="" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 列表页模板 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">list_template</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">封面模板</label>
+							<div class="layui-input-block">
+								<input type="text" name="index_template" value="{$info.index_template|default=''}" autocomplete="off" placeholder="" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 频道封面页模板 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">index_template</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">文章模板</label>
+							<div class="layui-input-block">
+								<input type="text" name="article_template" value="{$info.article_template|default=''}" autocomplete="off" placeholder="" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 文章内容页模板 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">article_template</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">文章规则</label>
+							<div class="layui-input-block">
+								<input type="text" name="article_rule" value="{$info.article_rule}" autocomplete="off" placeholder="" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 文章命名规则 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">article_rule</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">列表规则</label>
+							<div class="layui-input-block">
+								<input type="text" name="list_rule" value="{$info.list_rule}" autocomplete="off" placeholder="" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 列表命名规则 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">list_rule</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+							<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	layui.use(['form', 'layedit', 'laydate'], function(){
+		var form = layui.form
+			,layer = layui.layer
+			,layedit = layui.layedit
+			,laydate = layui.laydate;
+		// 日期
+		laydate.render({
+			elem: '#date'
+		});
+		laydate.render({
+			elem: '#date1'
+		});
+	    // 创建一个编辑器
+	    // var editIndex = layedit.build('LAY_demo_editor');
+	    /* //自定义验证规则
+	    form.verify({
+	    	title: function(value){
+	    		if(value.length < 5){
+	    			return '标题至少得5个字符啊';
+	    		}
+	    	}
+	    	,pass: [
+	    	/^[\S]{6,12}$/
+	    	,'密码必须6到12位，且不能出现空格'
+	    	]
+	    	,content: function(value){
+	    		layedit.sync(editIndex);
+	    	}
+	    });*/
+	    /*//监听指定开关
+	    form.on('switch(switchTest)', function(data){
+	    	layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+	    		offset: '6px'
+	    	});
+	    	layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+	    });*/
+	    //监听提交
+	    form.on('submit(demo1)', function(data){
+	    	layer.alert(JSON.stringify(data.field), {
+	    		title: '最终的提交信息'
+	    	})
+	    	return false;
+	    });
+	   /* //表单初始赋值
+	    form.val('example', {
+		    "username": "贤心" // "name": "value"
+		    ,"password": "123456"
+		    ,"interest": 1
+		    ,"like[write]": true //复选框选中状态
+		    ,"close": true //开关状态
+		    ,"sex": "女"
+		    ,"desc": "我爱 layui"
+		})*/
+	});
+</script>
+<script type="text/javascript">
+    $("input[name=need_pk][value={$info.need_pk|default = 1}]").attr("checked","checked"); //设置单选选中项
+    $("input[name=is_system][value={$info.is_system|default = 0}]").attr("checked","checked"); //设置单选选中项
+    $("select[name='extend']").val("{$info.extend|default = 1}"); //设置下拉选中项
+    $("select[name='engine_type']").val("{$info.engine_type|default = 'MyISAM'}"); //设置下拉选中项
+</script>
+<script src="__STATIC__/admin/lib/nestable/jquery.nestable.js"></script>
+<script src="__STATIC__/admin/lib/nestable/nestable-init.js"></script>
+{/block}

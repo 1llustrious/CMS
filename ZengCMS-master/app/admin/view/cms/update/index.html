@@ -1,0 +1,76 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<form class="layui-form layui-form-pane" action="" lay-filter="example">
+						<div class="layui-form-item" pane>
+							<label class="layui-form-label">首页模式：</label>
+							<div class="layui-input-block">
+								<input type="radio" name="showmod" value="1" title="动态浏览" lay-filter="sex" <?php if(get_one_config('WEB_INDEX_VISIT')){echo "checked";}?> >
+								<input type="radio" name="showmod" value="0" title="生成静态" lay-filter="sex" <?php if(!get_one_config('WEB_INDEX_VISIT')){echo "checked";}?> >
+								<span class="sysval"><em class="zerocopy">showmod</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text" id="info" style="display: none">
+							<label class="layui-form-label">返回信息</label>
+							<div class="layui-input-block">
+								<textarea placeholder="" rows="" class="layui-textarea" name="info"></textarea>
+							</div>
+						</div>
+						<div id="update" style="text-align: left;padding:20px 0;display: none">
+                            <img src="__STATIC__/admin/images/loading-1.gif"><span>更新中......</span>
+                        </div>
+						<div class="layui-form-item">
+							<a href="/index.{:get_one_config('index_suffix')}" target="_blank" class="layui-btn">预览主页</a>
+							<button class="layui-btn" type="button" lay-submit lay-filter="demo2" id="execute">更新主页HTML</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	//点击执行
+	$("#execute").on('click', function(event) {
+		var showmod = $(":radio[name=showmod]:checked").val();
+		$.ajax({
+			type:"POST",
+			data:{showmod:showmod},
+			url:"{:url('index')}",
+			dataType:"json",
+			beforeSend:function(){
+                $("#info").hide();
+                $("#update").show();
+            },
+			success:function(res){
+				$("#update").hide();
+                $("#info").show();
+				if(res.code == 1){
+					// $("#info").fadeIn();
+					/*$("textarea[name='info']").val(res.msg);
+					setTimeout(function () {
+					  $("textarea[name='info']").val('');
+					}, 3000);*/
+					$("textarea[name='info']").val(res.msg);
+				}else{
+					// $("#info").fadeIn();
+					$("textarea[name='info']").val(res.msg);
+				}
+			}
+		});
+	});
+</script>
+{/block}

@@ -1,0 +1,127 @@
+<!---------- pc 头部 -------------->
+<script type="text/javascript" src="__STATIC__/template/cloudcms/static/layui/layui.js"></script>
+<div class="yunu_header">
+    <div class="center">
+        <div class="head_top clearfix">
+            <div class="logo">
+                <a href="/"><img src="https://fakeimg.pl/200x60"></a>
+            </div>
+            <div class="nav">
+                <ul>
+                    <li><a href="/">首页</a></li>
+                    {volist name=":tag_nav($typeid='',$type='',$thisclass='on')" id="vo"}
+                    <li>
+                        <a href="{$vo.typeurl}" class="{$vo.thisclass}" target="{$vo.target}" rel="{$vo.rel}">{$vo.typename}</a>
+                        {if condition="$vo.children"}
+                        <div class="nav_text clearfix">
+                            <div class="center">
+                                {volist name="$vo.children" id="vo2"}
+                                <a href="{$vo2.typeurl}" class="{$vo2.thisclass}" target="{$vo2.target}" rel="{$vo2.rel}">{$vo2.typename}</a>
+                                {/volist}
+                            </div>
+                        </div>
+                        {/if}
+                    </li>
+                    {/volist}
+                </ul>
+                <script type="text/javascript">
+                    $('.nav li').eq(2).addClass('silder');
+                    $('.nav li').eq(3).addClass('silder');
+                    $('.nav li').eq(4).addClass('silder');
+                </script>
+            </div>
+            <!-- 会员中心 start，需要安装会员插件 -->
+            {if isAddonInstall('member')}
+            <div class="login">
+                {if !session('user_auth')}
+                <a class="zc_btn" href="{:url('member/index/login')}">登录</a>
+                <a class="dl_btn" href="{:url('member/index/register')}">注册</a>
+                {else/}
+                <a class="zc_btn" href="{:url('member/index/index')}">会员：{:session('user_auth')['username']}</a>
+                <a class="dl_btn" href="{:url('member/index/logout')}">退出</a>
+                {/if}
+            </div>
+            {/if}
+            <!-- 会员中心 end -->
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var navOffset = $(".yunu_header").offset().top;
+        $(window).scroll(function () {
+            var scrollPos = $(window).scrollTop();
+            if (scrollPos > navOffset) {
+                $(".yunu_header").addClass("fixed");
+            } else {
+                $(".yunu_header").removeClass("fixed");
+            }
+        });
+    });
+</script>
+<!---------- wap 头部 -------------->
+<div class="yunu_m_header">
+    <div class="m_head_content" id="mheader">
+        <div class="m_head_logo clearfix">
+            <a href="/">
+                <img src="https://fakeimg.pl/200x60">
+            </a>
+        </div>
+        <div class="menu" id="menu">
+            <img src="__STATIC__/template/cloudcms/static/img/menu.png">
+        </div>
+    </div>
+    <div class="app_menu" id="app_menu">
+        <ul>
+            <li><a href="/"><span>首页</span></a></li>
+            {volist name=":tag_nav($typeid='',$type='',$thisclass='on')" id="vo"}
+            <li><a href="javascript:;" class="{$vo.thisclass}"><span>{$vo.typename}</span></a></li>
+            {if condition="$vo.children"}
+            <div class="v_list clearfix">
+                <div class="m_nav_list">
+                    {volist name="$vo.children" id="vo2"}
+                    <a href="{$vo2.typeurl}" class="{$vo2.thisclass}" target="{$vo2.target}" rel="{$vo2.rel}">{$vo2.typename}</a>
+                    {/volist}
+                </div>
+            </div>
+            {/if}
+            {/volist}
+        </ul>
+        <!-- 会员中心 start，需要安装会员插件 -->
+        {if isAddonInstall('member')}
+        <div class="login">
+            {if !session('user_auth')}
+            <a class="zc_btn" href="{:url('member/index/login')}">登录</a>
+            <a class="dl_btn" href="{:url('member/index/register')}">注册</a>
+            {else/}
+            <a class="zc_btn" href="{:url('member/index/index')}">会员：{:session('user_auth')['username']}</a>
+            <a class="dl_btn" href="{:url('member/index/logout')}">退出</a>
+            {/if}
+        </div>
+        {/if}
+        <!-- 会员中心 end -->
+    </div>
+    <script type="text/javascript">
+        $("#menu").on('click', function (event) {
+            if ($("#app_menu").css("display") == "none") {
+                $("#app_menu").slideDown(600);
+            } else {
+                $("#app_menu").slideUp(600);
+            }
+        });
+        $("#app_menu li").eq(2).addClass('on');
+        $("#app_menu li").eq(3).addClass('on');
+        $("#app_menu li").eq(4).addClass('on');
+        $("#app_menu li").click(function () {
+            $(this).toggleClass("active").siblings('#app_menu li').removeClass("active"); //切换图标
+            $(this).next("#app_menu .v_list").slideToggle(500).siblings("#app_menu .v_list").slideUp(500);
+        });
+        if ("" !== '' && window.localStorage && !localStorage.getItem('hmsr')) {
+            var hmsr = {
+                ad_ident: "",
+                ad_start_time: "2020-08-30 08:10:56"
+            }
+            localStorage.setItem('hmsr', JSON.stringify(hmsr));
+        }
+    </script>
+</div>

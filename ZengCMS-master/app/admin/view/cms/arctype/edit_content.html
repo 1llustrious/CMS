@@ -1,0 +1,225 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<link rel="stylesheet" href="__STATIC__/admin/css/setting.css" media="all">
+<link rel="stylesheet" href="__STATIC__/admin/lib/kindeditor/themes/default/default.css" />
+<link rel="stylesheet" href="__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css" />
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/kindeditor-all.js"></script>
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/lang/zh-CN.js"></script>
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/plugins/code/prettify.js"></script>
+<script>
+	KindEditor.ready(function(K) {
+		/* var editor1 = K.create('textarea[name="description3"]', {
+			// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+			cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+			// 指定上传文件的服务器端程序。
+			uploadJson : GV.kindeditor_upload_url,
+			// 指定浏览远程图片的服务器端程序。
+			fileManagerJson : GV.kindeditor_file_manager_url,
+			filterMode : false, //关闭过滤模式
+			wellFormatMode : false, //true时美化HTML数据。false关闭美化
+			newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+			pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+			allowFileManager : true, //true时显示浏览远程服务器按钮。
+			// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+			// 默认值：空
+			// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+			// urlType:'domain',
+			// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+			width : '100%',
+			// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+			height : '390px',
+			afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+			afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+			// 设置编辑器创建后执行的回调函数。
+			afterCreate : function() {
+				var self = this;
+				K.ctrl(document, 13, function() {
+					self.sync();
+					K('form[name=example]')[0].submit();
+				});
+				K.ctrl(self.edit.doc, 13, function() {
+					self.sync();
+					K('form[name=example]')[0].submit();
+				});
+			},
+			// 编辑器工具
+			items:[
+				'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+				'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+				'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+				// 'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+				// 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+				// 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+				// 'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+				// 'anchor', 'link', 'unlink', '|', 'about'
+			],
+			// 上面的filterMode为true时以下就是要保留的标签
+			htmlTags:{
+				font : ['color', 'size', 'face', '.background-color'],
+				span : [
+					'.color', '.background-color', '.font-size', '.font-family', '.background',
+					'.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.line-height'
+				],
+				div : [
+					'align', '.border', '.margin', '.padding', '.text-align', '.color',
+					'.background-color', '.font-size', '.font-family', '.font-weight', '.background',
+					'.font-style', '.text-decoration', '.vertical-align', '.margin-left'
+				],
+				table: [
+					'border', 'cellspacing', 'cellpadding', 'width', 'height', 'align', 'bordercolor',
+					'.padding', '.margin', '.border', 'bgcolor', '.text-align', '.color', '.background-color',
+					'.font-size', '.font-family', '.font-weight', '.font-style', '.text-decoration', '.background',
+					'.width', '.height', '.border-collapse'
+				],
+				'td,th': [
+					'align', 'valign', 'width', 'height', 'colspan', 'rowspan', 'bgcolor',
+					'.text-align', '.color', '.background-color', '.font-size', '.font-family', '.font-weight',
+					'.font-style', '.text-decoration', '.vertical-align', '.background', '.border'
+				],
+				a : ['href', 'target', 'name'],
+				embed : ['src', 'width', 'height', 'type', 'loop', 'autostart', 'quality', '.width', '.height', 'align', 'allowscriptaccess'],
+				img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
+				'p,ol,ul,li,blockquote,h1,h2,h3,h4,h5,h6' : [
+				'align', '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.background',
+				'.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.text-indent', '.margin-left'
+				],
+				pre : ['class'],
+				hr : ['class', '.page-break-after'],
+				'br,tbody,tr,strong,b,sub,sup,em,i,u,strike,s,del' : []
+			}
+		});
+		prettyPrint(); */
+		var editor2 = K.create('textarea[name="content"]', {
+			// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+			cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+			// 指定上传文件的服务器端程序。
+			uploadJson : GV.kindeditor_upload_url,
+			// 指定浏览远程图片的服务器端程序。
+			fileManagerJson : GV.kindeditor_file_manager_url,
+			filterMode : false, //关闭过滤模式
+			wellFormatMode : false, //true时美化HTML数据。false关闭美化
+			newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+			pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+			allowFileManager : true, //true时显示浏览远程服务器按钮。
+			// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+			// 默认值：空
+			// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+			// urlType:'domain',
+			// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+			width : '100%',
+			// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+			height : '450px',
+			afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+			afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+			// 上面的filterMode为true时以下就是要保留的标签
+			/* htmlTags:{
+				div : [
+					'align', '.border', '.margin', '.padding', '.text-align', '.color',
+					'.background-color', '.font-size', '.font-family', '.font-weight', '.background',
+					'.font-style', '.text-decoration', '.vertical-align', '.margin-left'
+				],
+				table: [
+					'border', 'cellspacing', 'cellpadding', 'width', 'height', 'align', 'bordercolor',
+					'.padding', '.margin', '.border', 'bgcolor', '.text-align', '.color', '.background-color',
+					'.font-size', '.font-family', '.font-weight', '.font-style', '.text-decoration', '.background',
+					'.width', '.height', '.border-collapse'
+				],
+				img : ['src', 'width', 'height', 'border', 'alt', 'title', 'align', '.width', '.height', '.border'],
+				'p,ol,ul,li,blockquote,h1,h2,h3,h4,h5,h6' : [
+				'align', '.text-align', '.color', '.background-color', '.font-size', '.font-family', '.background',
+				'.font-weight', '.font-style', '.text-decoration', '.vertical-align', '.text-indent', '.margin-left'
+				],
+			} */
+		});
+		prettyPrint();
+		var editor3 = K.create('textarea[name="content_en"]', {
+			// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+			cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+			// 指定上传文件的服务器端程序。
+			uploadJson : GV.kindeditor_upload_url,
+			// 指定浏览远程图片的服务器端程序。
+			fileManagerJson : GV.kindeditor_file_manager_url,
+			filterMode : false, //关闭过滤模式
+			wellFormatMode : false, //true时美化HTML数据。false关闭美化
+			newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+			pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+			allowFileManager : true, //true时显示浏览远程服务器按钮。
+			// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+			// 默认值：空
+			// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+			// urlType:'domain',
+			// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+			width : '100%',
+			// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+			height : '390px',
+			afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+			afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+		});
+		prettyPrint();
+	});
+</script>
+{/block}
+{block name="css"}
+<style>
+	.layui-setting .layui-form-label {
+		width: 141px;
+		text-align: center;
+	}
+	.layui-setting .layui-input-block {
+		margin-left: 141px;
+		left: -1px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-body" style="top: 0px;left: 0px;">
+	<!-- 内容主体区域 -->
+	<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 7px;padding-top: 0px;">
+		<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+			<ul class="layui-tab-title" style="display: none;">
+				<li class="layui-this">基础</li>
+				<li class="">高级</li>
+				<li class="">内容</li>
+			</ul>
+			<div class="layui-tab-content layui-setting form-horizontal">
+				<div class="layui-tab-item layui-show">
+					<form class="layui-form layui-form-pane" action="">
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label">栏目内容</label> -->
+							<div class="layui-input-block" style="margin-left:0px;">
+								<textarea name="content" placeholder="" class="layui-textarea upload-text">{$info.content|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 栏目内容&nbsp;字段名:{content} ]
+								</span>
+								<span class="sysval"><em class="zerocopy">content</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<!-- <label class="layui-form-label">栏目内容</label> -->
+							<div class="layui-input-block" style="margin-left:0px;">
+								<textarea name="content_en" placeholder="" class="layui-textarea upload-text">{$info.content_en|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 英文栏目内容&nbsp;字段名:{content_en} ]
+								</span>
+								<span class="sysval"><em class="zerocopy">content_en</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}" class="upload-text" />
+								<button class="layui-btn ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="footer"}
+{/block}
+{block name="js"}
+{/block}

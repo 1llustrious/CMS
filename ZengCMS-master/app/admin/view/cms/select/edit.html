@@ -1,0 +1,72 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a href="{:url('admin/Select/index')}">联动类别</a>
+							<a><cite>{:isset($info['id'])?'编辑':'添加'}子分类</cite></a>
+						</span>
+					</blockquote>
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">标题</label>
+							<div class="layui-input-block">
+								<input type="text" name="title"  value="{$info.title|default=''}"  placeholder="" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 用于后台显示的配置标题 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">title</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-block">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" required="" lay-verify="required" placeholder="排序" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 用于分组显示的顺序 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">上级菜单</label>
+							<div class="layui-input-block">
+								<select  name="pid" id="pid" lay-verify="required">
+									{volist name="native" id="native"}
+                              	 	<option value="{$native.id}"><?php echo $native['title_show']; ?></option>
+                                	{/volist}
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 所属的上级菜单 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">pid</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="tid" value="{$info.tid|default=0}">
+                                <input type="hidden" name="id" value="{$info.id|default=0}">
+                                <input type="hidden" name="fields" value="{$info.fields}">
+								<button class="layui-btn ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("select[name='pid']").val("{$info.pid|default = 0}");
+</script>
+{/block}

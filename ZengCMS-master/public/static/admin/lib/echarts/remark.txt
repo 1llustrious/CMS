@@ -1,0 +1,4 @@
+ECharts 是一个使用 JavaScript 实现的开源可视化库，涵盖各行业图表，满足各种需求。
+https://echarts.baidu.com/echarts2/doc/example.html
+https://echarts.baidu.com/echarts2/index.html
+https://echarts.baidu.com/

@@ -1,0 +1,48 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<link rel="stylesheet" href="__STATIC__/admin/lib/search/admin.css" media="all">
+<link rel="stylesheet" href="__STATIC__/admin/lib/search/template.css" media="all">
+{/block}
+{block name="css"}
+<style>
+	.layadmin-serach-list li {
+		margin-bottom: 8px;
+		padding-bottom: 7px;
+		clear: both;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card layadmin-serach-main">
+				<div class="layui-card-header">
+					<p style="font-size: 18px;">
+						关键词：<span style="color: #01AAED">{:input('keywords')}</span> 查询到
+						<strong>{:count($list)}</strong> 个结果
+					</p>
+					<!-- <p class="layadmin-font-em">耗时：350ms</p> -->
+				</div>
+				<div class="layui-card-body">
+					<ul class="layadmin-serach-list layui-text">
+						{volist name="list" id="vo"}
+						<li>
+							<div class="layui-serachlist-text">
+								<h3><a layuimini-content-href="{:url($vo['name'])}" data-title="{$vo.title}">{$vo.title}</a></h3>
+								<p>{$vo.title}<em>{$vo.name}</em>{$vo.remark}</p>
+							</div>
+						</li>
+						{/volist}
+					</ul>
+					<div id="LAY-template-search-page" style="text-align: center;">
+						{$list|raw}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="footer"}
+{/block}

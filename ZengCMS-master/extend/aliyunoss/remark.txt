@@ -1,0 +1,3 @@
+﻿aliyun oss插件
+下载地址 https://github.com/aliyun/aliyun-oss-php-sdk/releases?spm=a2c4g.11186623.2.17.6dae2589olo3Qw
+官方文档 https://help.aliyun.com/document_detail/85580.html?spm=a2c4g.11186623.6.967.18801c62qHt1UY

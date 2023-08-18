@@ -1,0 +1,128 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post" enctype="multipart/form-data">
+						<div class="layui-form-item">
+							<label class="layui-form-label">友链类型</label>
+							<div class="layui-input-block">
+								<select name="typeid" lay-filter="aihao" class="upload-select">
+									<option value="" selected="">请选择</option>
+									{volist name="linkTypeRes" id="linkType"}
+									<option value="{$linkType.id}">{$linkType.name}</option>
+									{/volist}
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									[ 友链类型 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">typeid</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">友链地址</label>
+							<div class="layui-input-block">
+								<input type="text" name="url" value="{$info.url|default=''}" autocomplete="off" placeholder="请输入" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 友链地址 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">url</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">链接名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="name" value="{$info.name|default=''}" autocomplete="off" placeholder="请输入" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 链接名称 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<!-- 图片 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">缩略图</label>
+								<div class="layui-input-block">
+									<input type="file" filename="thumb" filetype="one" isajax="1" uploadparam="name=link" iscrop="0" class="upload-file thumb" style="display: none">
+									<input type="text" name="thumb" value="{$info.thumb|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('thumb');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'thumb'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'thumb'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="裁剪" onclick="caijian('thumb');" class="layui-btn layui-btn-primary">
+									<input type="button" value="thumb" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+								</div>
+							</div>
+							{if condition="$info['thumb']"}
+							<div class="layui-inline thumb_list" id="thumb">
+								<span>
+									<img src="{$info.thumb|get_file_path=###}" alt="" height="100px;" width="100px" class="showimg">
+									<button type="button" filename="thumb" filevalue="{$info.thumb}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="thumb">
+							</div>
+							{/if}
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">描述<span class="sysval"><em class="zerocopy">description</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="description" placeholder="请输入内容" class="layui-textarea upload-text">{$info.description|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									[ 描述 ]
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline">
+								<input type="text" name="sort" value="{$info.sort|default=0}" lay-verify="required" placeholder="请输入数字" autocomplete="off" class="layui-input upload-text">
+								<span class="layui-form-mid layui-word-aux">
+									[ 排序 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">显示方式</label>
+							<div class="layui-input-block">
+								<input type="radio" name="show_way" value="1" class="upload-radio" title="文字显示" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>文字显示</div></div>
+								<input type="radio" name="show_way" value="2" class="upload-radio" title="图片显示"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>图片显示</div></div>
+								<span class="sysval"><em class="zerocopy">show_way</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">状态</label>
+							<div class="layui-input-block">
+								<input type="radio" name="status" value="1" class="upload-radio" title="审核" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>审核</div></div>
+								<input type="radio" name="status" value="0" class="upload-radio" title="未审核"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>未审核</div></div>
+								<span class="sysval"><em class="zerocopy">status</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" class="upload-text" name="id" value="{$info.id|default=''}">
+								<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<!-- <a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("select[name='typeid']").val({$info.typeid|default = ''}); //设置 上级菜单 选中项
+	$("input[name=status][value={$info.status|default = 1}]").attr("checked","checked"); //设置选中项
+	$("input[name=show_way][value={$info.show_way|default = 1}]").attr("checked","checked"); //设置选中项
+</script>
+{/block}

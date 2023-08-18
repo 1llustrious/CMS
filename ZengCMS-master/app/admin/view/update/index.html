@@ -1,0 +1,207 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<script type="text/javascript">
+    // 用到的API
+    // file-->继承自-->Blob
+    // Blob有slice方法,可以截取二进制对象的一部分.
+    // 思路:
+    // 截取10M, 上传
+    // 判断文件有没有截取完毕
+    // 用定时器,不断调用上传方法
+    var xhr = new XMLHttpRequest();
+    var clock = null;
+    function upload() {
+        $('.mov').click();//模拟文件上传按钮点击操作
+    }
+    function fire() {
+        $("#upload_jd").show();
+        clock = window.setInterval(sendfile, 1000);
+    }
+    // 闭包计数器
+    var sendfile = (function () {
+        const LENGTH = 10 * 1024 * 1024;//每次切10M
+        var sta = 0;
+        var end = sta + LENGTH;
+        var sending = false;//标志正在上传中
+        var blob = null;
+        var fd = null;
+        // 百分比
+        var percent = 0;
+        return (function () {
+            if (sending == true) {
+                return;
+            }
+            var mov = document.getElementsByName('mov')[0].files[0];//文件对象
+            var filename = document.getElementsByName('mov')[0].files[0].name;
+            // 如果sta>mov.size,就结束了
+            if (sta > mov.size) {
+                clearInterval(clock);
+                return;
+            }
+            blob = mov.slice(sta, end);
+            fd = new FormData();
+            fd.append('part', blob);//添加数据到fd对象中
+            fd.append('filename', filename);//获取文件的名称
+            up(fd);
+            sta = end;
+            end = sta + LENGTH;
+            sending = false;//上传完了
+            percent = 100 * end / mov.size;
+            if (percent > 100) {
+                percent = 100;
+            }
+            document.getElementById('bar').style.width = percent + '%';
+            document.getElementById('bar').innerHTML = "<font color = 'red' size='3px'>" + parseInt(percent) + '%' + "</font>";
+            if (percent == 100) {
+                // 使用setTimeout()方法设定定时2000毫秒
+                setTimeout(function () {
+                    window.location.reload();//页面刷新
+                }, 2000);
+            }
+        });
+    })();
+    function up(fd) {
+        xhr.open('POST', "{:url('receive_upload')}", false);
+        xhr.send(fd);
+    }
+</script>
+{/block}
+{block name="css"}
+<style>
+    .success {
+        color: #65CEA7;
+    }
+    .error {
+        color: #FF3B00;
+    }
+    #progress {
+        width: 300px;
+        height: 30px;
+        border: 1px solid green;
+    }
+    #bar {
+        width: 0%;
+        height: 100%;
+        background: green;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+    <div class="layui-body" style="top: 0px;left: 0px;">
+        <!-- 内容主体区域 -->
+        <div style="padding: 6px;">
+            <!-- <blockquote class="layui-elem-quote layui-text">
+                <i class="fa fa-home"></i>
+                <span class="layui-breadcrumb">
+                    <a><cite>系统主页</cite></a>
+                    <a><cite>检查更新</cite></a>
+                </span>
+            </blockquote> -->
+            <div class="row">
+                <div class="sysNotice col">
+                    <blockquote class="layui-elem-quote title">程序信息</blockquote>
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <td width="20%">检测更新</td>
+                            <td>
+                                <div id="checkVersion" class="success">
+                                    {if condition="$new_version neq ''"}
+                                    <font class="error">发现新版本 v{$new_version} </font>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="javascript:;" onclick="x_admin_show('在线更新','{:url('isbackupfile')}',600,450,1)" title="在线更新前先关闭站点，不要清除静态防止数据丢失，再由超级管理员进行更新操作">在线升级</a>
+                                        &nbsp;&nbsp;
+                                    {else/}
+                                        当前版本为最新版本！
+                                    {/if}
+                                    <input type="file" name="mov" onchange="fire();" class="mov" style="display: none;"/>
+                                    <a href="javascript:;" onclick="upload();" title="注意更新包必须是官方提供zip类型的压缩文件">上传更新包</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="display: none;" id="upload_jd">
+                            <td>上传进度</td>
+                            <td>
+                                <div id="progress">
+                                    <div id="bar"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>程序名称</td>
+                            <td>
+                                <a href="https://gitee.com/ZengCMS/ZengCMS" target="_blank" rel="nofollow">ZengCMS</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>当前版本</td>
+                            <td>v{$Think.const.ZENGCMS_VERSION}</td>
+                        </tr>
+                        <tr>
+                            <td>更新日志</td>
+                            <td><a href="https://www.kancloud.cn/zengcms/zengcms/2084434" target="_blank" rel="nofollow">查看</a></td>
+                        </tr>
+                        <tr>
+                            <td>版权所有</td>
+                            <td><a href="https://gitee.com/ZengCMS/ZengCMS" target="_blank" rel="nofollow">ZengCMS</a></td>
+                        </tr>
+                        <tr>
+                            <td>服务与支持</td>
+                            <td>
+                                <a href="https://www.kancloud.cn/zengcms/zengcms" target="_blank" rel="nofollow">使用帮助</a>&nbsp;&nbsp;
+                                <a href="http://bbs.zengcms.cn" target="_blank" rel="nofollow">交流论坛</a>&nbsp;&nbsp;
+                                <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=eXg7izj5fU8UfUpqXufLI3aE8gRWnLrY&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="ZengCMS" title="ZengCMS"></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="sysNotice col">
+                    <blockquote class="layui-elem-quote title">服务器信息</blockquote>
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150">
+                            <col>
+                        </colgroup>
+                        <tbody class="hot_news">
+                        <tr>
+                            <td width="20%">操作系统</td>
+                            <td>{$Think.const.PHP_OS}</td>
+                        </tr>
+                        <tr>
+                            <td>WEB服务器</td>
+                            <td>{$_SERVER['SERVER_SOFTWARE']}</td>
+                        </tr>
+                        <tr>
+                            <td>PHP版本</td>
+                            <td>PHP <?php echo @phpversion();?></td>
+                        </tr>
+                        <tr>
+                            <td>MySQL版本</td>
+                            <td>MySQL {$serverinfo.mysql_ver}</td>
+                        </tr>
+                        <tr>
+                            <td>上传限制</td>
+                            <td>{:ini_get('upload_max_filesize')}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript"> 
+    function showmsg(msg, classname){ 
+        classname = classname||'success';
+        var checkhtml   = $("#checkVersion");   
+        checkhtml.addClass(classname).html(msg);
+    }
+</script>
+{/block}

@@ -1,0 +1,452 @@
+{extend name="layouts/main" /}
+{block name="css"}
+<style>
+	.layui-setting .layui-form-label {
+	    width: 141px;
+	    text-align: center;
+	}
+	.layui-setting .layui-input-block {
+	    margin-left: 141px;
+	    left: -1px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-layout layui-layout-admin">
+	<!-- 头部开始 -->
+	<!-- 头部结束 -->
+	<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+	<!--[if lt IE 9]>
+	<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+	<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- 左侧栏开始 -->
+	<!-- 左侧栏结束 -->
+	<!-- 右侧内容开始 -->
+	<div class="layui-body" style="top: 0px;left: 0px;">
+		<!-- 内容主体区域 -->
+		<div class="layui-fluid" style="padding: 15px;padding-top: 0px;">
+			<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+				<ul class="layui-tab-title">
+					<li class="layui-this">基础设置</li>
+					<li class="">高级设置</li>
+				</ul>
+				<div class="layui-tab-content layui-setting form-horizontal">
+					<div class="layui-tab-item  layui-show">
+						<form class="layui-form layui-form-pane" action="{:url('')}">
+							<div class="layui-form-item">
+								<label class="layui-form-label">字段标题</label>
+								<div class="layui-input-block">
+									<input type="text" name="title"  value="{$info.title|default=''}"  placeholder="" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux">
+										[ 请输入字段标题，用于表单显示 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">title</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">字段名称</label>
+								<div class="layui-input-block">
+									<input type="text" name="name"  value="{$info.name|default=''}"  placeholder="" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux">
+										[ 请输入字段名 <font style="color: rgb(255, 0, 0);">英文字母</font>，长度不超过30 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">name</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">字段类型</label>
+								<div class="layui-input-block">
+									<select name="type" lay-filter="type" lay-verify="required" class="upload-select" id="data-type">
+										<option value="">----请选择----</option>
+										{volist name=":get_attribute_type()" id="vo"}
+										<option value="{$key}" rule="{$vo[1]}">{$vo[0]}</option>
+										{/volist}
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 用于表单中的展示方式 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">type</em></span>
+								</div>
+							</div>
+							<!-- <div class="layui-form-item" style="display: none;"> -->
+							<div class="layui-form-item">
+								<label class="layui-form-label">字段定义</label>
+								<div class="layui-input-block">
+									<input type="text" name="field"  value="{$info.field|default=''}"  placeholder="" autocomplete="off" class="layui-input upload-text" id="data-field">
+									<span class="layui-form-mid layui-word-aux">
+										[ 字段属性的sql表示 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">field</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item layui-form-text">
+								<label class="layui-form-label">
+									参数
+									<i class="fa fa-question-circle extra-question" title="有疑问吗？点击这里！"></i>
+									<span class="sysval"><em class="zerocopy">extra</em></span>
+								</label>
+								<div class="layui-input-block">
+									<textarea name="extra" placeholder="" class="layui-textarea upload-text">{$info.extra|default=''}</textarea>
+									<span class="layui-form-mid layui-word-aux" id="extra-question" style="display: none;">
+										[ 布尔、枚举、多选字段类型的定义数据 ] <br>
+										两种方式：<br>
+										1、多个可选值用逗号隔开。注：必须加说明，例：值:说明,值:说明 <br>
+										2、如果是枚举型，需要配置该项，一行一个选项，例: <br>
+										0:选项1 <br>
+										2:选项2 <br>
+									</span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">默认值 <i class="fa fa-question-circle value-question" title="有疑问吗？点击这里！"></i></label>
+								<div class="layui-input-block">
+									<input type="text" name="value" value="{$info.value|default=''}"  placeholder="" autocomplete="off" class="layui-input data-value upload-text">
+									<span class="layui-form-mid layui-word-aux" id="value-question" style="display: none;">
+										[ 字段的默认值<br/>
+										字段类型为 数字、时间、布尔 默认值只能为数字。<br/>
+
+										字段类型为 上传图片、上传附件、文本框、编辑器 不能设置默认值。<br/>
+
+										字段类型为 布尔、枚举、多选 默认值只能为参数值 。]
+									</span>
+									<span class="sysval"><em class="zerocopy">value</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">字段备注</label>
+								<div class="layui-input-block">
+									<input type="text" name="remark"  value="{$info.remark|default=''}"  placeholder="" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux">
+										[ 用于表单中的提示 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">remark</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">是否显示</label>
+								<div class="layui-input-inline">
+									<select name="is_show" lay-verify="required" class="upload-select">
+										<option value="1">始终显示</option>
+										<option value="2">新增显示</option>
+										<option value="3">编辑显示</option>
+										<option value="0">不显示</option>
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 是否显示在表单中 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">is_show</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item" pane="">
+								<label class="layui-form-label">是否搜索</label>
+								<div class="layui-input-block">
+									<input type="radio" name="is_search" value="1" class="upload-radio" title="是"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>是</div></div>
+									<input type="radio" name="is_search" value="0" class="upload-radio" title="否" checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>否</div></div>
+									<span class="sysval"><em class="zerocopy">is_search</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">是否必填</label>
+								<div class="layui-input-inline">
+									<select name="is_must" lay-verify="required" class="upload-select">
+										<option value="0" selected="">否</option>
+										<option value="1">是</option>
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 用于自动验证 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">is_must</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">字段分组</label>
+								<div class="layui-input-inline">
+									<select name="group_id" lay-verify="required" class="upload-select">
+										{volist name=":get_field_group()" id="vo"}
+										<option value="{$key}">{$vo}</option>
+										{/volist}
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 字段分组 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">group_id</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">排序</label>
+								<div class="layui-input-block">
+									<input type="text" name="sort" value="{$info.sort|default='0'}" required="" lay-verify="required" placeholder="排序" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux">
+										[ 排序 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">sort</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<div class="layui-input-block">
+									<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+									<!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+									<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="layui-tab-item">
+						<form class="layui-form layui-form-pane" action="">
+							<div class="layui-form-item">
+								<label class="layui-form-label">验证方式</label>
+								<div class="layui-input-block">
+									<select name="validate_type" lay-filter="validate" lay-verify="required" class="upload-select" id="data-validate">
+										<option value="" rule="[ 根据验证方式定义相关验证规则 ]">请选择</option>
+										{volist name=":get_validate_type()" id="vo"}
+										<option value="{$key}" rule="{$vo[1]}">{$vo[0]}</option>
+										{/volist}
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 用于自动验证 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">validate_type</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">验证规则</label>
+								<div class="layui-input-block">
+									<input type="text" name="validate_rule" value="{$info.validate_rule|default=''}" placeholder="" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux" id="validate_rule">
+										[ 根据验证方式定义相关验证规则 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">validate_rule</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">出错提示</label>
+								<div class="layui-input-block">
+									<input type="text" name="error_info" value="{$info.error_info|default=''}" placeholder="" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux">
+										[ 出错提示 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">error_info</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">验证时间</label>
+								<div class="layui-input-inline">
+									<select name="validate_time" lay-verify="required" class="upload-select">
+										<option value="0">请选择</option>
+										<option value="3">始 终</option>
+										<option value="1">新 增</option>
+										<option value="2">编 辑</option>
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 验证时间 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">validate_time</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">自动完成方式</label>
+								<div class="layui-input-block">
+									<select name="auto_type" lay-filter="auto" lay-verify="required" class="upload-select" id="data-auto">
+										<option value="" rule="[ 自动完成规则 - 根据完成方式订阅相关规则 ]">请选择</option>
+										{volist name=":get_auto_type()" id="vo"}
+										<option value="{$key}" rule="{$vo[1]}">{$vo[0]}</option>
+										{/volist}
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 自动完成方式 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">auto_type</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">自动完成规则</label>
+								<div class="layui-input-block">
+									<input type="text" name="auto_rule"  value="{$info.auto_rule|default=''}"  placeholder="" autocomplete="off" class="layui-input upload-text">
+									<span class="layui-form-mid layui-word-aux" id="auto_rule">
+										[ 自动完成规则 - 根据完成方式订阅相关规则 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">auto_rule</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">自动完成时间</label>
+								<div class="layui-input-inline">
+									<select name="auto_time" lay-verify="required" class="upload-select">
+										<option value="0">请选择</option>
+										<option value="3">始 终</option>
+										<option value="1">新 增</option>
+										<option value="2">编 辑</option>
+									</select>
+									<span class="layui-form-mid layui-word-aux">
+										[ 自动完成时间 ]
+									</span>
+									<span class="sysval"><em class="zerocopy">auto_time</em></span>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<input type="hidden" name="id" value="{$info.id|default=''}" class="upload-text" />
+								<input type="hidden" name="model_id" value="{$model_id|default='1'}" class="upload-text" />
+								<input type="hidden" name="table_name" value="{$table_name|default=''}" class="upload-text" />
+								<button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+								<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 右侧内容结束 -->
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	layui.use(['form', 'layedit', 'laydate','layer','table','element','jquery'], function(){
+		var form = layui.form//表单
+		,table = layui.table//表格
+		,element = layui.element//元素操作
+		,layer = layui.layer//弹层
+		,layedit = layui.layedit//编辑器
+		,laydate = layui.laydate//日期
+		,$ = layui.jquery;
+		// 日期
+		/* laydate.render({
+			elem: '#date'
+		});
+		laydate.render({
+			elem: '#date1'
+		}); */
+	    // 创建一个编辑器
+	    // var editIndex = layedit.build('LAY_demo_editor');
+	    // 自定义验证规则
+	    /* form.verify({
+	    	title: function(value){
+	    		if(value.length < 5){
+	    			return '标题至少得5个字符啊';
+	    		}
+	    	}
+	    	,pass: [
+	    	/^[\S]{6,12}$/
+	    	,'密码必须6到12位，且不能出现空格'
+	    	]
+	    	,content: function(value){
+	    		layedit.sync(editIndex);
+	    	}
+	    }); */
+	    // 监听指定开关
+	    /* form.on('switch(switchTest)', function(data){
+	    	layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+	    		offset: '6px'
+	    	});
+	    	layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+	    }); */
+	    // 监听提交
+	    form.on('submit(demo1)', function(data){
+	    	layer.alert(JSON.stringify(data.field), {
+	    		title: '最终的提交信息'
+	    	})
+	    	return false;
+	    });
+	    // 表单初始赋值
+	    /* form.val('example', {
+		    "username": "贤心" // "name": "value"
+		    ,"password": "123456"
+		    ,"interest": 1
+		    ,"like[write]": true //复选框选中状态
+		    ,"close": true //开关状态
+		    ,"sex": "女"
+		    ,"desc": "我爱 layui"
+		}) */
+		form.on('select(type)', function(data) {
+			// console.log(data.elem);//得到select原始DOM对象
+		  	// console.log(data.value);//得到被选中的值
+		 	// console.log(data.othis);//得到美化后的DOM对象
+		  	// alert(data.value);
+		  	// alert($(data.elem).find('option:selected').attr('rule'));
+			$('#data-field').val($(data.elem).find('option:selected').attr('rule'));
+			var vl = data.value;
+			if(vl == 'textarea' || vl == 'datetime' || vl == 'editor'){
+				$('.data-value').attr("disabled",true).attr("placeholder","当前字段类型不能添加默认值！").attr("value","");
+			}else{
+				$('.data-value').attr("disabled",false).attr("placeholder","");
+			}
+	    });
+		form.on('select(validate)', function(data) {
+			// console.log(data.elem);//得到select原始DOM对象
+		  	// console.log(data.value);//得到被选中的值
+		 	// console.log(data.othis);//得到美化后的DOM对象
+		  	// alert(data.value);
+		  	// alert($(data.elem).find('option:selected').attr('rule'));
+			$('#validate_rule').html($(data.elem).find('option:selected').attr('rule'));
+	    });
+		form.on('select(auto)', function(data) {
+			// console.log(data.elem);//得到select原始DOM对象
+		  	// console.log(data.value);//得到被选中的值
+		 	// console.log(data.othis);//得到美化后的DOM对象
+		  	// alert(data.value);
+		  	// alert($(data.elem).find('option:selected').attr('rule'));
+			$('#auto_rule').html($(data.elem).find('option:selected').attr('rule'));
+	    });
+	});
+</script>
+<script type="text/javascript">
+    // $("select[name='type']").val("{$info.type|default = 'string'}"); //设置下拉选中项
+    $("select[name='type']").val("{$info.type|default = ''}"); //设置下拉选中项
+    $("select[name='group_id']").val("{$info.group_id|default = '1'}"); //设置下拉选中项
+    $("select[name='is_show']").val("{$info.is_show|default = 1}"); //设置下拉选中项
+	$("input[name=is_search][value={$info.is_search|default = 0}]").attr("checked","checked");
+    $("select[name='is_must']").val("{$info.is_must|default = 0}"); //设置下拉选中项
+    // $("select[name='validate_type']").val("{$info.validate_type|default = 'regex'}"); //设置下拉选中项
+    $("select[name='validate_type']").val("{$info.validate_type|default = ''}"); //设置下拉选中项
+    // $("select[name='validate_time']").val("{$info.validate_time|default = '3'}"); //设置下拉选中项
+    $("select[name='validate_time']").val("{$info.validate_time|default = '0'}"); //设置下拉选中项
+    // $("select[name='auto_type']").val("{$info.auto_type|default = 'function'}"); //设置下拉选中项
+    $("select[name='auto_type']").val("{$info.auto_type|default = ''}"); //设置下拉选中项
+    // $("select[name='auto_time']").val("{$info.auto_time|default = '3'}"); //设置下拉选中项
+    $("select[name='auto_time']").val("{$info.auto_time|default = '0'}"); //设置下拉选中项
+	var vl = $('#data-type').find('option:selected').val();
+	if(vl == 'textarea' || vl == 'datetime' || vl == 'editor'){
+		$('.data-value').attr("disabled",true).attr("placeholder","当前字段类型不能添加默认值！").attr("value","");
+	}else{
+		$('.data-value').attr("disabled",false).attr("placeholder","");
+	}
+	$('#validate_rule').html($('#data-validate').find('option:selected').attr('rule'));
+	$('#auto_rule').html($('#data-auto').find('option:selected').attr('rule'));
+	// empty($info['field'])意思是新增时
+    <?php if(!isset($info['field']) || empty($info['field'])):?>
+    $(function(){
+    	$('#data-field').val($('#data-type').find('option:selected').attr('rule'));
+    	$('#data-type').change(function(){
+    		$('#data-field').val($(this).find('option:selected').attr('rule'));
+			/* var vl = $(this).val();
+			if(vl == 'textarea' || vl == 'datetime' || vl == 'editor'){
+				$('.data-value').attr("disabled",true).attr("placeholder","当前字段类型不能添加默认值！").attr("value","");
+			}else{
+				$('.data-value').attr("disabled",false).attr("placeholder","");
+			} */
+		});
+    });
+    <?php endif;?>
+    $(".value-question").click(function(){
+		$("#value-question").toggle();
+	});
+	$(".extra-question").click(function(){
+		$("#extra-question").toggle();
+	});
+	$(".extra-question").mouseover(function(){
+		var html = '<span style="color:red;">';
+		    html += '[ 布尔、枚举、多选字段类型的定义数据 ] <br>';
+			html += '两种方式：<br>';
+			html += '1、多个可选值用逗号隔开。注：必须加说明，例：值:说明,值:说明 <br>';
+			html += '2、如果是枚举型，需要配置该项，一行一个选项，例: <br>';
+			html += '0:选项1 <br>';
+			html += '2:选项2 <br>';
+			html += '</span>';
+		layer.tips(html,this,{tips: [1, '#fff'],area: ['420px', 'auto'],guide: 1,time: 2000000});
+	});
+	$(".extra-question").mouseout(function(){
+		layer.closeAll();
+	})
+</script>
+{/block}

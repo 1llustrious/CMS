@@ -1,0 +1,168 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="css"}
+<style>
+	/* 栏目伸缩按钮样式 */
+	.open-up{
+		border: 1px solid #ccc;
+		padding: 0 3px 0 3px;
+		cursor: pointer;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="form-horizontal" action="{:url('')}" method="post">
+						<table class="layui-table">
+							<thead>
+								<tr pid="0">
+									<th class="xz" colspan="2">
+										<input type="checkbox" class="check-all" id="checkbox" />
+										<span for="checkbox">全选/全不选</span>
+									</th>
+								</tr>
+								<?php foreach($list as $k=>$v):?>
+								<tr id="{$v.id}" pid="{$v.pid}" level="{$v.level}">
+									<td align="left" width="1%"><span class="open-up">+</span></td>
+									<td class="xz" colspan="2">
+										<input type="checkbox" name="ids[]" value="{$v.id}" class="ids" id="checkbox" value="<?php echo $v['id'];?>" {if condition="$v.checked"} checked {/if} />
+										<label for="checkbox"></label>
+										<span><?php echo $v['title'];?></span>
+									</td>
+								</tr>
+								<?php if($v['children']):?>
+								<?php foreach($v['children'] as $k=>$v2):?>
+								<tr id="{$v2.id}" pid="{$v2.pid}" level="{$v2.level}">
+									<td align="left" width="1%"><span class="open-up">+</span></td>
+									<td class="xz" colspan="2">
+										<input type="checkbox" name="ids[]" value="{$v2.id}" class="ids" id="checkbox" value="<?php echo $v2['id'];?>" {if condition="$v2.checked"} checked {/if} />
+										<label for="checkbox"></label>
+										<span><?php echo '|';echo str_repeat('-',5); ?><?php echo $v2['title'];?></span>
+									</td>
+								</tr>
+								<?php endforeach;?>
+								<?php endif;?>
+								<?php endforeach;?>
+								<tr pid="0">
+									<td align="left" colspan="2">
+										<input type="hidden" name="group_id" value="{$group_id}">
+										<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+										<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+									</td>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<!-- 规则伸缩状态js 第一种方法(收缩隐藏用ajax) -->
+<!-- <script type="text/javascript">
+	$("tr[pid!=0]").hide();
+	$('.open-up').click(function(){
+	    var id=$(this).parent().parent().attr('id');
+	    if($(this).text()=='+'){
+	        // js伸展
+	        $(this).text('-');
+	        $('tr[pid='+id+']').show();
+	    }else{
+	        // ajax收缩
+	        $(this).text('+');
+	        // $('tr[pid='+id+']').hide();
+	        $.ajax({
+	            type:"POST",
+	            dataType:"json",
+	            data:{id:id},
+	            url:"{:url('shrink')}",
+	            success:function(data){
+                    // alert(typeof(data)); //typeof意思是这个data的类型，是object
+                    // 注意注释符号//不能离 括号 { 很近
+                    $.each(data,function(k,v){
+                        $('tr[id='+v+']').hide();
+                       $('tr[id='+v+']').find('span:first').text('+');//first是第一个span
+                    });
+                }
+	        });
+	    }
+	});
+</script> -->
+<!-- 规则伸缩状态js 第二种方法(收缩隐藏不用ajax) -->
+<script type="text/javascript">
+	$(function(){
+		// 栏目伸缩
+		// 1.隐藏非顶级栏目
+		// $('tr[pid!=0]').hide();
+		$('.open-up').text('-');
+		// 2.子栏目展开
+		$('.open-up').on('click',function(){
+			// 获取按钮状态
+			// var flag = $(this).find('i').text();
+			var flag = $(this).text();
+			var index = $(this).parents("tr").attr("id"); //注意parent和parents用法
+			if(flag == "+"){
+				//改变按钮状态
+				// $(this).find('i').text("-");
+				$(this).text("-");
+				// $('tr[pid='+index+']').show();//栏目展开
+				$('tr[pid='+index+']').fadeIn('slow');//栏目展开并加渐变效果
+			}else{
+				// $(this).find('i').text("+");
+				$(this).text("+");
+				// $('tr[pid='+index+']').hide();//栏目收起
+				// $('tr[pid='+index+']').fadeOut('slow');//栏目收起
+				hidecate(index);//递归隐藏子栏目
+			}
+		});
+	});
+	//隐藏子栏目 pid父级分类id，递归隐藏子栏目
+	function hidecate(pid){
+		$('tr[pid='+pid+']').each(function() {
+			hidecate($(this).attr('id'));
+		});
+		// $('tr[pid='+pid+']').find('.shensuo').find('i').text("+");
+		$('tr[pid='+pid+']').find('.open-up').text("+");
+		$('tr[pid='+pid+']').fadeOut('slow');//栏目收起
+	}
+</script>
+<!-- 等级的js效果 -->
+<script type="text/javascript">
+	// prevAll()函数用于选取每个匹配元素之前的所有同辈元素，并以jQuery对象的形式返回。
+	// 你还可以使用选择器来进一步缩小选取范围，筛选出符合指定选择器的元素。
+	// 与该函数相对的是nextAll()函数，用于选取每个匹配元素之后的所有同辈元素。
+	// 该函数属于jQuery对象(实例)。
+	$(":checkbox").click(function(){
+	    var cur_tr=$(this).parent().parent();
+	    var level=cur_tr.attr('level');
+	    var checked=$(this).prop('checked');
+	    // 往上面一直循环的 当$(this).attr('level')=0 就return false;
+	    cur_tr.prevAll('tr').each(function(){
+			if($(this).attr('level') < level && checked){
+				// level=$(this).attr('level');
+				level--;
+				$(this).find(':checkbox').prop('checked',true);
+				if($(this).attr('level')==0){
+					return false;
+				}
+			}
+	    });
+	    if(!checked){
+			cur_tr.nextAll('tr').each(function(){
+				if($(this).attr('level') > level){
+					$(this).find(':checkbox').prop('checked',false);
+				}else{
+					return false;
+				}
+			});
+	    }
+	});
+</script>
+{/block}

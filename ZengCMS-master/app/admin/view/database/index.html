@@ -1,0 +1,155 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 5px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>数据库备份</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set" style="margin-bottom:-6px;">
+							<div class="layui-inline">
+								<a title="立即备份" onclick="backupAll();" class="layui-btn layui-btn-sm">立即备份</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" onclick="optimizeAll()" class="layui-btn layui-btn-sm layui-btn-normal">优化表</a>
+							</div>
+							<div class="layui-inline">
+								<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-warm" onclick="repairAll()">修复表</a>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;">
+							<form class="layui-form"  action="{:url('export')}" method="post" id="form">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1">
+										<col>
+										<col width="8%">
+										<col width="6%">
+										<col width="13%">
+										<col width="10%">
+										<col width="10%">
+										<col width="10%">
+										<col width="10%">
+										<col width="30%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th><input type="checkbox" checked="checked" lay-skin="primary" id="allChoose" lay-filter="allChoose"></th>
+											<th>数据表名</th>
+											<th>存储引擎</th>
+											<th>字符集</th>
+											<th>注释</th>
+											<th>数据数量</th>
+											<th>数据大小</th>
+											<th>创建时间</th>
+											<th>更新时间</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="table"}
+										<tr>
+											<td>
+												<?php if(!in_array($table['name'],$notBackupTable)):?>
+													<input type="checkbox" lay-skin="primary" checked="checked" lay-filter="c_one" class="ids" name="tables[]" value="{$table.name}">
+												<?php endif;?>
+											</td>
+											<td>{$table.name}</td>
+											<td>{$table.engine}</td>
+											<td>{$table.collation}</td>
+											<td>{$table.comment}</td>
+											<td>{$table.rows}</td>
+											<td>{$table.data_length+$table.index_length|format_bytes}</td>
+											<td>{$table.create_time}</td>
+											<td>{$table.update_time}</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-normal" href="javascript:;" onclick="optimize('{$table.name}')"><i class="layui-icon layui-icon-release"></i> 优化表</a>
+												</div>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-warm" href="javascript:;" onclick="repair('{$table.name}')"><i class="layui-icon layui-icon-set-fill"></i> 修复表</a>
+												</div>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-default" href="javascript:;" onclick="x_admin_show('{$table.name}-备份','{:url("backuplst",["t"=>$table.name])}','','')"><i class="layui-icon layui-icon-set-fill"></i> 备份</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    // 修复
+    function repair(tablename){
+    	$.post("{:url('repair')}",{tablename:tablename},function(res){
+    		layer.msg(res.msg,{time:1000});
+    	},'json');
+    }
+    // 优化
+    function optimize(tablename){
+      	$.post("{:url('optimize')}",{tablename:tablename},function(res){
+      		layer.msg(res.msg,{time:1000});
+      	},'json');
+    }
+    // 批量修复
+    function repairAll(){
+    	var arr = [];
+        $("input:checkbox[name='tables[]']:checked").each(function(i){
+	         arr.push($(this).val());
+        });
+        tables=arr.join(",");
+        $.post("{:url('repairAll')}",{tables:tables},function(res){
+			if(res.code == 1){
+				layer.msg(res.msg,{icon:1,time:1000});
+			}else{
+				layer.msg(res.msg,{icon:2,time:1000});
+			}
+        },'json');
+    }
+    // 批量优化
+    function optimizeAll(){
+    	var arr = [];
+        $("input:checkbox[name='tables[]']:checked").each(function(i){
+	         arr.push($(this).val());
+        });
+        tables=arr.join(",");
+        $.post("{:url('optimizeAll')}",{tables:tables},function(res){
+			if(res.code == 1){
+				layer.msg(res.msg,{icon:1,time:1000});
+			}else{
+				layer.msg(res.msg,{icon:2,time:1000});
+			}
+        },'json');
+    }
+    // 选择性备份
+    function backupAll(){
+    	var arr = [];
+        $("input:checkbox[name='tables[]']:checked").each(function(i){
+	         arr.push($(this).val());
+        });
+        tables=arr.join(",");
+        if(!tables){
+        	layer.msg('请选择要备份的表',{icon:3,time:2000});
+        	return false;
+        }
+    	x_admin_show(tables+'-备份','{:url("backuplst")}?t='+tables,'','');
+    }
+</script>
+{/block}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta name="applicable-device" content="pc,wap">
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>{$nav.typename}_{$get_config.WEB_SITE_NAME}</title>
+    <meta name="keywords" content="{$nav.keywords|default=$get_config.WEB_SITE_KEYWORDS}" />
+    <meta name="description" content="{$nav.description|default=$get_config.WEB_SITE_DESCRIPTION}" />
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/cloud.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.min.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.animate.min.css">
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/cloud.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/Superslide.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/wow.min.js"></script>
+</head>
+<body>
+    {include file="cloudcms/z-head"}
+    <div class="main mtop60">
+        <div class="pro_box clearfix">
+            <div class="center">
+                <div class="pro_screen clearfix" id="filter_btn">
+                    {volist name=":get_search_field('product')" id="vo"}
+                    <ul class="fbox clearfix">
+                        <li><span>{$vo.title}</span></li>
+                        <li><a class="active" href="javascript:;">全部</a></li>
+                        {volist name="$vo['extra']" id="info"}
+                        <li><a class="" href="{:get_search_url($vo['name'],$info)}" title="{$key}">{$info}</a></li>
+                        {/volist}
+                    </ul>
+                    {/volist}
+                </div>
+                <div class="flex_between tfilter clearfix ">
+                    <div class="text">排序：
+                        <a data-field="order_type" href="{:get_search_url('order','1')}">最新</a>
+                        <a data-field="order_type" href="{:get_search_url('order','2')}">浏览量</a>
+                    </div>
+                    <div class="search">
+                        <form method="get" action="{:jump_by_lang('','search')}">
+                            <input type="hidden" name="id" value="{:get_curr_nav_name()}">
+                            <input id="search" type="text" data-field="filter_keyword" name="keywords" value="" placeholder="请输入搜索关键词...">
+                            <input class="btn_submit" type="submit" value="搜索">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="city_box3 clearfix station_box4">
+                <div class="center">
+                    <div class="box clearfix">
+                        <div class="yunu_case_list clearfix" id="yunu_list">
+                            <div class="swiper_container">
+                                <div class="clearfix swiper-wrapper" id="box">
+                                    {volist name="$docList" id="vo"}
+                                    <div class="swiper-slide  wow fadeInUp">
+                                        <div class="li_text">
+                                            <div class="n_case scroll_pic">
+                                                <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">
+                                                    <img src="https://fakeimg.pl/362x1435">
+                                                </a>
+                                            </div>
+                                            <div class="text clearfix">
+                                                <h3>{$vo.title}</h3>
+                                            </div>
+                                            <div class="text2 clearfix">
+                                                <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">查看详情</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/volist}
+                                </div>
+                            </div>
+                        </div>
+                        <script type="text/javascript">
+                            function scroll_pic() {
+                                $(".scroll_pic").on("mouseenter", "img", function () {
+                                    var t = $(this),
+                                        n = t.height() - t.closest(".scroll_pic").height();
+                                    t.stop(!0).animate({
+                                        top: -n
+                                    }, 10 * n, "linear")
+                                }).on("mouseleave", "img", function () {
+                                    $(this).stop(!0).animate({
+                                        top: 0
+                                    }, "fast")
+                                })
+                            }
+                            scroll_pic();
+                        </script>
+                    </div>
+                    <div class="pages">
+                        <style type="text/css">
+                            .pagination p {
+                                margin: 0;
+                                cursor: pointer
+                            }
+                            .pagination {
+                                height: 40px;
+                                padding: 20px 0px;
+                            }
+                            .pagination a {
+                                display: block;
+                                float: left;
+                                margin-right: 10px;
+                                padding: 2px 12px;
+                                height: 24px;
+                                border: 1px #cccccc solid;
+                                background: #fff;
+                                text-decoration: none;
+                                color: #808080;
+                                font-size: 12px;
+                                line-height: 24px;
+                            }
+                            .pagination a:hover {
+                                color: #077ee3;
+                                background: white;
+                                border: 1px #077ee3 solid;
+                            }
+                            .pagination a.cur {
+                                border: none;
+                                background: #077ee3;
+                                color: #fff;
+                            }
+                            .pagination p {
+                                float: left;
+                                padding: 2px 12px;
+                                font-size: 12px;
+                                height: 24px;
+                                line-height: 24px;
+                                color: #bbb;
+                                border: 1px #ccc solid;
+                                background: #fcfcfc;
+                                margin-right: 8px;
+                            }
+                            .pagination p.pageRemark {
+                                border-style: none;
+                                background: none;
+                                margin-right: 0px;
+                                padding: 4px 0px;
+                                color: #666;
+                            }
+                            .pagination p.pageRemark b {
+                                color: red;
+                            }
+                            .pagination p.pageEllipsis {
+                                border-style: none;
+                                background: none;
+                                padding: 4px 0px;
+                                color: #808080;
+                            }
+                            .dates li {
+                                font-size: 14px;
+                                margin: 20px 0
+                            }
+                            .dates li span {
+                                float: right
+                            }
+                        </style>
+                        <div class="pagination">
+                            {$docList|raw}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="cloudcms/z-footer"}
+</body>
+</html>

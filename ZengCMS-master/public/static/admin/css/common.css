@@ -1,0 +1,81 @@
+/* 右侧内容导航 */
+.layui-breadcrumb a:hover {
+	color: #5FB878!important;
+	text-decoration: none!important;
+}
+/* 上传文件按钮css样式 start */
+.file {
+	position: relative;
+	display: inline-block;
+	background: #D0EEFF;
+	border: 1px solid #99D3F5;
+	border-radius: 4px;
+	padding: 4px 12px;
+	overflow: hidden;
+	color: #1E88C7;
+	text-decoration: none;
+	text-indent: 0;
+	line-height: 27px;
+	margin-left: 1px;
+}
+.file input {
+	position: absolute;
+	font-size: 100px;
+	right: 0;
+	top: 0;
+	opacity: 0;
+}
+.file:hover {
+	background: #AADFFD;
+	border-color: #78C3F3;
+	color: #004974;
+	text-decoration: none;
+}
+/* 上传文件按钮css样式 end */
+/* 图片右上角删除图标 start */
+.layui-btn-mini {
+	height: 22px;
+	line-height: 22px;
+	padding: 0 5px;
+	font-size: 12px;
+}
+.layui-form-select dl {
+	z-index: 2;
+}
+.thumb_list {
+	padding-top: 8px;
+}
+.thumb_list span {
+	position: relative;
+	display: inline-block;
+	margin-right: 5px;
+}
+.thumb_list span .delimg {
+	position: absolute;
+	right: 3px;
+	top: 3px;
+}
+.thumb_list img {
+	border: 1px solid #DDD;
+	padding: 3px;
+	border-radius: 5px;
+}
+.thumb_list .img-div {
+	position: relative;
+	display: inline-block;
+	margin-right: 5px;
+}
+.thumb_list .img-div .delimg {
+	position: absolute;
+	right: 4px;
+	top: 4px;
+}
+.img-div img {
+	width: 100px;
+	height: 100px;
+	float: left;
+}
+.img-div {
+	float: left;
+}
+/* 图片右上角删除图标 end */

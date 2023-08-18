@@ -1,0 +1,103 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline" style="width:26px">
+											<button class="layui-btn layui-btn-sm layuimini-btn-primary" data-table-refresh="currentTableRenderId"><i class="fa fa-refresh"></i> </button>
+										</div>
+										<!-- <div class="layui-input-inline">
+											<select name="status" id="status" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">正常</option>
+												<option value="0">禁用</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:50px">
+											<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+										</div> -->
+										<div class="layui-input-inline" style="width:55px">
+											<a class="layui-btn layui-btn-sm layui-btn-success confirm ajax-get" data-confirm="确定更新新节点？" url="{:url('Node/refreshNode',['force'=>0])}">更新节点</a>
+										</div>
+										<div class="layui-input-inline" style="width:55px;margin-left: 5px;">
+											<a class="layui-btn layui-btn-sm layui-btn-normal confirm ajax-get" data-confirm="该操作会覆盖已存在的节点信息。<br>确定强制更新节点？" url="{:url('Node/refreshNode',['force'=>1])}">强制更新节点</a>
+										</div>
+										<div class="layui-input-inline" style="width:55px;margin-left: 29px;">
+											<a class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-get" data-confirm="确定清除失效节点？" url="{:url('Node/clearNode',['force'=>1])}">清除失效节点</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1">
+										<col width="5%">
+										<col>
+										<col width="20%">
+										<col width="15%">
+										<col width="12%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th><input type="checkbox" lay-skin="primary" id="allChoose" lay-filter="allChoose"></th>
+											<th>ID</th>
+											<th>系统节点</th>
+											<th>节点名称</th>
+											<th>更新时间</th>
+											<th>节点控制</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td><input type="checkbox" lay-skin="primary" class="ids" name="ids[]" value="{$info.id}" lay-filter="c_one"></td>
+											<td>{$info.id}</td>
+											<td>{$info.node}</td>
+											<td>{$info.title}</td>
+											<td>{$info.update_time|date="Y-m-d H:i:s"}</td>
+											<td>
+												<input type="checkbox" class="switch" {if condition="$info['is_auth'] eq 1"} checked="" {/if} url="{:url('setStatus')}" on="ids={$info.id}&status=1" off="ids={$info.id}&status=0" lay-skin="switch" lay-filter="switchTest" lay-text="开|关">
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-normal ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>1))}">开</a> </div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-warm ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>0))}">关</a> </div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+{/block}

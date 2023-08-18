@@ -1,0 +1,57 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<!-- <blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a href="{:url('index')}">菜单管理</a>
+							<a><cite>移动《{$info.title}》菜单</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote> -->
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post">
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th class="xz">
+										目标菜单（ 将移动至的菜单 ）
+									</th>
+								</tr>
+								<tr>
+									<td align="left">
+										<select name="pid" lay-verify="required">
+											<option value="0" selected="selected">顶级菜单</option>
+											{volist name="menuRes" id="m"}
+											<option value="{$m.id}"><?php if($m['level']!==0){echo '|';} echo str_repeat('-',$m['level']*5); ?>{$m.title}</option>
+											{/volist}
+										</select>
+										<span class="sysval"><em class="zerocopy">pid</em></span>
+									</td>
+								</tr>
+								<tr>
+									<td align="left">
+										<input type="hidden" name="id" value="{$id}">
+										<button class="layui-btn ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">立即提交</button>
+										<button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button>
+									</td>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$("select[name='pid']").val({$info.pid});
+</script>
+{/block}

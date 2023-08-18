@@ -1,0 +1,2 @@
+﻿codeMirror是一款十分强大的代码编辑插件，提供了十分丰富的API，用于文件管理时的文件编辑和新增做编辑器
+下载地址 https://codemirror.net/

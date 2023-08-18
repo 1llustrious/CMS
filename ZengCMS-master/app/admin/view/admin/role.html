@@ -1,0 +1,42 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="form-horizontal" action="{:url()}" method="post">
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th class="xz">
+										<input type="checkbox" class="check-all" id="checkbox" />
+										<span for="checkbox">全选/全不选</span>
+									</th>
+								</tr>
+								{volist name="allAuthGroupRes" id="info"}
+								<tr>
+									<td class="xz" colspan="3">
+										<input type="checkbox" name="ids[]" value="{$info.id}" class="ids" id="checkbox" <?php if(in_array($info['id'],$group_idArr)){echo "checked='checked'";} ?> />
+										<label for="checkbox"></label>
+										<span>{$info.title}</span>
+									</td>
+								</tr>
+								{/volist}
+								<tr>
+									<td align="left">
+										<input type="hidden" name="uid" value="{$uid}">
+										<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button
+									</td>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

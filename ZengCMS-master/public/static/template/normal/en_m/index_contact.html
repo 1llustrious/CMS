@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="HandheldFriendly" content="True"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{$nav.typename_en}_{$get_config.WEB_SITE_NAME_EN}</title>
+    <meta name="keywords" content="{$nav.keywords_en|default=$get_config.WEB_SITE_KEYWORDS_EN}"/>
+    <meta name="description" content="{$nav.description_en|default=$get_config.WEB_SITE_DESCRIPTION_EN}"/>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="__TEMPLATE__/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__TEMPLATE__/static/css/style.css"/>
+    <link rel="stylesheet" href="__TEMPLATE__/static/css/carousel.css"/>
+    <script src="__TEMPLATE__/static/js/jquery.min.js"></script>
+    <script src="__TEMPLATE__/static/js/bootstrap.min.js"></script>
+</head>
+<body>
+    {include file="normal/en_m/z-head"}
+    <div class="banner" style="height:236px;">
+        <a target="_blank" href="tencent://message/?uin={$get_config.QQ}&Site={$get_config.SITE_DOMAIN}&Menu=yes" rel="nofollow">
+            <img src="https://fakeimg.pl/1488x248" title="{$nav.seotitle_en}_{$get_config.WEB_SITE_NAME_EN}"/>
+        </a>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 text-center col-md-offset-2">
+                <div class="nei-menu">
+                    <a href="{:get_nav(get_top_nav_id(),'typeurl')}" class="{if get_top_nav_id()==get_curr_nav_id()}active{/if}">{:get_nav(get_top_nav_id(),'typename_en')}</a>
+                    {volist name=":tag_nav($typeid=get_top_nav_id(),$type='son',$thisclass='active')" id="vo"}
+                    <a href="{$vo.typeurl}" target="{$vo.target}" rel="{$vo.rel}" class="{$vo.thisclass}">{$vo.typename_en}</a>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container lingyun-about">
+        <div class="row">
+            <div class="col-md-12 text-center lingyun-content">
+                <div class="content-body">
+                    {$nav.content_en}
+                    <!-- 百度地图调用 -->
+                    <div class="map"></div>
+                    <div class="map2"></div>
+                </div>
+                <!-- 百度地图调用 -->
+                {:qq_map($nav.map, '10', '1140', '400', '0', '', 'map')}
+                {:baidu_map($nav.map, 17, '100%', '400', '', 'map2', $get_config.WEB_ADDRESS)}
+            </div>
+        </div>
+    </div>
+    {include file="normal/en_m/z-footer"}
+</body>
+</html>

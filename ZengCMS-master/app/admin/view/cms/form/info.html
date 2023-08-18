@@ -1,0 +1,227 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="css"}
+<style>
+	.layui-form-item {
+		margin-bottom: -8px;
+	}
+	.layui-form-item .layui-input-inline {
+		width: 120px;
+	    margin-right: 19px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>信息列表</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item">
+										<div class="layui-input-inline" style="width:80px;float: left;">
+											<a class="layui-btn" href="javascript:;" onclick="x_admin_show('新增','{:url('cms.Document/add',['category_id'=>0,'model_id'=>$model_id,'form'=>1])}','100%','100%',1)" title="新增信息">新增信息</a>
+										</div>
+										<div style="float: right;">
+											<!-- <input type="hidden" name="page" value="{:input('page')}"> -->
+											<input type="hidden" name="model_id" value="{:input('model_id')}">
+											<div class="layui-input-inline" style="margin-right: 5px;width: 180px;">
+												<input type="text" name="date" value="{:input('date')}" class="layui-input" id="laydate" placeholder="搜索时间范围">
+											</div>
+											<div class="layui-input-inline" style="width: 100px;margin-right: 5px;">
+												<select name="status" id="status" lay-verify="required">
+													<option value="" selected="selected">选择状态</option>
+													<option value="1">显示</option>
+													<option value="0">隐藏</option>
+													<option value="2">待审核</option>
+													<option value="3">草稿</option>
+													<option value="-1">已删除</option>
+												</select>
+											</div>
+											<div class="layui-input-inline" style="margin-right: 5px;width: 200px;">
+												<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+											</div>
+
+											<div class="layui-input-inline" style="width:42px">
+												<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1">
+										<col width="5%">
+										<col width="6%">
+										{if condition="$title"}
+										{volist name="$title" id="vo"}
+										<col>
+										{/volist}
+										{/if}
+										<col>
+										<col>
+										<col>
+									</colgroup>
+									<thead>
+										<tr>
+											<th style="text-align: center;"><input type="checkbox" lay-skin="primary" id="allChoose" lay-filter="allChoose"></th>
+											<th style="text-align: center;">ID</th>
+											<th style="text-align: center;">序号</th>
+											{if condition="$title"}
+											{volist name="$title" id="vo"}
+											<th style="text-align: center;">{$vo}</th>
+											{/volist}
+											{/if}
+											<th style="text-align: center;">创建时间</th>
+											<th style="text-align: center;">状态</th>
+											<th style="text-align: center;">操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td>
+												<input type="checkbox" lay-skin="primary" class="ids" name="ids[{$info.id}-{$model_id}]" value="{$info.id}" lay-filter="c_one">
+											</td>
+											<td>{$info.id}</td>
+											<td><input type="text" name="sort[{$info.id}-{$model_id}]" value="{$info.sort}" class="layui-input sort" lay-filter="weight"></td>
+											
+											{if condition="$fields"}
+											{volist name="$fields" id="vo"}
+											<td title="<?php echo $info[$vo];?>"><?php echo cut_str($info[$vo],12);?></td>
+											{/volist}
+											{/if}
+											<td>{$info.create_time|date="Y-m-d H:i:s"}</td>
+											<td>
+												<!--{$info.status_text}-->
+												<input type="checkbox" class="switch" {if condition="$info['status'] eq 1"} checked="" {/if} url="{:url('cms.Document/set_status')}" on="ids={$info.id}-{$model_id}&status=1&form=1" off="ids={$info.id}-{$model_id}&status=0&form=1" lay-skin="switch" lay-filter="switchTest" lay-text="显示|隐藏">
+											</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs " href="javascript:;" onclick="x_admin_show('编辑文档','{:url('cms.Document/edit',array('id'=>$info['id'],'model_id'=>$model_id,'form'=>1))}','100%','100%',1)">
+														<i class="layui-icon layui-icon-edit"></i> 查看
+													</a>
+												</div>
+												<?php if($info['status']==0||$info['status']==2||$info['status']==3):?>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('cms.Document/set_status',array('ids'=>$info['id'].'-'.$model_id,'status'=>1,'form'=>1))}">
+														<i class="layui-icon layui-icon-release"></i> 显示
+													</a>
+												</div>
+												<?php elseif($info['status']=='1'):?>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-warm ajax-get" href="{:url('cms.Document/set_status',array('ids'=>$info['id'].'-'.$model_id,'status'=>0,'form'=>1))}">
+														<i class="layui-icon layui-icon-set-fill"></i> 隐藏
+													</a>
+												</div>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-warm ajax-get" href="{:url('cms.Document/set_status',array('ids'=>$info['id'].'-'.$model_id,'status'=>'-1','form'=>1))}">
+														<i class="layui-icon layui-icon-set-fill"></i> 删除
+													</a>
+												</div>
+												<?php elseif($info['status']=='-1'):?>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('cms.Document/set_status',array('ids'=>$info['id'].'-'.$model_id,'status'=>1,'form'=>1))}">
+														<i class="layui-icon layui-icon-release"></i> 还原
+													</a>
+												</div>
+												<!-- 彻底删除 -->
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('cms.Document/del',array('ids'=>$info['id'].'-'.$model_id,'form'=>1))}">
+														<i class="layui-icon layui-icon-delete"></i> 删除
+													</a>
+												</div>
+												<?php endif;?>
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm ajax-post" target-form="sort" url="{:url('cms.Document/set_sort',['form'=>1])}" title="排序" >排序</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-normal ajax-post" target-form="ids" url="{:url('cms.Document/set_status',array('status'=>1,'form'=>1))}">显示</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-warm ajax-post" target-form="ids" url="{:url('cms.Document/set_status',array('status'=>0,'form'=>1))}">隐藏</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-post" target-form="ids" url="{:url('cms.Document/del',['form'=>1])}">删除</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										<!-- 分页 -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='status']").val({$status|default = ''});
+        xuanran('select');
+    });
+</script>
+<script type="text/javascript">
+	layui.use(['form','jquery','laypage','layer','laydate'], function(){
+		var form = layui.form
+		,laypage = layui.laypage //分页组件
+		,layer = layui.layer//弹框组件
+		,$ = layui.jquery//jquery
+		,laydate = layui.laydate;//日期
+		// 执行一个laypage实例(数组分页)
+		laypage.render({
+		    elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+		    ,count: {$page.count} //数据总数，从服务端得到
+		    ,limit: {$page.limit} //每页显示的条数。laypage将会借助 count 和 limit 计算出分页数，从服务端得到
+			,limits:[5,10,20,30,40,50,60,70,80,90,100] //每页条数的选择项。如果 layout 参数开启了 limit，则会出现每页条数的select选择框
+		    ,curr: {$page.curr} //起始页。一般用于刷新类型的跳页以及HASH跳页，从服务端得到
+		    ,groups:5   //连续出现的页码个数
+		    ,layout:['count','prev', 'page', 'next','skip','limit','refresh']      //自定义排版。可选值有：count（总条目输区域）、prev（上一页区域）、page（分页区域）、next（下一页区域）、limit（条目选项区域）、refresh（页面刷新区域。注意：layui 2.3.0 新增） 、skip（快捷跳页区域）
+		    ,jump: function(obj, first){
+			    //obj包含了当前分页的所有参数，比如：
+			    console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+			    console.log(obj.limit); //得到每页显示的条数
+			    //首次不执行
+			    if(!first){
+			      //do something
+			      location.href = "?model_id={:input('model_id')}&date={:input('date')}&status={:input('status')}&title={:input('title')}"+"&page="+obj.curr+"&limit="+obj.limit;
+			  	}
+			}
+		});
+		laydate.render({
+			elem: '#laydate',
+			range: true,
+		});
+	});
+</script>
+{/block}

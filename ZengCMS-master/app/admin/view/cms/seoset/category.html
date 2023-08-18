@@ -1,0 +1,90 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 0px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<!-- <div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline">
+											<select name="status" id="status" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">显示</option>
+												<option value="0">隐藏</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:80px">
+											<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div> -->
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="5%">
+										<col>
+										<col>
+										<col>
+										<col width="10%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>栏目名称</th>
+											<th>标识</th>
+											<th>上级栏目</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td>{$info.id}</td>
+											<td>{php} echo str_repeat('&nbsp;&nbsp;',  $info['level']- 1);if($info['level'] >1)echo ' ├─ ';  {/php}{$info.typename}
+		                            		</td>
+											<td>{$info.name}</td>
+											<td>{:get_cate($info['pid'])}</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs" href="javascript:;" onclick="x_admin_show('编辑','{:url('editCategory?id='.$info['id'])}','','',0)">
+														<i class="layui-icon layui-icon-edit"></i> 编辑
+													</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='status']").val({$status|default = ''});
+    });
+</script>
+{/block}

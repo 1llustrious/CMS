@@ -1,0 +1,112 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline">
+											<select name="addon" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												{volist name="addons" id="vo"}
+												<option value="{$key}">{$vo.name}-{$vo.title}</option>
+												{/volist}
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:80px">
+											<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1">
+										<col width="5%">
+										<col width="6%">
+										<col width="15%">
+										<col>
+										<col width="10%">
+										<col width="8%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th><input type="checkbox" lay-skin="primary" id="allChoose" lay-filter="allChoose"></th>
+											<th>ID</th>
+											<th>序号</th>
+											<th>名称</th>
+											<th>描述</th>
+											<th>类型</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td><input type="checkbox" lay-skin="primary" class="ids" name="ids[]" value="{$info.id}" lay-filter="c_one"></td>
+											<td>{$info.id}</td>
+											<td><input type="text" name="sort[{$info.id}]" value="{$info.sort}" class="layui-input sort" lay-filter="weight"></td>
+											<td>{$info.name}</td>
+											<td>{$info.description}</td>
+											<td>{$info.type_text}</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs " href="javascript:;" onclick="x_admin_show('查看','{:url('detail',array('id'=>$info['id']))}','60%','90%',1)">
+														<i class="layui-icon layui-icon-edit"></i> 查看
+													</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm ajax-post" target-form="sort" url="{:url('sort')}" title="排序" >排序</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$list|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='addon']").val("{$addon|default = ''}");
+    });
+</script>
+{/block}

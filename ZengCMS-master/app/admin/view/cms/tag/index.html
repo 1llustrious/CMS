@@ -1,0 +1,146 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline">
+											<select name="status" id="status" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">显示</option>
+												<option value="0">隐藏</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:50px">
+											<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+										</div>
+										<div class="layui-input-inline" style="width:80px">
+											<a id="cjbtn" class="layui-btn layui-btn-warm" href="javascript:;" onclick="return rebuilt();">数据重建</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1">
+										<col width="5%">
+										<col width="6%">
+										<col>
+										<col width="8%">
+										<col width="20%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th><input type="checkbox" lay-skin="primary" id="allChoose" lay-filter="allChoose"></th>
+											<th>ID</th>
+											<th>序号</th>
+											<th>TAG标签名称</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td><input type="checkbox" lay-skin="primary" class="ids" name="ids[]" value="{$info.id}" lay-filter="c_one"></td>
+											<td>{$info.id}</td>
+											<td><input type="text" name="sort[{$info.id}]" value="{$info.sort}" class="layui-input sort" lay-filter="weight"></td>
+											<td>{$info.name}</td>
+											<td>
+												<!--{$info.status_text}-->
+												<input type="checkbox" class="switch" {if condition="$info['status'] eq 1"} checked="" {/if} url="{:url('setStatus')}" on="ids={$info.id}&status=1" off="ids={$info.id}&status=0" lay-skin="switch" lay-filter="switchTest" lay-text="显示|隐藏">
+											</td>
+											<td>
+												<div class="layui-inline">
+													<a class="layui-btn layui-btn-xs " href="javascript:;" onclick="x_admin_show('编辑','{:url('edit',array('id'=>$info['id']))}','50%','90%',0)">
+														<i class="layui-icon layui-icon-edit"></i> 编辑
+													</a>
+												</div>
+												{if condition="$info['status'] eq 0"}
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('setStatus',array('ids'=>$info['id'],'status'=>1))}"><i class="layui-icon layui-icon-release"></i> 显示</a></div>
+												{else/}
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-warm ajax-get" href="{:url('setStatus',array('ids'=>$info['id'],'status'=>0))}"><i class="layui-icon layui-icon-set-fill"></i> 隐藏</a></div>
+												{/if}
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',array('ids'=>$info['id']))}"><i class="layui-icon layui-icon-delete"></i> 删除</a></div>
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm ajax-post" target-form="sort" url="{:url('sort')}" title="排序">排序</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-normal ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>1))}">显示</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-warm ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>0))}">隐藏</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-post" target-form="ids" url="{:url('del')}">删除</a></div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$list|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='status']").val({$status|default = ''});
+    });
+	function rebuilt(curr='1'){
+		// 加载层
+		var index = layer.load(0, {shade: false});//0代表加载的风格，支持0-2
+		$.ajax({
+			type:"POST",
+			dataType:"json",
+			data:{curr:curr},
+			url:"{:url('rebuilt')}",
+			success:function(res){
+				if(res.code==2){
+					layer.close(index);//关闭加载层
+					// 此处演示关闭
+					// layer.closeAll('loading');
+					layer.msg(res.msg,{time:1000},function(){
+						window.location.reload();
+					});
+					// $("#cjbtn").removeClass("disabled");
+					// window.location.reload();
+				}else{
+					rebuilt(res.curr);
+				}
+			}
+		});
+		$("#cjbtn").addClass("disabled");
+	}
+</script>
+{/block}

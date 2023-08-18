@@ -1,0 +1,5 @@
+﻿JSAPI支付
+
+用户通过微信扫码、关注公众号等方式进入商家H5页面，并在微信内调用JSSDK完成支付
+
+下载地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=11_1

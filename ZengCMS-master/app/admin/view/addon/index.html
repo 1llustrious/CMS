@@ -1,0 +1,317 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline">
+											<select name="install" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">安装</option>
+												<option value="0">未装</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:56px">
+											<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+										</div>
+										<div class="layui-input-inline" style="width:80px">
+											<a href="javascript:;" class="layui-btn" id="local-install">上传</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col width="23%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>名称</th>
+											<th>标识</th>
+											<th>描述</th>
+											<th>插件版本</th>
+											<th>适用版本</th>
+											<th>作者</th>
+											<th>添加时间</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td>
+												{$info.title}
+											</td>
+											<td>
+												{$info.name}
+												{if condition="$info['install']"}
+												<img src="__STATIC__/admin/images/image.gif" onmouseover="layer.tips('<img src=__STATIC__/{$info['images']}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();">
+												{/if}
+											</td>
+											<td title="{$info.description}">{$info.description|cut_str="16"}</td>
+											<td>v{$info.version}</td>
+											<td>v{$info.require}</td>
+											<td>{$info.author}</td>
+											<td>
+												<?php if(isset($info['create_time'])):?>
+												{$info.create_time|date="Y-m-d H:i:s"}
+												<?php else:?>
+												/
+												<?php endif;?>
+											</td>
+											<td>
+												{if condition="$info['install']"}
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs" onclick="x_admin_show('配置','{:url('config',['id'=>$info['id'],'name'=>$info['name']])}')">
+														<i class="layui-icon layui-icon-set-fill"></i> 配置
+													</a>
+												</div>
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<!-- <a class="layui-btn layui-btn-xs layui-btn-danger uninstall" href="javascript:;" url="{:url('uninstall')}?name={$info.name}"> -->
+													<a class="layui-btn layui-btn-xs layui-btn-danger" href="{:url('uninstall')}?name={$info.name}">
+														<i class="layui-icon layui-icon-set-fill"></i> 卸载
+													</a>
+												</div>
+												{if condition="$info['status'] eq 0"}
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('state',array('id'=>$info['id'],'name'=>$info['name']))}">
+														<i class="layui-icon layui-icon-release"></i> 启用
+													</a>
+												</div>
+												{else/}
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-warm ajax-get" href="{:url('state',array('id'=>$info['id'],'name'=>$info['name']))}">
+														<i class="layui-icon layui-icon-set-fill"></i> 禁用
+													</a>
+												</div>
+												{/if}
+												{if condition="$info['website']"}
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs" target="_blank" href="{$info.website}">
+														<i class="layui-icon layui-icon-set-fill"></i> 演示
+													</a>
+												</div>
+												{/if}
+												{else /}
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<!-- <a class="layui-btn layui-btn-xs layui-btn-normal install" href="javascript:;" url="{:url('install')}?name={$info.name}"> -->
+													<a class="layui-btn layui-btn-xs layui-btn-normal" href="{:url('install')}?name={$info.name}">
+														<i class="layui-icon layui-icon-release"></i> 安装
+													</a>
+												</div>
+												<div class="layui-inline" style="padding-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-danger ajax-get" href="{:url('del')}?name={$info.name}">
+														<i class="layui-icon layui-icon-set-fill"></i> 删除
+													</a>
+												</div>
+												{/if}
+											</td>
+										</tr>
+										{/volist}
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										<!-- 分页 -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='install']").val({$install|default = ''});
+    });
+	layui.use(['table', 'upload','layer','laypage'], function() {
+		var table = layui.table,
+		$ = layui.$,
+		layer = layui.layer,
+		laypage = layui.laypage,//分页组件
+		upload = layui.upload;
+		// 上传
+		var uploadInst = upload.render({
+			elem: '#local-install',
+			url: '{:url("admin/Addon/local")}',
+			accept: 'file',
+			exts: 'zip',
+			done: function(res) {
+				var i = 1;
+				if(res.code == 0){
+					i = 0;
+				}
+				// 上传完毕回调
+				layer.msg(res.msg, {icon:i,time:1500}, function() {
+					if (res.code != 0) {
+						location.reload();
+					}
+				});
+			},
+			error: function() {
+				//请求异常回调
+			}
+		});
+		// 执行一个laypage实例(数组分页)
+		laypage.render({
+		    elem: 'page' //注意，这里的 test1 是 ID，不用加 # 号
+		    ,count: {$page.count} //数据总数，从服务端得到
+		    ,limit: {$page.limit} //每页显示的条数。laypage将会借助 count 和 limit 计算出分页数，从服务端得到
+			,limits:[5,10,20,30,40,50,60,70,80,90,100] //每页条数的选择项。如果 layout 参数开启了 limit，则会出现每页条数的select选择框
+		    ,curr: {$page.curr} //起始页。一般用于刷新类型的跳页以及HASH跳页，从服务端得到
+		    ,groups:5   //连续出现的页码个数
+		    ,layout:['count','prev', 'page', 'next','skip','limit','refresh']      //自定义排版。可选值有：count（总条目输区域）、prev（上一页区域）、page（分页区域）、next（下一页区域）、limit（条目选项区域）、refresh（页面刷新区域。注意：layui 2.3.0 新增） 、skip（快捷跳页区域）
+		    ,jump: function(obj, first){
+			    // obj包含了当前分页的所有参数，比如：
+			    console.log(obj.curr);  //得到当前页，以便向服务端请求对应页的数据。
+			    console.log(obj.limit); //得到每页显示的条数
+			    // 首次不执行
+			    if(!first){
+			    	// do something
+			        location.href = "?install={:input('install')}&title={:input('title')}"+"&page="+obj.curr+"&limit="+obj.limit;
+			  	}
+			}
+		});
+		/* $(document).ready(function(){
+			$(".install").click(function(){
+				var url = $(this).attr('url');
+				// 询问框
+				layer.confirm('是否清除旧数据？', {
+					btn: ['是','否'] //按钮
+				}, function(){
+					// layer.msg('的确很重要', {icon: 1});
+					$.ajax({
+						url: url,
+						data: {clear: '1'},
+						type: "POST",
+						dataType: "json",
+						success: function(res) {
+							// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再反序列化
+							if(res.code == 1){
+								layer.msg('安装成功！', {icon: 1,time:1500},function(){
+									// location.reload();
+									window.parent.location.reload();
+								});
+							}else{
+								layer.msg('安装失败！', {icon: 2,time:1500},function(){
+									location.reload();
+								});
+							}
+						}
+					});
+				}, function(){
+					// layer.msg('也可以这样', {
+					// 	time: 20000, //20s后自动关闭
+					// 	btn: ['明白了', '知道了']
+					// });
+					$.ajax({
+						url: url,
+						data: {clear: '0'},
+						type: "POST",
+						dataType: "json",
+						success: function(res) {
+							// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再反序列化
+							if(res.code == 1){
+								layer.msg('安装成功！', {icon: 1,time:1500},function(){
+									// location.reload();
+									window.parent.location.reload();
+								});
+							}else{
+								layer.msg('安装失败！', {icon: 2,time:1500},function(){
+									location.reload();
+								});
+							}
+						}
+					});
+				});
+			});
+			$(".uninstall").click(function(){
+				var url = $(this).attr('url');
+				// 询问框
+				layer.confirm('是否清除插件数据？', {
+					btn: ['是','否'] //按钮
+				}, function(){
+					// layer.msg('的确很重要', {icon: 1});
+					$.ajax({
+						url: url,
+						data: {clear: '1'},
+						type: "POST",
+						dataType: "json",
+						success: function(res) {
+							// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再反序列化
+							if(res.code == 1){
+								layer.msg('卸载成功！', {icon: 1,time:1500},function(){
+									// location.reload();
+									window.parent.location.reload();
+								});
+							}else{
+								layer.msg('卸载失败！', {icon: 2,time:1500},function(){
+									location.reload();
+								});
+							}
+						}
+					});
+				}, function(){
+					// layer.msg('也可以这样', {
+					// 	time: 20000, //20s后自动关闭
+					// 	btn: ['明白了', '知道了']
+					// });
+					$.ajax({
+						url: url,
+						data: {clear: '0'},
+						type: "POST",
+						dataType: "json",
+						success: function(res) {
+							// data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再反序列化
+							if(res.code == 1){
+								layer.msg('卸载成功！', {icon: 1,time:1500},function(){
+									// location.reload();
+									window.parent.location.reload();
+								});
+							}else{
+								layer.msg('卸载失败！', {icon: 2,time:1500},function(){
+									location.reload();
+								});
+							}
+						}
+					});
+				});
+			});
+		}); */
+	});
+</script>
+{/block}

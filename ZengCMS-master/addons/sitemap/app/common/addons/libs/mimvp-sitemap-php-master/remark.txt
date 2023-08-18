@@ -1,0 +1,2 @@
+﻿自动生成sitemap地图插件 sitemap.xml sitemap.html
+下载地址https://github.com/mimvp/mimvp-sitemap-php

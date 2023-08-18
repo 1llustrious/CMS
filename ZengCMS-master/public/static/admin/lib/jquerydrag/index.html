@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- <script src="js/jquery-1.10.2.js"></script> -->
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery-ui-1.11.0.js"></script>
+    <title>Title</title>
+</head>
+<body>
+<ul id="sortable" class="sortable">
+    <li class="guige_list">组件一</li>
+    <li class="guige_list">组件二</li>
+    <li class="guige_list">组件三</li>
+    <li class="guige_list">组件四</li>
+    <li class="guige_list">组件五</li>
+	<li class="guige_list">组件六</li>
+	<li class="guige_list">组件七</li>
+	<li class="guige_list">组件八</li>
+	<li class="guige_list">组件九</li>
+</ul>
+<pre>
+
+</pre>
+
+<script>
+    $("#sortable").sortable({
+        start: function( event, ui ) {
+			
+		},
+        stop: function( event, ui ) {//结束时触发
+			console.count("拖拽结束");
+        }
+    });
+</script>
+</body>
+</html>

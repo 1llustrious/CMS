@@ -1,0 +1,152 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="css"}
+<style>
+	.layui-form-item .layui-input-inline {
+		width: 186px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>行为日志</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline">
+											<select name="admin_id" lay-verify="">
+												<option value="">选择操作员</option>
+												<option value="0">其它操作员</option>
+												{volist name="adminRes" id="vo"}
+												<option value="{$vo.id}">{$vo.name}</option>
+												{/volist}
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}" placeholder="请输入关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="start_date" value="{:input('start_date')}" id="date" placeholder="开始日期" autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="end_date" value="{:input('end_date')}" id="date1" placeholder="结束日期" autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-input-inline" style="width:80px">
+											<button class="layui-btn " lay-submit="" lay-filter="formSet" id="search"><i class="layui-icon"></i></button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1%">
+										<col width="5%">
+										<col width="8%">
+										<col width="8%">
+										<col>
+										<col width="18%">
+										<col width="10%">
+										<col width="16%">
+										<col width="5%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>
+												<input type="checkbox" name="" id="allChoose" lay-skin="primary" lay-filter="allChoose">
+											</th>
+											<th>ID</th>
+											<th>操作员</th>
+											<th>节点</th>
+											<th>描述</th>
+											<th>操作时间</th>
+											<th>操作IP</th>
+											<th>操作地区</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{if condition="$list"}
+										{volist name="list" id="vo"}
+										<tr>
+											<td>
+												<input type="checkbox" name="ids[]" value="{$vo.id}" class="ids" lay-skin="primary" lay-filter="c_one">
+											</td>
+											<td>{$vo.id}</td>
+											<td>{$vo.name}</td>
+											<td>{$vo.url}</td>
+											<td>{$vo.description}</td>
+											<td>{$vo.operate_time|date="Y/m/d H:i:s"}</td>
+											<td>{$vo.operate_ip}</td>
+											<td>{$vo.operate_area}</td>
+											<td>
+												<div class="layui-inline">
+													<!-- <a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',array('ids'=>$vo['id']))}"><i class="layui-icon layui-icon-delete"></i> 删除</a> -->
+													<a class="layui-btn layui-btn-xs layui-btn-danger remove ajax-get" url="{:url('del',array('ids'=>$vo['id']))}"><i class="layui-icon layui-icon-delete"></i> 删除</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+										{else /}
+										<tr><td colspan="8"> aOh! 暂时还没有内容! </td></tr>
+										{/if}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline"> <a class="layui-btn layui-btn-sm layui-btn-warm confirm ajax-post" target-form="ids" url="{:url('del')}">删除</a> </div>
+												<div class="layui-inline"> <a class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-get" url="{:url('clear_log')}">清空</a> </div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$list|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$("select[name='admin_id']").val({$admin_id|default = ''}); //设置表单类型，下拉选中项
+</script>
+<script type="text/javascript">
+	layui.use(['form','laydate','jquery'], function(){
+		var form = layui.form //表单
+		,laydate = layui.laydate //日期
+		,$ = layui.jquery;
+		// 日期
+		laydate.render({
+			elem: '#date'
+			,type: 'datetime'
+		});
+		laydate.render({
+			elem: '#date1'
+			,type: 'datetime'
+		});
+	});
+</script>
+{/block}

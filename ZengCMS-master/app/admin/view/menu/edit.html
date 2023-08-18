@@ -1,0 +1,160 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<!-- <blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a href="{:url('index')}">菜单管理</a>
+							<a><cite>{$info?'编辑':'新增'}菜单</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote> -->
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">菜单中文名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="title"  value="{$info.title|default=''}"  placeholder="" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(菜单中文名称)
+								</span>
+								<span class="sysval"><em class="zerocopy">title</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">菜单英文名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="title_en"  value="{$info.title_en|default=''}"  placeholder="" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(菜单英文名称)
+								</span>
+								<span class="sysval"><em class="zerocopy">title_en</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">菜单url地址</label>
+							<div class="layui-input-block">
+								<input type="text" name="name" value="{$info.name|default=''}"  placeholder="" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(菜单url地址)
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">上级菜单</label>
+							<div class="layui-input-block">
+								<select name="pid" lay-verify="required">
+									<option value="0" selected="selected">顶级菜单</option>
+									{volist name="menuRes" id="m"}
+									<option value="{$m.id}"><?php if($m['level']!==0){echo '|';} echo str_repeat('-',$m['level']*5); ?>{$m.title}</option>
+									{/volist}
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									(顶级菜单)
+								</span>
+								<span class="sysval"><em class="zerocopy">pid</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">状态</label>
+							<div class="layui-input-block">
+								<input type="radio" name="status" value="1" title="正常" checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>正常</div></div>
+								<input type="radio" name="status" value="0" title="禁用"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>禁用</div></div>
+								<span class="sysval"><em class="zerocopy">status</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">菜单显示</label>
+							<div class="layui-input-block">
+								<input type="radio" name="show" value="1" title="显示" checked="checked"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>显示</div></div>
+								<input type="radio" name="show" value="0" title="隐藏" ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>隐藏</div></div>
+								<span class="sysval"><em class="zerocopy">show</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">图标名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="icon"  value="{$info.icon|default=''}" placeholder="图标名称" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(图标名称)
+								</span>
+								<span class="sysval"><em class="zerocopy">icon</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">定义规则</label>
+							<div class="layui-input-block">
+								<input type="radio" name="type" value="1" title="是" checked="checked" lay-filter="type"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>是</div></div>
+								<input disabled="" type="radio" name="type" value="0" title="否 [如果type为1， condition字段就可以定义规则表达式]" lay-filter="type"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>否</div></div>
+								<span class="sysval"><em class="zerocopy">type</em></span>
+							</div>
+						</div>
+						<div id="type" class="layui-form-item layui-form-text" <?php if(isset($info['type']) && $info['type']==0): ?> style="display: none" <?php endif;?> >
+							<label class="layui-form-label">规则附件条件<span class="sysval"><em class="zerocopy">condition</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="condition" placeholder="请输入内容" class="layui-textarea">{$info.condition|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(规则附件条件,满足附加条件的规则,才认为是有效的规则。如定义{score}>5 and {score}<100  表示用户的分数在5-100之间时这条规则才会通过。注意score是管理员admin表的字段。)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">说明<span class="sysval"><em class="zerocopy">remark</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="remark" placeholder="请输入内容" class="layui-textarea">{$info.remark|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(说明)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-block">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" required="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(排序)
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}">
+								<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<!-- <a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$("input[name=status][value={$info.status|default = 1}]").attr("checked","checked");
+	$("input[name=show][value={$info.show|default = 1}]").attr("checked","checked");
+	$("input[name=type][value={$info.type|default = 1}]").attr("checked","checked");
+	$("select[name='pid']").val({$info.pid|default = $pid}); //设置 上级菜单 选中项
+	layui.use(['form','jquery'], function(){
+		var form = layui.form, //表单
+		$ = layui.jquery;  //jquery
+		// 监听radio单选
+		form.on('radio(type)', function(data){
+            if(data.value == 1){
+           	    $("#type").show();
+            }else{
+				$("#type").hide();
+            }
+        });
+	});
+</script>
+{/block}

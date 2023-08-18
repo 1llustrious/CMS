@@ -1,0 +1,106 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<!--multi-select-->
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/lib/jquery-multi-select/css/multi-select.css" />
+<link rel="stylesheet" href="__STATIC__/admin/css/common.css" media="all">
+{/block}
+{block name="css"}
+<style>
+	.layui-unselect .layui-form-select{
+		display: none;
+	}
+	.search-input{width: 163px;height: 24px;}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<!-- <form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post"> -->
+					<form class="form-horizontal" action="{:url()}" method="post">
+						<div class="wrapper">
+							<div class="row">
+								<div class="col-sm-12">
+									<section class="panel">
+										<div class="panel-body">
+											<p class="text-danger" style="color: #a94442;">选择热门推广城市（建议选择5-10个城市） </p>
+											<br >
+											<label class="control-label col-md-2" style="float: left;padding-left: 146px;">
+												<p class="text-danger" style="color: #a94442;">选择优化城市</p>
+											</label>
+											<label class="control-label col-md-2" style="float: left;padding-left: 120px;">
+												<p class="text-danger" style="color: #a94442;">优化中城市</p>
+											</label>
+											<form  class="cmxform form-horizontal adminex-form" action="{:url()}" method="post">
+												<div class="layui-form-item">
+													<div class="layui-input-block">
+														<select name="area[]" class="multi-select" multiple="multiple" id="my_multi_select3">
+															{volist name="area" id="area"}
+															<option value="{$area.id}">{$area.name}</option>
+															{/volist}
+														</select>
+													</div>
+												</div>
+												<div class="layui-form-item">
+													<div class="col-lg-12">
+														<label><strong><p class="text-danger">选择栏目优化 <span>（建议选择产品或者案例栏目）</span></p></strong></label>
+													</div>
+													<div class="col-lg-10">
+														{notempty name="arctype"}
+															{volist name="arctype" id="tinfo"}
+																<label class="checkbox-inline">
+																	<input type="checkbox"  name="seomenu[]" id="inlineCheckbox{$tinfo.id}" value="{$tinfo.id}"> {$tinfo.typename}
+																</label>
+															{/volist}
+															{else/}
+															<span>没有栏目！</span>
+														{/notempty}
+													</div>
+												</div>
+												<div class="layui-form-item">
+													<div class="layui-input-block">
+														<button class="layui-btn ajax-post" type="submit" data-reload="false" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+														<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+														<a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a>
+													</div>
+												</div>
+											</form>
+										</div>
+									</section>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<!--multi-select-->
+<script type="text/javascript" src="__STATIC__/admin/lib/jquery-multi-select/js/jquery.multi-select.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/lib/jquery-multi-select/js/jquery.quicksearch.js"></script>
+<script src="__STATIC__/admin/lib/jquery-multi-select/multi-select-init.js"></script>
+<!--bootstrap input mask-->
+<!-- <script type="text/javascript" src="__PUBLIC__/js/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>  -->
+<script type="text/javascript">
+	var select3 = <?php echo $info['value'];?>;
+	$('#my_multi_select3').multiSelect('select',select3);
+	<?php if($tpinfo):?>
+	var str = "{$tpinfo}";
+	$(str.split(",")).each(function (i,dom){
+		$(":checkbox[value='"+dom+"']").attr("checked",true);
+	});
+	<?php endif;?>
+</script>
+{/block}

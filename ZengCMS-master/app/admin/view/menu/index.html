@@ -1,0 +1,271 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="css"}
+<style>
+	.table{table-layout:fixed;}
+	.text-info td{word-wrap:break-word;}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a href="{:url('index')}">{$meta_title}</a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline">
+											<select name="pid" id="pid" lay-verify="required">
+												<option value="all" selected="selected">全部</option>
+												<option value="0">顶级菜单</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<select name="status" id="status" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">正常</option>
+												<option value="0">禁用</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<select name="show" id="show" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">显示</option>
+												<option value="0">隐藏</option>
+											</select>
+										</div>
+										<div class="layui-input-inline">
+											<input type="text" name="title" value="{:input('title')}" placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:50px">
+											<button class="layui-btn " id="search"><i class="layui-icon"></i></button>
+										</div>
+										<div class="layui-inline">
+											<a href="{:url('index')}?pid={$prev_pid}" class="layui-btn layui-btn-md layui-btn-primary" title="上级菜单">上级</a>
+										</div>
+										<div class="layui-input-inline" style="width:106px;display: none">
+											<a class="layui-btn layui-btn-warm ajax-get" href="{:url('update_menu')}">
+												<i class="layui-icon">စ</i>更新菜单
+											</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="4%">
+										<col width="5%">
+										<col width="6%">
+										<col width="10%">
+										<col>
+										<col width="10%">
+										<col width="10%">
+										<col width="5%">
+										<col width="10%">
+										<col width="17%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th style="text-align: center;">
+												<input type="checkbox" class="check-all" lay-skin="primary" id="allChoose" lay-filter="allChoose">
+											</th>
+											<th style="text-align: center;">ID</th>
+											<th style="text-align: center;">序号</th>
+											<th style="text-align: center;">中文名称</th>
+											<th style="text-align: center;">URL地址</th>
+											<th style="text-align: center;">上级菜单</th>
+											<th style="text-align: center;">有无下级</th>
+											<!-- <th>说明</th> -->
+											<th style="text-align: center;">状态</th>
+											<th style="text-align: center;">显示 / 隐藏</th>
+											<th style="text-align: center;">操作</th>
+										</tr>
+									</thead>
+									<tbody class='text-info'>
+										{if condition="$list"}
+										{volist name="list" id="info"}
+										<tr>
+											<td>
+												<input type="checkbox"  class="ids" name="ids[]" value="{$info.id}" lay-skin="primary" lay-filter="c_one">
+											</td>
+											<td>{$info.id}</td>
+											<td>
+												<input name="sort[{$info.id}]" value="{$info.sort}" type="text" class="layui-input sort"  lay-filter="weight" >
+											</td>
+											<td>
+												<a href="{:url('index')}?pid={$info.id}" title="点击展开">{$info.title}</a>
+											</td>
+											<td>
+												<a href="{:url('index')}?pid={$info.id}" title="{$info.name}">{$info.name|cut_str=###,15}</a>
+											</td>
+											<td>
+												<a href="{:url('index')}?pid={$prev_pid}" title="点击展开">{$info.pid_title}</a>
+											</td>
+											<td>
+												{$info.child}
+											</td>
+											<!-- <td>{$info.remark|cut_str=###,10}</td> -->
+											<td>{$info.status_text}</td>
+											<td align="center">
+												<!--{$info.show_text}-->
+												<input type="checkbox" class="switch" {if condition="$info['show'] eq 1"} checked="" {/if} name="{:url('setShow')}" value="{$info.show}" url="{:url('setShow')}" on="ids={$info.id}&show=1" off="ids={$info.id}&show=0" lay-skin="switch" lay-filter="switchTest" lay-text="显示|隐藏">
+											</td>
+											<td>
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs" href="javascript:;" onclick="x_admin_show('编辑','{:url('edit',array('id'=>$info['id']))}','','',1)">
+														<i class="layui-icon layui-icon-edit"></i> 编辑
+													</a>
+												</div>
+												{if condition="$info['show'] eq 0"}
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('setShow',array('ids'=>$info['id'],'show'=>1))}">
+														<i class="layui-icon layui-icon-release"></i> 显示
+													</a>
+												</div>
+												{else/}
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-warm ajax-get" href="{:url('setShow',array('ids'=>$info['id'],'show'=>0))}">
+														<i class="layui-icon layui-icon-set-fill"></i> 隐藏
+													</a>
+												</div>
+												{/if}
+												{if condition="$info['status'] eq 0"}
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('setStatus',array('ids'=>$info['id'],'status'=>1))}"><!-- <span class="ace-icon fa fa-hourglass-start icon-on-right bigger-110"></span> -->
+														<i class="layui-icon layui-icon-release"></i> 启用
+													</a>
+												</div>
+												{else/}
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-primary ajax-get" href="{:url('setStatus',array('ids'=>$info['id'],'status'=>0))}">
+														<i class="layui-icon layui-icon-close"></i> 禁用
+													</a>
+												</div>
+												{/if}
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',array('ids'=>$info['id']))}">
+														<i class="layui-icon layui-icon-delete"></i> 删除
+													</a>
+												</div>
+												<div class="layui-inline" style="margin-bottom: 5px;">
+													<a class="layui-btn layui-btn-xs layui-btn-success" href="javascript:;" onclick="x_admin_show('移动','{:url('move',array('id'=>$info['id']))}','','',1)">
+														<i class="layui-icon layui-icon-release"></i> 移动
+													</a>
+												</div>
+											</td>
+										</tr>
+										{/volist}
+										{else /}
+										<tr>
+											<td colspan="9" class="center">
+												暂无数据&nbsp;
+												<a href="javascript:;" onclick="javascript:history.back(-1);return false;">返回
+												</a>
+											</td>
+										</tr>
+										{/if}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline">
+													<!-- <a onClick="javascript:window.location.href = '{:url('add',array('pid'=>input('pid',0)))}'" title="新增" class="layui-btn layui-btn-sm">新增</a> -->
+													<a href="javascript:;" onclick="x_admin_show('新增','{:url('add',array('pid'=>input('pid',0)))}','','',1)" title="新增" class="layui-btn layui-btn-sm">新增</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" target-form="sort" url="{:url('sort')}" title="排序" class="layui-btn layui-btn-sm ajax-post">排序</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-normal ajax-post" target-form="ids" url="{:url('setShow',array('show'=>1))}" title="显示">显示</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-warm ajax-post" target-form="ids" url="{:url('setShow',array('show'=>0))}" title="隐藏">隐藏</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-normal ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>1))}" title="启用">启用</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-primary ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>0))}" title="禁用">禁用</a>
+												</div>
+												<div class="layui-inline">
+													<a href="" class="layui-btn layui-btn-sm layui-btn-danger confirm ajax-post" target-form="ids" url="{:url('del')}" title="删除">删除</a>
+												</div>
+												<div class="layui-inline">
+													<a href="{:url('index')}?pid={$prev_pid}" class="layui-btn layui-btn-sm layui-btn-primary" title="上级菜单">上级</a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+    	$("select[name='status']").val({$status|default = ''});
+    	$("select[name='show']").val({$show|default = ''});
+    	$("select[name='pid']").val("{$pid}");
+    });
+	/* layui.use(['form', 'layedit', 'laydate'], function(){
+		var form = layui.form
+		,layer = layui.layer
+		,layedit = layui.layedit
+		,laydate = layui.laydate;
+		// 监听switch
+		form.on('switch(switchTest)', function(data){
+			// console.log(data.elem); //得到checkbox原始DOM对象
+			console.log(data.elem.checked); //开关是否开启，true或者false
+			console.log(data.value); //开关value值，也可以通过data.elem.value得到
+			// console.log(data.othis); //得到美化后的DOM对象
+
+			console.log($(data.elem).attr('url'));
+			var url = $(data.elem).attr('url');
+			if(data.elem.checked){
+				url = url + '?' + $(data.elem).attr('on');
+			}else{
+				url = url + '?' + $(data.elem).attr('off');
+			}
+			// 发送ajax
+			$.ajax({
+				url:url,
+				method:'get',
+				// data:data.field,
+				dataType:'JSON',
+				//请求成功
+				success : function(res) {
+					console.log(res);
+					// if(res.code='0'){
+					// 	parent.closeIframe(res.msg);
+					// }else{
+					// 	alert(0);
+					// }
+				},
+				//请求失败，包含具体的错误信息
+				error : function(e){
+					console.log(e.status);
+					console.log(e.responseText);
+				}
+			});
+		});
+	}); */
+</script>
+{/block}

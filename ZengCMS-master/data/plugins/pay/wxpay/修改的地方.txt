@@ -1,0 +1,12 @@
+﻿1.注释掉wxpay/index2.php 里面的32、33、36行代码吧他们放到Flow.php里的wxewm方法里面，修改第2行和第3行为第4和第5行内容
+修改14、22、24、29行代码
+
+2.注释wxpay/notify.php第47的new Notify(); 并把它复制到Flow.php的wxPaySuccess方法里并加了根命名空间即new \Notify();
+修改第2行代码为include $payPlus.'Base.php'; 
+增加23行代码修改订单状态db('order')->where(array('out_trade_no'=>$arr['out_trade_no']))->update(['pay_status'=>1]);
+增加39、40行代码获取订单总价
+修改41行把2改为$orderTotalPrice
+
+3.注释wxpay/base.php的第15行并增加第16代码
+
+4.注意配置wxpay/base.php的第10、11、12、13、14行代码的配置

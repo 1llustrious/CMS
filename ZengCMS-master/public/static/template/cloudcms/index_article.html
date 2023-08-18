@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta name="applicable-device" content="pc,wap">
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <title>{$nav.typename}_{$get_config.WEB_SITE_NAME}</title>
+    <meta name="keywords" content="{$nav.keywords|default=$get_config.WEB_SITE_KEYWORDS}"/>
+    <meta name="description" content="{$nav.description|default=$get_config.WEB_SITE_DESCRIPTION}"/>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/jquery-1.12.4.min.js"></script>
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/cloud.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.min.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.animate.min.css">
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/cloud.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/Superslide.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/wow.min.js"></script>
+</head>
+<body>
+    {include file="cloudcms/z-head"}
+    <div class="main">
+        {$nav.content}
+    </div>
+    {include file="cloudcms/z-footer"}
+</body>
+</html>

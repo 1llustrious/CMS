@@ -1,0 +1,91 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<!-- <blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>广告位管理</cite></a>
+							<a><cite>{$info?'编辑':'新增'}广告位</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote> -->
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">分组名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="name" value="{$info.name|default=''}" lay-verify="name" autocomplete="off" placeholder="请输入" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 分组名称 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">是否默认</label>
+							<div class="layui-input-block">
+								<input type="radio" name="is_default" value="1" title="是" checked="">
+								<div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i>
+									<div>是</div>
+								</div>
+								<input type="radio" name="is_default" value="0" title="否">
+								<div class="layui-unselect layui-form-radio layui-form-radioed"><i
+										class="layui-anim layui-icon"></i>
+									<div>否</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">is_default</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" class="layui-input upload-text" lay-verify="required" placeholder="请输入数字" autocomplete="off">
+								<span class="layui-form-mid layui-word-aux">
+									[ 排序 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}">
+								<!-- 方法一：使用ajax-post -->
+								<!-- <button class="layui-btn ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button> -->
+								<!-- 方法二：使用layui监听表单提交-可以使用layui自定义验证规则 -->
+								<button class="layui-btn x_admin_close" lay-submit lay-filter="formDemo">提交保存</button>
+								<!-- <button type="reset" class="layui-btn layui-btn-danger">重置</button> -->
+								<!-- <a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("input[name=status][value={$info.status|default = 1}]").attr("checked","checked"); //设置状态选中项
+</script>
+<script>
+layui.use(['form', 'laydate','jquery'], function () {
+    var form = layui.form, //表单
+	laydate = layui.laydate, //日期
+	$ = layui.jquery; //jquery
+	// 自定义验证规则，这个里面的title、number就写在Html 代码中lay-verify的属性值，即可 例如：lay-verify="title"
+	form.verify({
+		ap_name: function(value, item){ //value：表单的值、item：表单的DOM对象
+			if(value.length < 5){
+				return '广告位名称至少得5个字符啊';
+			}
+		}
+	});      
+	$("input[name=is_default][value={$info.is_default|default = 1}]").attr("checked", "checked");
+});
+</script>
+{/block}

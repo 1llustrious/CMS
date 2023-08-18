@@ -1,0 +1,50 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th class="xz">
+										目标栏目（ 将移动至的栏目 ）
+									</th>
+								</tr>
+								<tr>
+									<td align="left">
+										<select name="category_id" lay-verify="required">
+											<option value="" selected="selected">请选择</option>
+											{volist name="arctypeRes" id="arctype"}
+											<option value="{$arctype.id}" {if condition="$arctype['model_id'] neq $model_id"}disabled{/if}><?php if($arctype['level']!==0){echo '|';} echo str_repeat('-',$arctype['level']*5); ?>{$arctype.typename}</option>
+											{/volist}
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td align="left">
+										<input type="hidden" name="ids" value="{$ids}">
+										<input type="hidden" name="model_id" value="{$model_id}">
+										<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+										<!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+										<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+									</td>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="footer"}
+{/block}
+{block name="js"}
+{/block}

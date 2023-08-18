@@ -1,0 +1,163 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">中文名称</label>
+							<div class="layui-input-block">
+								<input type="text"  name="cname"  value="{$info.cname|default=''}" autocomplete="off" placeholder="请输入" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(配置中文名称)
+								</span>
+								<span class="sysval"><em class="zerocopy">cname</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">英文名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="ename"  value="{$info.ename|default=''}" autocomplete="off" placeholder="请输入" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(英文名称)
+								</span>
+								<span class="sysval"><em class="zerocopy">ename</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">表单类型</label>
+							<div class="layui-input-block">
+								<select  name="form_type" lay-verify="required">
+									<option value="" selected="selected"></option>
+									<option value="input">单行文本</option>
+									<option value="tags">标签</option>
+									<option value="array">数组</option>
+									<option value="markdown">markdown编辑器</option>
+									<option value="colorpicker">取色器</option>
+									<option value="datetime">时间</option>
+									<option value="radio">单选按钮</option>
+									<option value="checkbox">复选框</option>
+									<option value="select">下拉菜单</option>
+									<option value="selecto">高级下拉单选</option>
+									<option value="selects">高级下拉多选</option>
+									<option value="map">地图</option>
+									<option value="region">地区</option>
+									<option value="textarea">文本域</option>
+									<option value="file">附件</option>
+									<option value="editor">编辑器</option>
+									<option value="picture">单图</option>
+									<option value="piclist">多图</option>
+									<option value="onefile">单文件</option>
+									<option value="filelist">多文件</option>
+									<option value="onevideo">单视频</option>
+									<option value="videolist">多视频</option>
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									(表单类型)
+								</span>
+								<span class="sysval"><em class="zerocopy">form_type</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">配置类型</label>
+							<div class="layui-input-block">
+								<select name="config_type_id" lay-verify="required">
+									<option value="" selected="selected"></option>
+									{volist name="configTypeRes" id="ct"}
+									<option value="{$ct.id}">{$ct.config_type_name}</option>
+									{/volist}
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									(配置类型)
+								</span>
+								<span class="sysval"><em class="zerocopy">config_type_id</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">可选值<span class="sysval"><em class="zerocopy">values</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="values" placeholder="" class="layui-textarea">{$info.values|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+										可选值，以下两种都可以：<br>
+										<!-- 1、如可选值有说明则在每个可选值后面加:说明，多个可选值用逗号隔开，例：值:说明,值:说明 或 值,值 configuration.html中用第一种方法时用 <br> -->
+										1、多个可选值用逗号隔开。注：必须加说明，例：值:说明,值:说明<!--configuration.html中用第二种方法时用--> <br>
+										2、如果是枚举型，需要配置该项，一行一个选项，例: <br>
+										0:选项1 <br>
+										2:选项2 <br>
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">默认值<span class="sysval"><em class="zerocopy">value</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="value" placeholder="" class="layui-textarea">{$info.value|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(默认值，多个用逗号隔开)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">配置说明<span class="sysval"><em class="zerocopy">remark</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="remark" placeholder="" class="layui-textarea">{$info.remark|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(配置说明，如配置说明是个链接那么就在配置说明后面加@链接地址，链接地址必须带http://或https://)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">核心配置</label>
+							<div class="layui-input-block">
+								<select name="is_core_configuration" lay-verify="required">
+									<option value="1" selected="selected">是</option>
+									<option value="0" selected="selected">否</option>
+								</select>
+								<span class="layui-form-mid layui-word-aux">
+									(核心配置)
+								</span>
+								<span class="sysval"><em class="zerocopy">is_core_configuration</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">状态</label>
+							<div class="layui-input-block">
+								<input type="radio" name="status" value="1" title="显示" checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>显示</div></div>
+								<input type="radio" name="status" value="0" title="隐藏"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>隐藏</div></div>
+								<span class="sysval"><em class="zerocopy">status</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-block">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" required="" lay-verify="required" placeholder="排序" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(排序)
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}">
+								<button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<!-- <button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("select[name='form_type']").val("{$info.form_type|default = ''}"); //设置表单类型 下拉选中项
+    $("select[name='config_type_id']").val({$info.config_type_id|default = $config_type_id}); //设置配置类型 下拉选中项
+    $("input[name=status][value={$info.status|default = 1}]").attr("checked","checked"); //设置状态选中项
+    $("select[name='is_core_configuration']").val("{$info.is_core_configuration|default = '0'}"); //设置核心配置选中项
+</script>
+{/block}

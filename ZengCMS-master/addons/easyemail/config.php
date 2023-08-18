@@ -1,0 +1,43 @@
+<?php
+return [
+    'SMTP_SERVER' => [
+        'title'=> '邮件发送服务器(SMTP)',
+        'type' => 'text',
+        'rule' => 'required',
+        'content' => [],
+        'msg'     => '',
+        'tips'    => '(发送邮箱的smtp地址。如: smtp.gmail.com或smtp.qq.com)',
+        'ok'      => '',
+        'value'   => '',
+    ],
+    'SMTP_PORT' => [
+        'title'=> '服务器(SMTP)端口',
+        'type' => 'text',
+        'rule' => 'required',
+        'content' => [],
+        'msg'     => '',
+        'tips'    => '(smtp的端口。默认为25。具体请参看各STMP服务商的设置说明 （如果使用Gmail，请将端口设为465）)',
+        'ok'      => '',
+        'value'   => '',
+    ],
+    'SMTP_USER' => [
+        'title'=> '邮箱账号',
+        'type' => 'text',
+        'rule' => 'required',
+        'content' => [],
+        'msg'     => '',
+        'tips'    => '(使用发送邮件的邮箱账号)',
+        'ok'      => '',
+        'value'   => '',
+    ],
+    'SMTP_PWD' => [
+        'title'=> '邮箱密码/授权码',
+        'type' => 'text',
+        'rule' => 'required',
+        'content' => [],
+        'msg'     => '',
+        'tips'    => '(使用发送邮件的邮箱密码,或者授权码。具体请参看各STMP服务商的设置说明)',
+        'ok'      => '',
+        'value'   => '',
+    ],
+];

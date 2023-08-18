@@ -1,0 +1,70 @@
+{extend name="layouts/main" /}
+{block name="css"}
+<style>
+	form{
+		margin: 10px 15px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>文件管理</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote>
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url()}" method="post" enctype="multipart/form-data">
+						<div class="layui-form-item">
+							<button class="layui-btn">保存</button>
+							<a href="javascript:window.history.back();" class="layui-btn layui-btn-primary">返回</a>
+							<span class="layui-btn layui-btn-danger">当前目录：{$curdir}</span>
+						</div>
+						<input type="hidden" name="curdir" value="{$curdir}">
+						<input type="hidden" name="filename" value="{:input('filename')}">
+						<div class="layui-form-item">
+							<label class="layui-form-label">文件名称</label>
+							<div class="layui-input-block">
+								<div class="file" style="float: left;">选择文件
+									<input type="file" name="upload[]" class="upload-file">
+								</div>
+								<div class="layui-form-mid"></div>
+								<div style="float: left;margin-top: 6px;margin-left: 6px;"><a href="javascript:;" class="layui-btn layui-btn-xs" onclick="dt(this);">+</a></div>
+								<span class="sysval"><em class="zerocopy">{upload[]}</em></span>
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    function dt(o){
+        var div=$(o).parent().parent().parent();
+        if($(o).html()==='+'){
+            var newdiv=div.clone(true);
+            newdiv.find("a").html('-')
+            div.after(newdiv);
+        }else{
+            div.remove();
+        }
+    }
+	$(".upload-file").change(function(e){
+		var arrs = $(this).val().split('\\');
+		var filename = arrs[arrs.length - 1];
+		// console.log(arrs);
+		$(this).parent().next().html(filename);
+	});
+</script>
+{/block}

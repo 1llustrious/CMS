@@ -1,0 +1,55 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+					</blockquote>
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('operate')}" method="post">
+						{if condition="$list"}
+						{volist name="list" id="list"}
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">
+								{$list.cname}
+								<span class="sysval"><em class="zerocopy">{$list.ename}</em></span>
+							</label>
+							<div class="layui-input-block">
+								<input type='hidden' name='id[]' value='{$list.id}' />
+                            	<input type='hidden' name='cname[]' value='{$list.cname}' />
+                            	<input type='hidden' name='ename[]' value='{$list.ename}' />
+								<textarea name="content[]" placeholder="请输入内容" class="layui-textarea">{$list.value}</textarea>
+								{if condition="$list"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$list.remark} ]
+								</span>
+								{/if}
+							</div>
+						</div>
+						{/volist}
+						{/if}
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn ajax-post" type="submit" data-reload="false" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("input[name=status][value={$info.status|default = 1}]").attr("checked","checked");//设置选中项
+</script>
+{/block}

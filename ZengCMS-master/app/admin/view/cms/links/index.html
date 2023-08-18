@@ -1,0 +1,135 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>友情链接</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline" style="width:80px;padding-right: 5px;">
+											<a class="layui-btn" href="javascript:;" layuimini-content-href="{:url('cms.LinkType/index')}" data-title="链接类型">链接类型</a>
+										</div>
+										<div class="layui-input-inline" style="margin-right: 5px;">
+											<select name="link_type_id" lay-verify="required">
+												<option value="">全部</option>
+												{volist name="linkTypeRes" id="type"}
+												<option value="{$type.id}">{$type.name}</option>
+												{/volist}
+											</select>
+										</div>
+										<div class="layui-input-inline" style="margin-right: 5px;">
+											<select name="status" lay-verify="required">
+												<option value="">全部</option>
+												<option value="1">审核</option>
+												<option value="0">未审核</option>
+											</select>
+										</div>
+										<div class="layui-input-inline" style="margin-right: 5px;">
+											<input type="text" name="title" value="{:input('title')}" placeholder="搜索关键词" autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-input-inline" style="width:51px;">
+											<button class="layui-btn " id="search"><i class="layui-icon"></i></button>
+										</div>
+										<!-- <div class="layui-input-inline" style="width:131px;">
+											<a class="layui-btn layui-btn-warm ajax-get" href="{:url('Common/update_cache',array('type'=>'links'))}">
+												<i class="layui-icon">စ</i>更新友链缓存
+											</a>
+										</div> -->
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1%">
+										<col width="5%">
+										<col width="6%">
+										<col>
+										<col>
+										<col width="15%">
+										<col width="8%">
+										<col width="20%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th><input type="checkbox" id="allChoose" lay-skin="primary" lay-filter="allChoose"></th>
+											<th>ID</th>
+											<th>排序</th>
+											<th>网站名称</th>
+											<th>链接地址</th>
+											<th>添加时间</th>
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td><input type="checkbox"  name="ids[]" value="{$info.id}" class="ids" lay-skin="primary" lay-filter="c_one"></td>
+											<td>{$info.id}</td>
+											<td><input name="sort[{$info.id}]" value="{$info.sort}" type="text"  class="layui-input sort"  lay-filter="weight" ></td>
+											<td>{$info.name}</td>
+											<td>{$info.url}</td>
+											<td>{$info.create_time|date="Y-m-d H:i:s"}</td>
+											<td>{$info.status_text}</td>
+											<td>
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs" href="javascript:;" onclick="x_admin_show('编辑','{:url('edit',array('id'=>$info['id']))}','','','1')"><i class="layui-icon layui-icon-edit"></i> 编辑</a></div>
+												{if condition="$info['status'] eq 0"}
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-normal ajax-get" href="{:url('setStatus',array('ids'=>$info['id'],'status'=>1))}"><i class="layui-icon layui-icon-release"></i> 审核</a></div>
+												{else/}
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-warm ajax-get" href="{:url('setStatus',array('ids'=>$info['id'],'status'=>0))}"><i class="layui-icon layui-icon-set-fill"></i> 未审核</a></div>
+												{/if}
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del',array('ids'=>$info['id']))}"><i class="layui-icon layui-icon-delete"></i> 删除</a></div>
+											</td>
+										</tr>
+										{/volist}
+										<tr>
+											<td align="left" colspan="10" style="padding-left:0;">
+												&nbsp;
+												<div class="layui-inline"><a href="javascript:;" onclick="x_admin_show('新增','{:url('add')}','','','1')" class="layui-btn layui-btn-sm">新增</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm ajax-post" target-form="sort" url="{:url('sort')}" title="排序" >排序</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-normal ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>1))}">审核</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-warm ajax-post" target-form="ids" url="{:url('setStatus',array('status'=>0))}">未审核</a></div>
+												<div class="layui-inline"><a href="" class="layui-btn layui-btn-sm layui-btn-danger ajax-post" target-form="ids" url="{:url('del')}">删除</a></div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$list|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='status']").val({$status|default = ''});
+        $("select[name='link_type_id']").val({$link_type_id|default = ''});
+    });
+</script>
+{/block}

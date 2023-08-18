@@ -1,0 +1,1352 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<link rel="stylesheet" href="__STATIC__/admin/css/setting.css" media="all">
+<!-- kindeditor编辑器 start-->
+<link rel="stylesheet" href="__STATIC__/admin/lib/kindeditor/themes/default/default.css" />
+<link rel="stylesheet" href="__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css" />
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/kindeditor-all.js"></script>
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/lang/zh-CN.js"></script>
+<script charset="utf-8" src="__STATIC__/admin/lib/kindeditor/plugins/code/prettify.js"></script>
+<!-- kindeditor编辑器 end-->
+<script src="__STATIC__/admin/js/jquery-1.11.3.min.js" charset="utf-8"></script>
+<script src="__STATIC__/admin/lib/layer/layer.js"></script>
+<script src="__STATIC__/admin/lib/layui-master/dist/layui.js" charset="utf-8"></script>
+<!-- bootstrap-tagsinput回车生成标签 start-->
+<link rel="stylesheet" href="__STATIC__/admin/lib/bootstrap-tagsinput/bootstrap.min.css">
+<link rel="stylesheet" href="__STATIC__/admin/lib/bootstrap-tagsinput/dist/bootstrap-tagsinput.css">
+<!-- bootstrap-tagsinput回车生成标签 end-->
+<!-- editormd编辑器 start-->
+<link rel="stylesheet" href="__STATIC__/admin/lib/editormd/css/editormd.min.css">
+<script type="text/javascript" src="__STATIC__/admin/lib/editormd/editormd.min.js"></script>
+<!-- editormd编辑器 end-->
+<!-- bootstrap-colorpicker取色器 start-->
+<!-- <link href="__STATIC__/admin/lib/bootstrap-colorpicker/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/lib/bootstrap-colorpicker/css/htmleaf-demo.css">
+<link href="__STATIC__/admin/lib/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" rel="stylesheet"> -->
+<!-- bootstrap-colorpicker取色器 end-->
+<!-- xmSelect下拉单、多选 start-->
+<script src="__STATIC__/admin/lib/layui_exts/xm-select/dist/xm-select.js" charset="utf-8"></script>
+<!-- xmSelect下拉单、多选 end-->
+<!-- 百度地图 start -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak={:get_one_config('SYS_BDMAP_API')}"></script>
+<!-- 百度地图 end -->
+{/block}
+{block name="css"}
+<style>
+	.layui-setting .layui-form-label {
+		width: 141px;
+		text-align: center;
+	}
+	.layui-setting .layui-input-block {
+		margin-left: 141px;
+		left: -1px;
+	}
+	.layui-input-block{
+		border: 1px solid #e6e6e6
+	}
+	.layui-input-block input{
+		border: none;
+	}
+	.layui-input-block textarea{
+		border: none;
+	}
+	.layui-input, .layui-select, .layui-textarea {
+		height: 36px;
+		line-height: 1.3;
+		line-height: 36px\9;
+	}
+	.layui-colorpicker-main-input .layui-btn-container .layui-btn {
+		margin: 0 0 0 5px;
+	}
+	.layui-colorpicker {
+		width: 41px;
+		height: 38px;
+	}
+	.layui-form-pane .layui-form-text .layui-input-block {
+		margin: 0;
+		left: 0;
+		top: -5px;
+	}
+	.bootstrap-tagsinput {
+		border: none;
+		width: 95%;
+		height: 36px;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-body" style="top: 0px;left: 0px;">
+	<!-- 内容主体区域 -->
+	<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 7px;padding-top: 0px;">
+		<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+			<!-- 字段分组 基础设置和拓展设置 -->
+			<ul class="layui-tab-title">
+				{if condition="$fields"}
+					{volist name="$fields" id="list"}
+					<li {eq name="key" value="1"}class="layui-this"{/eq}>{:get_field_group($key)}</li>
+					{/volist}
+				{/if}
+			</ul>
+			<div class="layui-tab-content layui-setting form-horizontal">
+				<!-- 所有字段 start -->
+				{if condition="$fields"}
+				{volist name="$fields" id="list"}
+				<div class="layui-tab-item {eq name="key" value="1"}layui-show{/eq}">
+					<form class="layui-form layui-form-pane" action="{:url('edit')}">
+						{if condition="$form eq 0"}
+						<!-- 栏目名称，展示并非字段之内-->
+						<div class="layui-form-item">
+							<label class="layui-form-label">栏目名称</label>
+							<div class="layui-input-block">
+								<input type="text" disabled="disabled" value="{:get_Category_title($data['category_id'])}" placeholder="栏目名称" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 文章所属栏目 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">typename</em></span>
+							</div>
+						</div>
+						{/if}
+						{volist name="list" id="field"}
+						{if condition="($field['is_show'] == 1 || $field['is_show'] == 3) AND $field['status'] == 1"}
+						<!-- 判断字段类型是否文本域或数组 -->
+						<?php if($field['type'] == 'textarea'):?>
+						<div class="layui-form-item layui-form-text">
+							<!-- 字段注释(字段标题，用于表单显示) -->
+							<label class="layui-form-label">
+								{$field['title']}
+								<!-- 必填标识 -->
+								{if condition="$field['is_must']"}
+									&nbsp;<font color="red">*</font>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</label>
+						<?php else:?>
+						<div class="layui-form-item">
+							<!-- 字段注释(字段标题,用于表单显示) -->
+							<label class="layui-form-label">
+								{$field['title']}
+								<!-- 必填标识 -->
+								{if condition="$field['is_must']"}
+									&nbsp;<font color="red">*</font>
+								{/if}
+							</label>
+						<?php endif;?>
+						{switch name="field.type"}
+						{case value="num"}<!-- 数字 -->
+							<div class="layui-input-block">
+								<input type="text" name="{$field.name}"  value="{$data[$field['name']]}" placeholder="" autocomplete="off" class="layui-input upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="float"}<!-- 小数类型 -->
+							<div class="layui-input-block">
+								<input type="text" name="{$field.name}"  value="{$data[$field['name']]}" placeholder="" autocomplete="off" class="layui-input upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="decimal"}<!-- 金额类型 -->
+							<div class="layui-input-block">
+								<input type="text" name="{$field.name}"  value="{$data[$field['name']]}" placeholder="" autocomplete="off" class="layui-input upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="string"}<!-- 字符串 -->
+							<div class="layui-input-block">
+								<input type="text" name="{$field.name}"  value="{$data[$field['name']]}" placeholder="" autocomplete="off" class="layui-input upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="tags"}<!-- 标签 -->
+							<div class="layui-input-block">
+								<input type="hidden" id="{$field.name}-tags" name="{$field.name}" value="{$data[$field['name']]}" class="layui-input upload-text">
+								<input type="text" id="{$field.name}" value="{$data[$field['name']]}" data-role="tagsinput" class="layui-input">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+							<script>
+								$(function() {
+									$('#{$field.name}').on('change', function(event) {
+										var $element = $(event.target);
+										if (!$element.data('tagsinput')){
+											return;
+										}	
+										var val = $element.val();
+										if (val === null){
+											val = "null";
+										}
+										$("#{$field.name}-tags").attr('value',($.isArray(val) ? JSON.stringify(val) :val.replace('"', '\\"')));
+									}).trigger('change');
+								});
+							</script>
+						{/case}
+						{case value="array"}<!-- 数组 -->
+							<!-- 方法一：start -->
+							{if condition="0"}
+							<div class="array{$field.name}">
+								{volist name=":json_decode($data[$field['name']],true)" id="vo"}
+								<div class="layui-form-item">
+									<div class="layui-inline" style="width: 350px;">
+										<input type="text" name="{$field.name}[0][]" value="{$key}" placeholder="键" autocomplete="off" class="layui-input upload-text">
+										<span class="sysval"><em class="zerocopy">{$field.name}[0][]</em></span>
+									</div>
+									<span>:</span>
+									<div class="layui-inline input-two" style="width: 500px;">
+										<input type="text" name="{$field.name}[1][]" value="{$vo}" placeholder="值" autocomplete="off" class="layui-input upload-text">
+										<span class="sysval"><em class="zerocopy">{$field.name}[1][]</em></span>
+									</div>
+									<div class="layui-inline">
+										<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs" onclick="addinfo(this,'array{$field.name}');">-</a></div>
+									</div>
+								</div>
+								{/volist}
+								<div class="layui-form-item">
+									<div class="layui-inline" style="width: 350px;">
+										<input type="text" name="{$field.name}[0][]" value="" placeholder="键" autocomplete="off" class="layui-input upload-text">
+										<span class="sysval"><em class="zerocopy">{$field.name}[0][]</em></span>
+									</div>
+									<span>:</span>
+									<div class="layui-inline input-two" style="width: 500px;">
+										<input type="text" name="{$field.name}[1][]" value="" placeholder="值" autocomplete="off" class="layui-input upload-text">
+										<span class="sysval"><em class="zerocopy">{$field.name}[1][]</em></span>
+									</div>
+									<div class="layui-inline">
+										<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs" onclick="addinfo(this,'array{$field.name}');">+</a></div>
+									</div>
+								</div>
+							</div>
+							{/if}
+							<!-- 方法一：end -->
+							<!-- 方法二：start -->
+							<div class="layui-inline array-move">
+								{if condition="json_decode($data[$field['name']],true)"}
+								{volist name=":json_decode($data[$field['name']],true)" id="vo"}
+								<div>
+									<div class="layui-inline">
+										<label class="layui-form-label" style="width: 45px;">键</label>
+										<div class="layui-input-inline" style="width: 350px;">
+											<input type="text" name="{$field.name}[0][]"  placeholder="请输入键" autocomplete="off" class="layui-input upload-text" value="{$key}">                        
+											<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+										</div>
+									</div>
+									<div class="layui-inline">
+										<label class="layui-form-label" style="width: 45px;">值</label>
+										<div class="layui-input-inline" style="width: 350px;">
+											<input type="text" name="{$field.name}[1][]" placeholder="请输入值" autocomplete="off" class="layui-input upload-text" value="{$vo}">                        
+											<span class="sysval"><em class="zerocopy">{$field.name}.{$key}</em></span>
+										</div>
+									</div>
+									<div class="layui-inline">
+										<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="delinfo(this)">-</a></div>
+									</div>
+									<div class="layui-inline">
+										<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs"><i class="layui-icon" style="margin-right: 0px;">&#xe622;</i></a></div>
+									</div>
+								</div>
+								{/volist}
+								{else/}
+								<div>
+									<div class="layui-inline">
+										<label class="layui-form-label" style="width: 45px;">键</label>
+										<div class="layui-input-inline" style="width: 350px;">
+											<input type="text" name="{$field.name}[0][]"  placeholder="请输入键" autocomplete="off" class="layui-input upload-text" value="">                        
+											<span class="sysval"><em class="zerocopy">键</em></span>
+										</div>
+									</div>
+									<div class="layui-inline">
+										<label class="layui-form-label" style="width: 45px;">值</label>
+										<div class="layui-input-inline" style="width: 350px;">
+											<input type="text" name="{$field.name}[1][]" placeholder="请输入值" autocomplete="off" class="layui-input upload-text" value="">                        
+											<span class="sysval"><em class="zerocopy">值</em></span>
+										</div>
+									</div>
+									<div class="layui-inline">
+										<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="delinfo(this)">-</a></div>
+									</div>
+									<div class="layui-inline">
+										<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs"><i class="layui-icon" style="margin-right: 0px;">&#xe622;</i></a></div>
+									</div>
+								</div>
+								{/if}
+							</div>
+							<button type="button" class="layui-btn btn-append" style="display: block;">追加</button>
+							<!-- 方法二：end -->
+						{/case}
+						{case value="textarea"}<!-- 文本框(文本域) -->
+							<div class="layui-input-block">
+								<textarea name="{$field.name}" placeholder="" class="layui-textarea upload-text">{$data[$field['name']]}</textarea>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<!-- <span class="sysval"><em class="zerocopy">{$field.name}</em></span> -->
+							</div>
+						{/case}
+						{case value="editor"}<!-- 编辑器 -->
+							<div class="layui-input-block">
+								<textarea id="{$field.name}" name="{$field.name}" placeholder="" class="layui-textarea upload-text">{$data[$field['name']]}</textarea>
+								<script>
+									KindEditor.ready(function(K) {
+										var editor2 = K.create('textarea[name="{$field.name}"]', {
+											// 指定编辑器iframe document的CSS文件，用于设置可视化区域的样式。
+											cssPath : '__STATIC__/admin/lib/kindeditor/plugins/code/prettify.css',
+											// 指定上传文件的服务器端程序。
+											uploadJson : GV.kindeditor_upload_url,
+											// 指定浏览远程图片的服务器端程序。
+											fileManagerJson : GV.kindeditor_file_manager_url,
+											filterMode : false, //关闭过滤模式
+											wellFormatMode : false, //true时美化HTML数据。false关闭美化
+											newlineTag : "br", //设置回车换行标签，可设置”p”、”br”。数据类型: String 默认值: “p”
+											pasteType : 2, //设置粘贴类型，0:禁止粘贴, 1:纯文本粘贴, 2:HTML粘贴 数据类型: Int 默认值: 2
+											allowFileManager : true, //true时显示浏览远程服务器按钮。
+											// 改变站内本地URL，可设置空、relative、absolute、domain。空为不修改URL，relative为相对路径，absolute为绝对路径，domain为带域名的绝对路径。数据类型：String
+											// 默认值：空
+											// 注: 3.4版本开始支持，3.4.1版本开始默认值为空。
+											// urlType:'domain',
+											// 编辑器的宽度，可以设置px或%，比textarea输入框样式表宽度优先度高。数据类型: String 默认值: textarea输入框的宽度
+											width : '100%',
+											// 编辑器的高度，只能设置px，比textarea输入框样式表高度优先度高。数据类型: String 默认值: textarea输入框的高度
+											height : '350px',
+											afterUpload:function(){ this.sync(); }, //图片上传后，将上传内容同步到textarea中
+											afterBlur:function(){ this.sync(); }, //解决KindEditor编辑器Ajax表单提交时获取不到值问题
+										});
+										prettyPrint();
+									});
+								</script>
+								{if condition="$field['remark'] or $field['name']"}
+									<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark}&nbsp;字段名:{$field.name} ]
+									</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="markdown"}<!-- markdown编辑器 -->
+							<div class="layui-input-block">
+								<div class="layui-form-field-label js-editormd" id="{$field.name}" >
+									<textarea style="display:none;" name="{$field.name}" class="layui-textarea upload-text">{$data[$field['name']]}</textarea>
+								</div>
+								{if condition="$field['remark'] or $field['name']"}
+									<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark}&nbsp;字段名:{$field.name} ]
+									</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+							<script type="text/javascript">
+								$(function() {
+									var editormds = {};
+									if ($(".js-editormd").size() > 0) {
+										$('.js-editormd').each(function() {
+											var editormd_name = $(this).attr('id');
+											editormds[editormd_name] = editormd(editormd_name, {
+												height: 500, // 高度
+												watch: true,
+												searchReplace: true,
+												emoji: true,
+												toolbarAutoFixed: false, // 取消工具栏固定
+												path: '__STATIC__/admin/lib/editormd/lib/', // 用于自动加载其他模块
+												codeFold: true, // 开启代码折叠
+												dialogLockScreen: false, // 设置弹出层对话框不锁屏
+												imageUpload: true, // 开启图片上传
+												imageUploadURL: GV.markdown_image_upload_url,
+												onload : function() {
+													var a = this;
+													/* setTimeout(function () {
+														a.watch(false);
+													}, 900); */
+													setInterval(function(){ a.watch(false); }, 900);
+												}
+											});
+										});
+									}
+								});
+							</script>
+						{/case}
+						{case value="colorpicker"}<!-- 取色器 -->
+							<!-- <div class="layui-input-block">
+								<input id="colorpicker-{$field.name}" type="text" name="{$field.name}" value="{$data[$field['name']]}" placeholder="" autocomplete="off" class="layui-input upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+							<script>
+								$(function () {
+									$('#colorpicker-{$field.name}').colorpicker({"color": "{$data[$field['name']]}"});
+								});
+							</script> -->
+							<div class="layui-input-inline" style="width: 120px;">
+								<input type="text" id="color-{$field.name}" name="{$field.name}" value="{$data[$field['name']]}" placeholder="请选择颜色" class="layui-input upload-text" style="height: 38px;">
+							</div>
+							<div class="layui-inline" style="left: -11px;">
+								<div id="test-form-{$field.name}"></div>
+							</div>
+							<script type="text/javascript">
+								layui.use('colorpicker', function(){
+									var colorpicker = layui.colorpicker;
+									//表单赋值
+									colorpicker.render({
+										elem: '#test-form-{$field.name}'
+										,color: "{$data[$field['name']]}"
+										,done: function(color){
+											$('#color-{$field.name}').val(color);
+										}
+									});
+								});
+							</script>
+						{/case}
+						{case value="datetime"}<!-- 时间 -->
+							<div class="layui-input-block">
+								<input type="text" name="{$field.name}" id="datetime_{$field.name}" value="{$data[$field['name']]|date='Y-m-d H:i:s'}" placeholder="" autocomplete="off" class="layui-input form_datetime upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+							<script type="text/javascript">
+								layui.use(['form','laydate','jquery'], function(){
+									var form = layui.form //表单
+									,laydate = layui.laydate //日期
+									,$ = layui.jquery;
+									laydate.render({
+										elem: '#datetime_{$field.name}',
+										type: 'datetime',
+										trigger: 'click'
+									});
+								});
+							</script>
+						{/case}
+						{case value="bool"}<!-- bool值 -->
+							<div class="layui-input-block">
+								<select name="{$field.name}" lay-verify="required" class="upload-select">
+									{volist name=":parse_field_attr($field['extra'])" id="vo"}
+									<option value="{$key}" {eq name="data[$field['name']]" value="$key"}selected{/eq}>{$vo}</option>
+									{/volist}
+								</select>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="radio"}<!-- 单选 -->
+							<div class="layui-input-block" pane="">
+								{volist name=":parse_field_attr($field['extra'])" id="vo"}
+								<input type="radio" value="{$key}" {eq name="data[$field['name']]" value="$key"}checked{/eq} name="{$field.name}" title="{$vo}" class="upload-radio"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>{$vo}</div></div>
+								{/volist}<br/>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="checkbox"}<!-- 多选 -->
+							<div class="layui-input-block">
+								{volist name=":parse_field_attr($field['extra'])" id="vo"}
+								<input type="checkbox" type="checkbox" value="{$key}" name="{$field.name}[]" {if condition="check_document_position($data[$field['name']],$key)"}checked="checked"{/if} title="{$key}：{$vo}" lay-skin="primary" class="upload-checkbox">
+								{/volist}<br>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="select"}<!-- option下拉 -->
+							<div class="layui-input-block">
+								<select name="{$field.name}" lay-verify="required" class="upload-select">
+									<option value="" selected>请选择</option>
+									{volist name=":parse_field_attr($field['extra'])" id="vo"}
+									<option value="{$key}" {eq name="data[$field['name']]" value="$key"}selected{/eq}>{$vo}</option>
+									{/volist}
+								</select>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="selecto"}<!-- 高级下拉单选 -->
+							<div class="layui-input-block">
+								<input type="hidden" id="{$field.name}" name="{$field.name}" value="{$data[$field['name']]}" class="layui-input upload-text">
+								<div id="selecto_{$field.name}" class="xm-select-demo"></div>
+								<script>
+									var selecto_{$field.name} = xmSelect.render({
+										el: '#selecto_{$field.name}', 
+										// 开启单选
+										radio: true,
+										// 搜索模式
+										filterable: true,
+										// 输入停止2s后进行搜索过滤
+										delay: 2000,
+										// 分页
+										paging: true,
+										// 每页数量
+										pageSize: 5,
+										// 工具栏
+										toolbar: {show: true},
+										// 自动换行
+										autoRow: true,
+										height: '500px',
+										// 隐藏图标
+										// model: {
+										// 	icon: 'hidden',
+										// },
+										data: {:parse_field_json($field['extra'],$data[$field['name']],'selecto')},
+										on: function(data){
+											if(data.arr){
+												var myArray=new Array();
+												for (let i = 0; i < data.arr.length; i++) {
+													myArray.push(data.arr[i].value);
+												}
+												var valuestr = myArray.join(",");
+												console.log(valuestr);
+												$("#{$field.name}").val(valuestr);
+											}else{
+												$("#{$field.name}").val('');
+											}
+										},
+									})
+								</script>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ] 
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="selects"}<!-- 高级下拉多选 -->
+							<div class="layui-input-block">
+								<input type="hidden" id="{$field.name}" name="{$field.name}" value="{$data[$field['name']]}" class="layui-input upload-text">
+								<div id="selects_{$field.name}" class="xm-select-demo"></div>
+								<script>
+									var selects_{$field.name} = xmSelect.render({
+										el: '#selects_{$field.name}', 
+										// 搜索模式
+										filterable: true,
+										// 输入停止2s后进行搜索过滤
+										delay: 2000,
+										// 分页
+										paging: true,
+										// 每页数量
+										pageSize: 5,
+										// 工具栏
+										toolbar: {show: true},
+										// 自动换行
+										autoRow: true,
+										height: '500px',
+										// 隐藏图标
+										// model: {
+										// 	icon: 'hidden',
+										// },
+										data: {:parse_field_json($field['extra'],$data[$field['name']])},
+										on: function(data){
+											if(data.arr){
+												var myArray=new Array();
+												for (let i = 0; i < data.arr.length; i++) {
+													myArray.push(data.arr[i].value);
+												}
+												var valuestr = myArray.join(",");
+												console.log(valuestr);
+												$("#{$field.name}").val(valuestr);
+											}else{
+												$("#{$field.name}").val('');
+											}
+										},
+									})
+								</script>
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ] 
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/case}
+						{case value="region"}<!-- 地区 -->
+							<input type="hidden" class="form-control upload-text" name="{$field.name}" value="{$data[$field['name']]}">
+							<div class="filter_{$field.name}" id="filter_{$field.name}">
+								<div class="layui-input-inline">
+									<select id="province_{$field.name}" lay-filter="filter_{$field.name}_1">
+										<option value="">请选择</option>
+										{volist name=":get_region_tostr($data[$field['name']],'province')" id="vo"}
+											<?php
+												$arr =explode(',',$data[$field['name']]);
+												if(in_array($vo['id'],$arr))
+												{
+													$select = "selected";
+												}else{
+													$select = '';
+												}
+											?>
+											<option value="{$vo.id}" <?php echo $select;?> >{$vo.shortname}</option>
+										{/volist}
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<select  id="city_{$field.name}" lay-filter="filter_{$field.name}_2">
+										<option value="" selected="">请选择  </option>
+										{volist name=":get_region_tostr($data[$field['name']],'city')" id="vo"}
+											<?php
+												$arr =explode(',',$data[$field['name']]);
+												if(in_array($vo['id'],$arr))
+												{
+													$select = "selected";
+												}else{
+													$select = '';
+												}
+											?>
+											<option value="{$vo.id}" <?php echo $select;?> >{$vo.shortname}</option>
+										{/volist}
+									</select>
+								</div>
+								<div class="layui-input-inline">
+									<select  id="area_{$field.name}" lay-filter="filter_{$field.name}_3">
+										<option value="" selected="">请选择  </option>
+										{volist name=":get_region_tostr($data[$field['name']],'area')" id="vo"}
+											<?php
+												$arr =explode(',',$data[$field['name']]);
+												if(in_array($vo['id'],$arr))
+												{
+													$select = "selected";
+												}else{
+													$select = '';
+												}
+											?>
+											<option value="{$vo.id}" <?php echo $select;?> >{$vo.shortname}</option>
+										{/volist}
+									</select>
+								</div>
+								<div class="layui-input-inline" style="float: right;">
+									{if condition="$field['remark']"}
+									<span class="layui-form-mid layui-word-aux">
+										[ {$field.remark} ]
+									</span>
+									{/if}
+									<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+								</div>
+							</div>
+							<script type="text/javascript">
+								// 第一种方法 原生
+								/* $("#filter_{$field.name} select").live('change',function(data){
+									var that = $(this);
+									changeCity(that);
+								}); */
+								// 第二种方法 layui
+								layui.use(['form', 'layedit', 'laydate','layer','table','element','jquery'], function(){
+									var form = layui.form //表单
+									,$ = layui.jquery;
+									// 监听select
+									form.on('select(filter_{$field.name}_1)', function(data){
+										var that = $(data.elem);
+										changeCity(that);
+									});
+									form.on('select(filter_{$field.name}_2)', function(data){
+										var that = $(data.elem);
+										changeCity(that);
+									});
+									form.on('select(filter_{$field.name}_3)', function(data){
+										var that = $(data.elem);
+										changeCity(that);
+									});
+								});
+							</script>
+						{/case}
+						{case value="map"}<!-- 地图 -->
+							<input name="{$field.name}" id="dr_{$field.name}" type="hidden" value="{$data[$field['name']]}" class="upload-text">
+							<div class="layui-input-inline" style="width: 80px;">
+								<select name="province_{$field.name}" lay-filter="province_{$field.name}">
+									<option value="" selected="">省</option>
+									{volist name=":get_region()" id="province"}
+									<option value="{$province.id}">{$province.name}</option>
+									{/volist}
+								</select>
+							</div>
+							<div class="layui-input-inline" style="width: 80px;">
+								<select name="city_{$field.name}" lay-filter="city_{$field.name}">
+									<option value="" selected="">市</option>
+								</select>
+							</div>
+							<div class="layui-input-inline" style="width: 80px;">
+								<select name="couty_{$field.name}" lay-filter="couty_{$field.name}">
+									<option value="">县/区</option>
+								</select>
+							</div>
+							<div class="layui-input-inline" style="width: 390px;">
+								<input type="text" id="baidu_address_{$field.name}" value="{$data[$field['name']]}" placeholder="请输入详细地址" autocomplete="off" class="layui-input">
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+							<div class="layui-input-inline" style="width:80px">
+								<a class="layui-btn " href="javascript:;" onclick="baiduSearchAddress(new BMap.Map('baidumap_{$field.name}'), '{$field.name}', '11');" style="text-decoration:none;">
+									<i class="layui-icon"></i>
+								</a>
+							</div>
+							<div class="layui-form-item">
+								<div class="layui-inline" style="width: 600px;padding-left: 141px;">
+									<div style="width:722px;height:300px;clear:both;" id="baidumap_{$field.name}"></div>
+								</div>
+							</div>
+							<script type="text/javascript">
+								// 百度地图API功能
+								var map_{$field.name} = new BMap.Map("baidumap_{$field.name}");
+								var data = "{$data[$field['name']]}";
+								var data = data.split(',');
+								var lngX = data[0];
+								var latY = data[1];
+								var point = new BMap.Point(lngX,latY);
+								map_{$field.name}.centerAndZoom(point,13);
+								setTimeout(function(){
+									map_{$field.name}.setZoom(11);
+								}, 2000);  //2秒后放大到14级
+								map_{$field.name}.enableScrollWheelZoom(true);
+								var marker = new BMap.Marker(point);//创建标注
+								map_{$field.name}.clearOverlays();
+								map_{$field.name}.addOverlay(marker);//将标注添加到地图中
+								marker.disableDragging();
+								map_{$field.name}.addEventListener("click",function(e){
+									$('#dr_{$field.name}').val(e.point.lng+','+e.point.lat);
+									marker.point.lng = e.point.lng;
+									marker.point.lat = e.point.lat;
+									var point2 = new BMap.Point(e.point.lng,e.point.lat);
+									var marker2 = new BMap.Marker(point2);// 创建标注
+									map_{$field.name}.clearOverlays();
+									map_{$field.name}.addOverlay(marker2);
+									marker.disableDragging();
+								});
+								layui.use(['form','layer', 'element','jquery'], function(){
+									var form = layui.form //表单
+									,element = layui.element //元素操作
+									,layer = layui.layer //弹层
+									,$ = layui.jquery;
+									form.on('select(province_{$field.name})', function(data){
+										$("select[name='couty_{$field.name}']").html("<option value='' selected=''>请选择县/区</option>");
+										$.ajax({
+											type:"POST",
+											dataType: 'JSON',
+											data:{id:data.value,type:2},
+											url:GV.ajax_get_city,
+											success:function(data){
+												var html = "";
+												html+="<option value='' selected=''>请选择市</option>";
+												$(data).each(function(k,v){
+													html+="<option value='"+v.id+"'>"+v.name+"</option>";
+												});
+												// alert(html);
+												$("select[name='city_{$field.name}']").html(html);
+												form.render('select');
+											}
+										});
+										// console.log(data.elem); //得到select原始DOM对象
+										// console.log(data.value); //得到被选中的值
+										// console.log(data.othis); //得到美化后的DOM对象
+									});
+									form.on('select(city_{$field.name})', function(data){
+										$.ajax({
+											type:"POST",
+											dataType: 'JSON',
+											data:{id:data.value,type:3},
+											url:GV.ajax_get_city,
+											success:function(data){
+												var html = "";
+												html+="<option value='' selected=''>请选择县/区</option>";
+												$(data).each(function(k,v){
+													html+="<option value='"+v.id+"'>"+v.name+"</option>";
+												});
+												// alert(html);
+												$("select[name='couty_{$field.name}']").html(html);
+												form.render('select');
+											}
+										});
+									});
+									form.on('select(couty_{$field.name})', function(data){
+										theLocation('couty_{$field.name}',map_{$field.name});
+									});
+								});
+							</script>
+						{/case}
+						{case value="stepselect"}<!-- 联动类型 -->
+							<input type="hidden" class="form-control upload-text" name="{$field.name}" value="{$data[$field['name']]}">
+							<div id="div_{$field.name}">
+								<div class="layui-input-inline">
+									<select name="" id="step_{$field.name}_0" lay-filter="div_{$field.name}">
+										<option value="" selected="">请选择  </option>
+										{volist name=":get_stepsclect($field['name'])" id="vo"}
+											<?php
+												$arr =explode(',',$data[$field['name']]);
+												if(in_array($vo['id'],$arr))
+												{
+													$select = "selected";
+												}else{
+													$select = '';
+												}
+											?>
+											<option value="{$vo.id}" <?php echo $select;?> >{$vo.title}</option>
+										{/volist}
+									</select>
+								</div>
+							</div>
+							<div class="layui-input-inline" style="float:right;">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+							<script type="text/javascript">
+								$(function(){
+									changeSelected('{$field.name}');
+								});
+									//第二种方法 layui
+								layui.use(['form','jquery'], function(){
+									var form = layui.form //表单
+									,$ = layui.jquery;
+									// 监听select
+									form.on('select(div_{$field.name})', function(data){
+										var that = $(data.elem);
+										changeStep(that);
+									});
+								});
+							</script>
+						{/case}
+						{case value="picture"}<!-- 上传单图 -->
+							<div class="layui-input-inline" style="width: 750px;">
+								<input type="file"  filename="{$field.name}" filetype="one" isajax="1" uploadparam="name=document&iswater=1&isthumb=1" iscrop="1" class="upload-file {$field.name}" style="display: none">
+								<input type="text"   name="{$field.name}" value="{$data[$field['name']]|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;height: 38px;">
+								<input type="button" value="浏览..." onclick="SelectImage('{$field.name}');" class="layui-btn layui-btn-normal">
+								<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+								<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+								<input type="button" value="裁剪" onclick="caijian('{$field.name}');" class="layui-btn layui-btn-primary">
+								<!-- <input type="checkbox" name="ddisremote" value="1" title="远程"><div class="layui-unselect layui-form-checkbox"><span>远程</span><i class="layui-icon layui-icon-ok"></i></div> -->
+								<input type="button" value="{{$field.name}}" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+							</div>
+							{if condition="$data[$field['name']]"}
+							<div class="layui-inline thumb_list" id="{$field.name}" style="padding-top: 0px;">
+								<span>
+									<img src="{$data[$field['name']]|get_file_path=###}" alt="" height="100px;" width="100px" class="showimg">
+									<button type="button" filename="{$field.name}" filevalue="{$data[$field['name']]}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="{$field.name}" style="padding-top: 0px;">
+							</div>
+							{/if}
+						{/case}
+						{case value="piclist"}<!-- 上传多图 -->
+							<div class="layui-inline">
+								<div class="layui-input-inline" style="width: 750px;">
+									<input type="file" filename="{$field.name}" filetype="list" isajax="1" uploadparam="name=document&iswater=1&isthumb=1" iscrop="1" class="upload-file {$field.name}" style="display: none">
+									<input type="text" name="{$field.name}" value="{$data[$field['name']]|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;height: 38px;">
+									<input type="button" value="浏览..." onclick="SelectImage('{$field.name}');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="{{$field.name}}" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+									{if condition="$data[$field['name']]"}
+									<div class ="thumb_list" id="{$field.name}">
+										<?php foreach(explode(',',$data[$field['name']]) as $k=>$v):?>
+										<div class="img-div">
+											<img src="{$v|get_file_path=###}" alt="" height="100px;" width="100px" class="showimg">
+											<button type="button" filename="{$field.name}" filevalue="{$v}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div>
+										<?php endforeach;?>
+									</div>
+									{else/}
+									<div class ="thumb_list" id="{$field.name}"></div>
+									{/if}
+								</div>
+								<!-- <span class="sysval" style="margin-right: -36px;"><em class="zerocopy">{$field.name}</em></span> -->
+							</div>
+						{/case}	
+						{case value="file"}<!-- 上传单文件 -->
+							<div class="layui-input-inline" style="width: 750px;">
+								<input type="file"  filename="{$field.name}" filetype="onefile" isajax="1" uploadparam="name=document" iscrop="0" class="upload-file {$field.name}" style="display: none">
+								<input type="text"   name="{$field.name}" value="{$data[$field['name']]|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;height: 38px;">
+								<input type="button" value="浏览..." onclick="SelectImage('{$field.name}');" class="layui-btn layui-btn-normal">
+								<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+								<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+								<input type="button" value="{{$field.name}}" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+							</div>
+							{if condition="$data[$field['name']]"}
+							<div class="layui-inline thumb_list" id="{$field.name}" style="padding-top: 0px;">
+								<div class="upload-pre-file"><i class="fa fa-paperclip"></i> <?php echo basename($data[$field['name']]);?><a href="javascript:;" onclick="delimg(this);" filename="{$field.name}" filevalue="{$data[$field['name']]|default=''}"> <i class="fa fa-trash-o"></i></a></div>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="{$field.name}" style="padding-top: 0px;">
+							</div>
+							{/if}
+						{/case}
+						{case value="filelist"}<!-- 上传多文件 -->
+							<div class="layui-inline">
+								<div class="layui-input-inline" style="width: 750px;">
+									<input type="file" filename="{$field.name}" filetype="filelist" isajax="1" uploadparam="name=document" iscrop="0" class="upload-file {$field.name}" style="display: none">
+									<input type="text" name="{$field.name}" value="{$data[$field['name']]|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;height: 38px;">
+									<input type="button" value="浏览..." onclick="SelectImage('{$field.name}');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="{{$field.name}}" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+									{if condition="$data[$field['name']]"}
+									<div class ="thumb_list" id="{$field.name}">
+										<?php foreach(explode(',',$data[$field['name']]) as $k=>$v):?>
+										<div class="img-div">
+											<div class="upload-pre-file">
+												<i class="fa fa-paperclip"></i> <?php echo basename($v);?>
+												<button type="button" onclick="delimg(this);" filename="{$field.name}" filevalue="{$v}" style="background-color: transparent;border: 0;"> 
+													<i class="fa fa-trash-o"></i>
+												</button>
+											</div>
+										</div>
+										<?php endforeach;?>
+									</div>
+									{else/}
+									<div class ="thumb_list" id="{$field.name}"></div>
+									{/if}
+								</div>
+								<!-- <span class="sysval" style="margin-right: -54px;"><em class="zerocopy">{$field.name}</em></span> -->
+							</div>
+						{/case}
+						{case value="onevideo"}<!-- 上传单视频 -->
+							<div class="layui-input-inline" style="width: 750px;">
+								<input type="file"  filename="{$field.name}" filetype="onevideo" isajax="1" uploadparam="name=document" iscrop="0" class="upload-file {$field.name}" style="display: none">
+								<input type="text"   name="{$field.name}" value="{$data[$field['name']]|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;height: 38px;">
+								<input type="button" value="浏览..." onclick="SelectImage('{$field.name}');" class="layui-btn layui-btn-normal">
+								<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+								<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+								<!-- <input type="checkbox" name="ddisremote" value="1" title="远程"><div class="layui-unselect layui-form-checkbox"><span>远程</span><i class="layui-icon layui-icon-ok"></i></div> -->
+								<input type="button" value="{{$field.name}}" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+							</div>
+							{if condition="$data[$field['name']]"}
+							<div class="layui-inline thumb_list" id="{$field.name}">
+								<span>
+									<!-- <video width="100px" height="100px" controls="controls" autoplay="autoplay"> -->
+									<video width="100px" height="100px" controls="controls">
+										<source src="{$data[$field['name']]|get_file_path=###}" type="video/mp4">
+									</video>
+									<button type="button" filename="{$field.name}" filevalue="{$data[$field['name']]}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="{$field.name}" style="padding-top: 0px;"></div>
+							{/if}
+						{/case}
+						{case value="videolist"}<!-- 上传多视频 -->
+							<div class="layui-inline">
+								<div class="layui-input-inline" style="width: 750px;">
+									<input type="file" filename="{$field.name}" filetype="videolist" isajax="1" uploadparam="name=document" iscrop="0" class="upload-file {$field.name}" style="display: none">
+									<input type="text" name="{$field.name}" value="{$data[$field['name']]|default=''}" class="layui-input upload-text" style="float:left;margin-right:-2px;width:300px;height: 38px;">
+									<input type="button" value="浏览..." onclick="SelectImage('{$field.name}');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>$field['name']])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="{{$field.name}}" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+									{if condition="$data[$field['name']]"}
+									<div class ="thumb_list" id="{$field.name}">
+										<?php foreach(explode(',',$data[$field['name']]) as $k=>$v):?>
+										<div class="img-div">
+											<!-- <video width="100px" height="100px" controls="controls" autoplay="autoplay"> -->
+											<video width="100px" height="100px" controls="controls">
+												<source src="{$v|get_file_path=###}" type="video/mp4">
+											</video>
+											<button type="button" filename="{$field.name}" filevalue="{$v}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div>
+										<?php endforeach;?>
+									</div>
+									{else/}
+									<div class ="thumb_list" id="{$field.name}"></div>
+									{/if}
+								</div>
+								<!-- <span class="sysval" style="margin-right: -42px;"><em class="zerocopy">{$field.name}</em></span> -->
+							</div>
+						{/case}
+						{default/}<!-- 默认 -->
+							<div class="layui-input-block">
+								<input type="text" name="{$field.name}"  value="{$data[$field['name']]}" placeholder="" autocomplete="off" class="layui-input upload-text">
+								{if condition="$field['remark']"}
+								<span class="layui-form-mid layui-word-aux">
+									[ {$field.remark} ]
+								</span>
+								{/if}
+								<span class="sysval"><em class="zerocopy">{$field.name}</em></span>
+							</div>
+						{/switch}
+						</div>
+						{/if}
+						{/volist}
+						<div class="layui-form-item">
+							<div class="layui-input-inline" style="padding-left: 142px;width: 320px;">
+								<!-- <button class="layui-btn x_admin_close ajax-post2" type="submit" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button> -->
+								<!-- 防止回车提交 -->
+								<button class="layui-btn x_admin_close ajax-post2" type="button" target-form="form-horizontal" lay-submit lay-filter="demo1">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								<!-- <button type="button" onclick="javascript:history.back(-1);return false;" class="layui-btn layui-btn-primary">返回</button> -->
+							</div>
+						</div>
+					</form>
+				</div>
+				{/volist}
+				{/if}
+				<!-- 所有字段 end -->
+				<!-- <input type="hidden" name="id" value="" class="upload-text" /> -->
+				<input type="hidden" name="model_id" value="{$model_id|default=''}" class="upload-text"/>
+				<input type="hidden" name="form" value="{:input('form',0)}" class="upload-text"/>
+				<input type="hidden" name="category_id" value="{$data.category_id|default=''}" class="upload-text">
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<!-- bootstrap-colorpicker取色器 start-->
+<!-- <script src="__STATIC__/admin/lib/bootstrap-colorpicker/js/jquery.min.js" type="text/javascript"></script>
+<script>window.jQuery || document.write('<script src="__STATIC__/admin/lib/bootstrap-colorpicker/js/jquery-1.11.0.min.js"><\/script>')</script>
+<script src="__STATIC__/admin/lib/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script> -->
+<!-- bootstrap-colorpicker取色器 end-->
+<!-- bootstrap-tagsinput start-->
+<script src="__STATIC__/admin/lib/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+<!-- bootstrap-tagsinput end-->
+<script type="text/javascript">
+	// 地区选择，第一种方法
+	/* function changeCity(that){
+		var selid =  that.attr('id');
+		var pid = that.val();
+		var strsplit = selid.split("_") ;
+		var setCity  = strsplit[0].toString();
+		var fields  = strsplit[1].toString();
+		if(setCity=='province'){
+			$('#city_'+fields+' option:gt(0)').remove();
+			$('#area_'+fields+' option:gt(0)').remove();
+			$('input[name="'+fields+'"]').val(pid);
+			setCity = 'city_'+fields;
+		}else if (setCity=='city') {
+			setCity = 'area_'+fields;
+			var val = $('input[name="'+fields+'"]').val();
+			var valstr = val.split(",") ;
+			var valprovince  = valstr[0].toString();
+			$('input[name="'+fields+'"]').val(valprovince+','+pid);
+		}else{
+			var val = $('input[name="'+fields+'"]').val();
+			var valstr = val.split(",") ;
+			var valprovince  = valstr[0].toString();
+			var valcity  = valstr[1].toString();
+			$('input[name="'+fields+'"]').val(valprovince+','+valcity+','+pid);
+		}
+		$.getJSON(GV.get_city,{"pid":pid},function(data){
+			if(data){
+				var str='<option value="" >请选择  </option>';
+				for(var i in data)
+				{
+					if (data[i].id) {
+						str+="<option value="+data[i].id+">"+data[i].shortname+"</option>";
+					}
+				}
+				$("#"+setCity+"").html(str);
+			}
+		});
+	} */
+	// 地区选择，第二种方法
+	function changeCity(that)
+	{
+		var selid =  that.attr('id');
+		var pid = that.val();
+		var strsplit = selid.split("_") ;
+		var setCity  = strsplit[0].toString();
+		var fields  = strsplit[1].toString();
+		if(setCity=='province'){
+			$('#city_'+fields+' option:gt(0)').remove();
+			$('#area_'+fields+' option:gt(0)').remove();
+			$('input[name="'+fields+'"]').val(pid);
+			setCity = 'city_'+fields;
+		}else if (setCity=='city') {
+			setCity = 'area_'+fields;
+			var val = $('input[name="'+fields+'"]').val();
+			var valstr = val.split(",") ;
+			var valprovince  = valstr[0].toString();
+			$('input[name="'+fields+'"]').val(valprovince+','+pid);
+		}else{
+			var val = $('input[name="'+fields+'"]').val();
+			var valstr = val.split(",") ;
+			var valprovince  = valstr[0].toString();
+			var valcity  = valstr[1].toString();
+			$('input[name="'+fields+'"]').val(valprovince+','+valcity+','+pid);
+		}
+		$.getJSON(GV.get_city,{"pid":pid},function(data){
+			if(data){
+				var str='<option value="" >请选择  </option>';
+				for(var i in data) {
+					if (data[i].id) {
+						str+="<option value="+data[i].id+">"+data[i].shortname+"</option>";
+					}
+				}
+				$("#"+setCity+"").html(str);
+				xuanran();//渲染
+			}
+		});
+	}
+	function changeStep(that)
+	{
+		var selid =  that.attr('id');
+		var pid = that.val();
+		// alert(pid);
+		var steplist = selid.split("_") ;
+		var fields  = steplist[1].toString();
+		$(that).parent().nextAll().remove();
+		if (pid) {
+			$.getJSON("{:url('Select/getStep')}",{"pid":pid},function(data){
+				if(data.length !=0){
+					var str = '<div class="layui-input-inline stepselect" id="div_'+fields+'">';
+					str+='<select name="" id="step_'+fields+'_'+pid+'"lay-filter="div_'+fields+'"><option value="" >请选择  </option>';
+					for(var i in data) {
+						if (data[i].id) {
+							str+="<option value="+data[i].id+">"+data[i].title+"</option>";
+						}
+					}
+					str+="</select>";
+					str+="</div>";
+					$(that).parent().nextAll().remove();
+					$(that).parent().parent().append(str);
+					xuanran();//渲染
+				}
+			});
+		}
+		var setValue = '';
+		$('#div_'+fields+' select :selected').each(function() {
+			if (setValue=='') {
+				setValue = $(this).val();
+			}else{
+				setValue += ','+$(this).val();
+			}
+		});
+		$('input[name="'+fields+'"]').val(setValue);
+		// xuanran();//渲染
+	}
+	function changeSelected(fields)
+	{
+		var stepval  = $('input[name="'+fields+'"]').val();
+		var steplist = stepval.split(",");
+		var that = '#step_'+fields+'_0';
+		console.log(steplist);
+		if(steplist.length !=0){
+			for(var i = 0; i < steplist.length; i++)
+			{
+				var pid  =steplist[i];
+				var tid = steplist[(i+1)];
+				if (pid) {
+					$.ajax({
+						url : "{:url('Select/getStep')}",
+						type : "POST",
+						async:false,
+						data : {"pid":pid },
+						success : function(data)
+						{
+							if(data.length !=0){
+								var str = '<div class="layui-input-inline stepselect" id="div_'+fields+'">';
+								str+='<select name="" id="step_'+fields+'_'+pid+'"><option value="" >请选择  </option>';
+								for(var i in data)
+								{
+									if (data[i].id) {
+										if (tid && tid==data[i].id) {
+											str+="<option value="+data[i].id+" selected>"+data[i].title+"</option>";
+										}else{
+											str+="<option value="+data[i].id+">"+data[i].title+"</option>";
+										}
+
+									}
+								}
+								str+="</select>";
+								str+="</div>";
+								$(that).parent().nextAll().remove();
+								$(that).parent().parent().append(str);
+								that = '#step_'+fields+'_'+pid;
+								xuanran();
+							}
+						},
+						error : function()
+						{
+							alert("请求错误")
+						}
+					});
+				}
+			}
+		}
+	}
+	// 数组类型字段点击添加或软删除(方法一的)
+	function addinfo(o,c)
+	{
+		var div = $(o).parent().parent().parent();
+		if($(o).html()==='+'){
+			var newdiv=div.clone(true);
+			newdiv.find("a").html('-');
+			newdiv.find("input").val('');
+			$('.'+c).append(newdiv);
+		}else{
+			div.remove();
+		}
+	}
+	// 数组类型点击软删除
+	function delinfo(o){
+		$(o).parent().parent().parent().remove();
+	}
+	// 数组类型点击追加
+	$(".btn-append").click(function(){
+		var div = $(this).prev().children().last();
+		var newdiv=div.clone(true);
+		newdiv.find("input").val('');
+		newdiv.find(".sysval").html('');
+		$(this).prev().append(newdiv);
+	});
+	// 数组拖动
+	$(".array-move").sortable({
+		// 当排序动作开始时触发此事件
+		start: function(event, ui) {
+			// console.log(event);
+			// console.log(ui);
+		},
+		// 当排序动作结束时触发此事件
+		stop: function(event, ui) {
+			// console.log(event);
+			// console.log(ui);
+			// console.log(this);
+			// var filename = $(this).attr('id');
+			// var arr = new Array();
+			// $(this).find('button').each(function (index, el) {
+			// 	console.log($(el).attr('filevalue'));
+			// 	arr.push($(this).attr('filevalue'));
+			// });
+			// var str = arr.join(',');
+			// // console.log(str);
+			// $("input[name=" + filename + "]").val(str);
+		},
+	});
+	function theLocation(name,mapObj)
+	{
+		var city = $("select[name='"+name+"']").find("option:selected").text();
+		if(city == "请选择县/区"){
+			layer.msg('请选择县/区', {icon: 2,time:1500});
+		}else{
+			// 用城市名设置地图中心点
+			mapObj.centerAndZoom(city,11);
+		}
+	}
+	// 搜索地址
+	function baiduSearchAddress(mapObj, name, level)
+	{
+		var address = $('#baidu_address_'+name).val();
+		if ( address.indexOf(",") != -1 && address.indexOf(".") != -1) {
+			// 表示坐标
+			var data = address.split(',');
+			var lngX = data[0];
+			var latY = data[1];
+			var zoom = 17;
+			mapObj.centerAndZoom(new BMap.Point(lngX,latY),zoom);
+			// 创建图标对象
+			var myIcon = new BMap.Icon('__STATIC__/common/images/mak.png', new BMap.Size(27, 45));
+			// 创建标注对象并添加到地图
+			var center = mapObj.getCenter();
+			var point = new BMap.Point(lngX,latY);
+			var marker = new BMap.Marker(point, {icon: myIcon});
+			marker.enableDragging();
+			mapObj.addOverlay(marker);
+			var ZoomLevel = mapObj.getZoom();
+			$('#dr_'+name).val(address);
+			mapObj.addEventListener("click",function(e){
+				$('#dr_'+name).val(e.point.lng+','+e.point.lat);
+				marker.point.lng = e.point.lng;
+				marker.point.lat = e.point.lat;
+				var point2 = new BMap.Point(e.point.lng,e.point.lat);
+				// 创建标注
+				var marker2 = new BMap.Marker(point2);
+				mapObj.clearOverlays();
+				mapObj.addOverlay(marker2);
+				marker.disableDragging();
+			});
+		} else {
+			/* var myGeo = new BMap.Geocoder();
+			// 将地址解析结果显示在地图上,并调整地图视野
+			myGeo.getPoint(address, function(point){
+				if (point) {
+					mapObj.centerAndZoom(point, 13);
+					mapObj.addOverlay(new BMap.Marker(point));
+				}else{
+					dr_tips(0, "没有找到这个地址");
+				}
+			});
+			// mapObj.setCenter(address); */
+			var myGeo = new BMap.Geocoder();
+			// 将地址解析结果显示在地图上,并调整地图视野
+			myGeo.getPoint(address, function(point){
+				if (point) {
+					mapObj.centerAndZoom(point, 13);
+					// mapObj.addOverlay(new BMap.Marker(point));
+					// 创建图标对象
+					var myIcon = new BMap.Icon('__STATIC__/common/images/mak.png', new BMap.Size(27, 45));
+					// 创建标注对象并添加到地图
+					var center = mapObj.getCenter();
+					var point = new BMap.Point(lngX,latY);
+					var marker = new BMap.Marker(point, {icon: myIcon});
+					marker.enableDragging();
+					mapObj.addOverlay(marker);
+					var ZoomLevel = mapObj.getZoom();
+					$('#dr_'+name).val(address);
+					mapObj.addEventListener("click",function(e){
+						$('#dr_'+name).val(e.point.lng+','+e.point.lat);
+						marker.point.lng = e.point.lng;
+						marker.point.lat = e.point.lat;
+						var point2 = new BMap.Point(e.point.lng,e.point.lat);
+						// 创建标注
+						var marker2 = new BMap.Marker(point2);
+						mapObj.clearOverlays();
+						mapObj.addOverlay(marker2);
+						marker.disableDragging();
+					});
+				}else{
+					dr_tips(0, "没有找到这个地址");
+				}
+			});
+			// mapObj.setCenter(address);
+		}
+	}
+</script>
+{/block}

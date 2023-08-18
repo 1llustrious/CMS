@@ -1,0 +1,75 @@
+<!---------- pc 底部 -------------->
+{:hook('PageFooter')}
+<div class="yunu_footer clearfix">
+    <div class="foot_c">
+        <div class="center">
+            {volist name=":tag_nav($typeid='3,6,31',$type='',$thisclass='on',$where = '', $level = '3', $field = '', $limit = '', $order = 'sort desc')" id="vo"}
+            <dl class="wow fadeInLeft">
+                <dt class="{$vo.thisclass}">{$vo.typename}</dt>
+                <div class="f_list clearfix">
+                    {volist name="$vo.children" id="vo2"}
+                    <dd><a href="{$vo2.typeurl}" class="{$vo2.thisclass}" target="{$vo2.target}" rel="{$vo2.rel}">{$vo2.typename}</a></dd>
+                    {/volist}
+                </div>
+            </dl>
+            {/volist}
+            <script type="text/javascript">
+                $(".foot_c dt").on('click', function (event) {
+                    $(".foot_c .f_list").slideUp(500);
+                    if ($(this).next(".foot_c .f_list").css("display") == "none") {
+                        $(this).next(".foot_c .f_list").slideDown(600);
+                    } else {
+                        $(this).next(".foot_c .f_list").slideUp(600);
+                    }
+                });
+            </script>
+            <div class="foot_r wow fadeInRight" style="visibility: visible; animation-name: fadeInRight;">
+                <div class="m_ewm">
+                    <img src="https://fakeimg.pl/258x258"><p>关注公众号，掌握ZengCMS资讯</p>
+                    <span>TEL：{$get_config.WEB_TEL}</span>
+                </div>
+                <span>{$get_config.WEB_TEL}</span>
+                <p>工作日 9:30-12:00 13:30-17:00</p>
+                <p>周六及部分节假日提供值班服务</p>
+                <a class="hover_ewm" href="javascript:;"><img src="https://fakeimg.pl/258x258">关注微信</a>
+            </div>
+            <div class="copyright wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                <p>Copyright © 某某网络科技有限公司 地址：{$get_config.WEB_ADDRESS}</p>
+                <p>ZengCMS专为企业提供网站建设、网站制作、网站模板、网页模板！</p>
+                <p>{:tag_seomenu()}</p>
+                <p><a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">备案号：{$get_config.WEB_SITE_ICP}</a></p>
+                <p style="color: red;">【本站素材及资源全来源于互联网,非商业性质,仅供演示和学习,不承担任何版权问题,如果我们侵犯了您的权益,请来信告知,我们会在第一时间处理！】</p>              
+            </div>
+            <div class="m_copyright">
+                <p>Copyright © 2019-2020 某某网络科技有限公司</p>
+                <p>ZengCMS专为企业提供<strong>网站建设、网站制作、网站模板、网页模板！</strong></p>
+                <p>{:tag_seomenu()}</p>
+                <p><a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">备案号：{$get_config.WEB_SITE_ICP}</a></p>
+                <p style="color: red;">【本站素材及资源全来源于互联网,非商业性质,仅供演示和学习,不承担任何版权问题,如果我们侵犯了您的权益,请来信告知,我们会在第一时间处理！】</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!---------- wap 底部悬浮 -------------->
+<div class="mt51"></div>
+<div class="m_fix_bottom clearfix">
+    <a class="top_btn" href="javascript:;">
+        <p><img src="__STATIC__/template/cloudcms/static/img/topbtn.png"></p>
+        <span>返回顶部</span>
+    </a>
+    <a class="tel_btn" href="tel:{$get_config.WEB_TEL}">
+        <p><img src="__STATIC__/template/cloudcms/static/img/tel.png"></p>
+        <span>拨打电话</span>
+    </a>
+    <a class="more_btn" href="">在线咨询</a>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('.imgauto img').imgAuto();
+    })
+    $('.top_btn').click(function () {
+        $('html,body').animate({
+            scrollTop: 0
+        }, 500);
+    });
+</script>

@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+	<title>手机版-英文{$get_config.WEB_SITE_TITLE_EN}</title>
+	<meta name="keywords" content="{$get_config.WEB_SITE_KEYWORDS_EN}">
+	<meta name="description" content="{$get_config.WEB_SITE_DESCRIPTION_EN}">
+	<meta http-equiv="Cache-Control" content="no-transform" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="stylesheet" href="__TEMPLATE__/static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="__TEMPLATE__/static/css/style.css" />
+	<link rel="stylesheet" href="__TEMPLATE__/static/css/carousel.css" />
+	<link rel="stylesheet" href="__TEMPLATE__/static/css/animate.min.css" />
+	<script src="__TEMPLATE__/static/js/jquery.min.js"></script>
+	<script src="__TEMPLATE__/static/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="__TEMPLATE__/static/css/aos.css" />
+	<link type="text/css" href="__TEMPLATE__/static/css/index_price.css" rel="stylesheet" />
+</head>
+<body style="overflow:scroll;overflow-x:hidden">
+	{include file="normal/en_m/z-head"}
+	<div id="myCarousel" class="carousel slide">
+		<ol class="carousel-indicators">
+			{volist name=":tag_ad(1)" id="vo" key="k"}
+			<li data-target="#myCarousel" data-slide-to="0" class="{if condition='$k eq 1'}active{/if}"></li>
+			{/volist}
+		</ol>
+		<div class="carousel-inner">
+			{volist name=":tag_ad(1)" id="vo" key="k"}
+			<div class="item {if condition='$k eq 1'}active {/if}">
+				<img src="https://fakeimg.pl/1479x486" alt="{$vo.name}">
+			</div>
+			{/volist}
+		</div>
+		<a class="carousel-control left" href="#myCarousel" data-slide="prev">
+			<span class="glyphicon glyphicon-chevron-left"></span>
+		</a>
+		<a class="carousel-control right" href="#myCarousel" data-slide="next">
+			<span class="glyphicon glyphicon-chevron-right"></span>
+		</a>
+	</div>
+	<div class="container-full lingyun-home">
+		<div class="row">
+			<div class="col-md-4 col-sm-12 col-xs-12 list-imgleft">
+				{volist name=":tag_doc(3,5,[['id','in',[1,2,3]]])" id="vo" key="k"}
+				<a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}" title="{$vo.title_en}--{$vo.typename_en}" aos="fade-up-right-rotate" aos-delay="{$k}00">
+					<img src="https://fakeimg.pl/350x500" alt="{$vo.title_en}--{$vo.typename_en}" />
+				</a>
+				{/volist}
+			</div>
+			<div class="col-md-4  col-sm-12 col-xs-12 m50 text-center" aos="fade-up">
+				<h2 class="">High quality template</h2>
+				<a href="http://wpa.qq.com/msgrd?v=3&amp;uin={$get_config.QQ}&amp;site={$get_config.SITE_DOMAIN}&amp;menu=yes" target="_blank" rel="nofollow" class="btn btn-default btn-lg btn-think m30">Click to get quality template</a>
+			</div>
+			<div class="col-md-4  col-sm-12 col-xs-12 list-imgright">
+				{volist name=":tag_doc(3,5,[['id','in',[4,5,6]]])" id="vo" key="k"}
+				<a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">
+					<img src="https://fakeimg.pl/350x500" aos="fade-up-left-rotate{$k}" aos-delay="{$k}00" />
+				</a>
+				{/volist}
+			</div>
+		</div>
+	</div>
+	<div class="container lingyun-home">
+		<div class="row">
+			<div class="col-md-12 text-center index_title">
+				<h2 class="">Update</h2>
+			</div>
+		</div>
+		<div class="row">
+			{volist name=":tag_doc(31,6,'','')" id="vo"}
+			<div class="col-md-4" aos="flip-left" aos-easing="ease-out-cubic" aos-duration="2000">
+				<blockquote class="lingyun-evaluation">
+					<a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">
+						<span>{$vo.title_en|cut_str=###,15}</span>
+						<p>{$vo.description_en|cut_str=###,66}</p>
+					</a>
+				</blockquote>
+			</div>
+			{/volist}
+		</div>
+	</div>
+	<div class="container-fluid message_bg" style="background:url(https://fakeimg.pl/3000x1932) no-repeat center fixed; background-size: cover;">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 text-center lingyun-msgtitle" aos="fade-up">
+					<h2><strong>Leaving a message.</strong>！</h2>
+					<p class="lead">Dear customers, we will communicate and confirm with you within 24 hours of receiving your information.</p>
+				</div>
+			</div>
+			<div class="row lingyun-message" aos="fade-up">
+				<form action="{:url('Form/dopost')}" enctype="multipart/form-data" method="post"
+					onsubmit="return postform();" name="formWrite">
+					<div class="col-md-5">
+						<div class="form-group">
+							<label for="exampleInputName">Corporate name:</label>
+							<input type="text" class="form-control" placeholder="Corporate name" name="company">
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="form-group">
+							<label for="exampleInputPassword1">Your name:</label>
+							<input type="text" class="form-control" placeholder="Your name" name="uname">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<label for="exampleInputPassword1">Mobile / QQ</label>
+							<input type="text" class="form-control" placeholder="Please enter your phone number or QQ." name="contact">
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<label for="exampleInputPassword1">evaluate / Opinion :</label>
+							<select name="title" class="form-control">
+								<option value="评价">evaluate</option>
+								<option value="意见">Opinion</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="exampleInputPassword1">Message :</label>
+							<textarea name="content" class="form-control" placeholder="Thank you for your valuable comments and comments." rows="3"></textarea>
+						</div>
+					</div>
+					<div class="col-md-12">
+						{:token_field('__token__', 'md5')}
+						<input type="hidden" name="formname" value="message">
+						<input type="hidden" class="form-control" placeholder="" name="valicode" value="{:session('valicode')}">
+						<button type="submit" class="btn btn-default btn-lg btn-a">Immediate submission</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	{include file="normal/en_m/z-footer"}
+	<script src="__TEMPLATE__/static/js/aos.js"></script>
+	<script>
+		AOS.init({
+			easing: 'ease-out-back',
+			duration: 1000
+		});
+	</script>
+	<script>
+		function postform(){
+			var company=document.formWrite.company;
+			var uname=document.formWrite.uname;
+			var contact =document.formWrite.contact;
+			var content =document.formWrite.content;
+			// var website =document.formWrite.website;
+			if (company.value==""){
+				alert("Please enter your company name!");
+				company.focus();
+				return false;
+			}
+			if (uname.value==""){
+				alert("Please enter your name!");
+				uname.focus();
+				return false;
+			}
+			if (contact.value==""){
+				alert("Mobile phone / QQ cannot be empty!");
+				contact.focus();
+				return false;
+			}
+			if (content.value==""){
+				alert("It seems that there is no content, fill in some content!");
+				content.focus();
+				return false;
+			}
+			/* var RegUrl = new RegExp();
+			RegUrl.compile("^http(s)?://[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=]+$");
+			if (!RegUrl.test(website.value)){
+				alert("您输入的网址不正确！");
+				website.focus();
+				return false;
+			} */
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" name="form1" action="{:url()}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">管理员账号</label>
+							<div class="layui-input-block">
+								<input type="text" name="name" value="{$info.name|default=''}" placeholder=""
+									autocomplete="off" lay-verify="name" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 管理员登陆账号 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">name</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">真实名称</label>
+							<div class="layui-input-block">
+								<input type="text" name="relname" value="{$info.relname|default=''}" placeholder=""
+									autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 真实名称 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">relname</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">管理员密码</label>
+							<div class="layui-input-block">
+								<input type="password" name="password" value="" placeholder="" autocomplete="off"
+									class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 管理员密码 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">password</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">确认密码</label>
+							<div class="layui-input-block">
+								<input type="password" name="confirm_password" value="" placeholder=""
+									autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 确认密码 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">confirm_password</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">联系电话</label>
+							<div class="layui-input-block">
+								<input type="text" name="phone" value="{$info.phone|default=''}" placeholder=""
+									autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 联系电话 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">phone</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">邮箱</label>
+							<div class="layui-input-block">
+								<input type="text" name="email" value="{$info.email|default=''}" placeholder=""
+									autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 邮箱 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">email</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">性别</label>
+							<div class="layui-input-block">
+								<input type="radio" name="sex" value="1" title="男" checked="">
+								<div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i>
+									<div>男</div>
+								</div>
+								<input type="radio" name="sex" value="2" title="女">
+								<div class="layui-unselect layui-form-radio layui-form-radioed"><i
+										class="layui-anim layui-icon"></i>
+									<div>女</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">sex</em></span>
+							</div>
+						</div>
+						{if condition="$is_super_administrator AND $info"}
+						<div class="layui-form-item" pane="">
+							<label class="layui-form-label">是否启用</label>
+							<div class="layui-input-block">
+								<input type="radio" name="status" value="1" title="正常" checked="checked">
+								<div class="layui-unselect layui-form-radio layui-form-radioed"><i
+										class="layui-anim layui-icon"></i>
+									<div>正常</div>
+								</div>
+								<input type="radio" name="status" value="0" title="禁用">
+								<div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i>
+									<div>禁用</div>
+								</div>
+								<span class="sysval"><em class="zerocopy">status</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="sort" value="{$info.sort|default='0'}" lay-verify="required"
+									placeholder="请输入" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 排序 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">sort</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">注册时间</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="create_time" value="{$info.create_time|date='Y-m-d H:i:s'}"
+									class="layui-input" placeholder="注册时间" id="test1">
+								<span class="layui-form-mid layui-word-aux">
+									[ 注册时间 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">create_time</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">最后修改时间</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="update_time" value="{$info.update_time|date='Y-m-d H:i:s'}"
+									class="layui-input" placeholder="最后修改时间" id="test2">
+								<span class="layui-form-mid layui-word-aux">
+									[ 最后一次修改信息的时间 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">update_time</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">成功登陆次数</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="success_logins" value="{$info.success_logins|default='0'}"
+									lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 成功登陆次数 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">success_logins</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">最后登录时间</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="last_login_time"
+									value="{$info.last_login_time|date='Y-m-d H:i:s'}" class="layui-input"
+									placeholder="最后登录时间" id="test4">
+								<span class="layui-form-mid layui-word-aux">
+									[ 最后一次修改信息的时间 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">last_login_time</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">最后登录IP</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="last_login_ip" value="{$info.last_login_ip|default=''}"
+									lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 最后登录IP ]
+								</span>
+								<span class="sysval"><em class="zerocopy">last_login_ip</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">登录成功随机数</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="random_number" value="{$info.random_number|default=''}"
+									lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 每次登录成功插入的随机数 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">random_number</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">最后错误登录时间</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="error_login_time"
+									value="{$info.error_login_time|date='Y-m-d H:i:s'}" class="layui-input"
+									placeholder="最后错误登录时间" id="test3">
+								<span class="layui-form-mid layui-word-aux">
+									[ 最后错误登录的时间 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">error_login_time</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">错误登录次数</label>
+							<div class="layui-input-inline" style="width: 300px;">
+								<input type="text" name="error_logins" value="{$info.error_logins|default='0'}"
+									lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									[ 错误登录次数 ]
+								</span>
+								<span class="sysval"><em class="zerocopy">error_logins</em></span>
+							</div>
+						</div>
+						{if condition="0"}
+						<!-- 上传单图 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">头 像</label>
+								<div class="layui-input-block">
+									<input type="file" filename="image" filetype="one" isajax="1" class="upload-file image" style="display: none">
+									<input type="text" name="image" value="{$info.image|default=''}" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('image');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'image'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'image'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="裁剪" onclick="caijian('image');" class="layui-btn layui-btn-primary">
+									<input type="checkbox" name="ddisremote" value="1" title="远程">
+									<div class="layui-unselect layui-form-checkbox"><span>远程</span><i class="layui-icon layui-icon-ok"></i></div>
+									<input type="button" value="image" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+								</div>
+							</div>
+							{if condition="$info['image']"}
+							<div class="layui-inline thumb_list" id="image">
+								<span>
+									<img src="{$info.image|get_file_path=###}" height="100px;" width="100px" class="showimg">
+									<button type="button" filename="image" filevalue="{$info.image}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="image">
+								<!-- <span>
+									<img src="http://zxpic.imtt.qq.com/zxpic_imtt/2019/03/04/0700/originalimage/070338_823146375_1_1000_749.jpg" height="100px;" width="100px">
+									<button type="button" filename="image" filevalue="{$info.image}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span> -->
+							</div>
+							{/if}
+						</div>
+						<!-- 上传多图 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">相 册</label>
+								<div class="layui-input-block">
+									<input type="file" filename="photo_album" filetype="list" isajax="1" uploadurl="{:url('Common/native_upload')}" uploadparam="name=admin&iswater=1&isthumb=1&thumbwidth=300&thumbheight=300" iscrop="1" class="upload-file photo_album" style="display: none">
+									<input type="text" name="photo_album" value="{$info.photo_album|default=''}" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('photo_album');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'photo_album'])}');" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'photo_album'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="photo_album" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+									{if condition="$info['photo_album']"}
+									<div class="thumb_list" id="photo_album">
+										<?php foreach(explode(',',$info['photo_album']) as $k=>$v):?>
+										<div class="img-div">
+											<img src="{$v|get_file_path=###}" height="100px;" width="100px" class="showimg">
+											<button type="button" filename="photo_album" filevalue="{$v}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div>
+										<?php endforeach;?>
+									</div>
+									{else/}
+									<div class="thumb_list" id="photo_album">
+										<!-- <div class="img-div">
+											<img src="__STATIC__/uploads/admin/20190317/1.jpg" height="100px;" width="100px" class="showimg">
+											<button type="button" filename="photo_album" filevalue="uploads/admin/20190317/1.jpg" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div>
+										<div class="img-div">
+											<img src="__STATIC__/uploads/admin/20190317/2.jpg" height="100px;" width="100px" class="showimg">
+											<button type="button" filename="photo_album" filevalue="uploads/admin/20190317/2.jpg" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div>
+										<div class="img-div">
+											<img src="__STATIC__/uploads/admin/20190317/3.jpg" height="100px;" width="100px" class="showimg">
+											<button type="button" filename="photo_album" filevalue="uploads/admin/20190317/3.jpg" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div> -->
+									</div>
+									{/if}
+								</div>
+							</div>
+						</div>
+						<!-- 上传单文件 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">单 文 件</label>
+								<div class="layui-input-block">
+									<input type="file" filename="file_one" filetype="onefile" isajax="1" uploadparam="name=admin" iscrop="0" class="upload-file file_one" style="display: none">
+									<input type="text" name="file_one" value="{$info.file_one|default=''}" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('file_one');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'file_one'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'file_one'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="file_one" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+								</div>
+							</div>
+							{if condition="$info['file_one']"}
+							<div class="layui-inline thumb_list" id="file_one" style="padding-top: 0px;">
+								<div class="upload-pre-file"><i class="fa fa-paperclip"></i> <?php echo basename($info['file_one']);?><a href="javascript:;" onclick="delimg(this);" filename="file_one" filevalue="{$info.file_one}"> <i class="fa fa-trash-o"></i></a></div>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="file_one" style="padding-top: 0px;"></div>
+							{/if}
+						</div>
+						<!-- 上传多文件 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">多 文 件</label>
+								<div class="layui-input-block">
+									<input type="file" filename="file_list" filetype="filelist" isajax="1" uploadparam="name=admin" iscrop="0" class="upload-file file_list" style="display: none">
+									<input type="text" name="file_list" value="{$info.file_list|default=''}" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('file_list');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'file_list'])}');" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'file_list'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="file_list" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+									{if condition="$info['file_list']"}
+									<div class="thumb_list" id="file_list">
+										<?php foreach(explode(',',$info['file_list']) as $k=>$v):?>
+										<div class="img-div">
+											<div class="upload-pre-file">
+												<i class="fa fa-paperclip"></i> <?php echo basename($v);?>
+												<button type="button" onclick="delimg(this);" filename="file_list" filevalue="{$v}" style="background-color: transparent;border: 0;">
+													<i class="fa fa-trash-o"></i>
+												</button>
+											</div>
+										</div>
+										<?php endforeach;?>
+									</div>
+									{else/}
+									<div class="thumb_list" id="file_list"></div>
+									{/if}
+								</div>
+							</div>
+						</div>
+						<!-- 上传单视频 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">单 视 频</label>
+								<div class="layui-input-block">
+									<input type="file" filename="video_one" filetype="onevideo" isajax="1" uploadparam="name=admin" iscrop="0" class="upload-file video_one" style="display: none">
+									<input type="text" name="video_one" value="{$info.video_one|default=''}" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('video_one');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'video_one'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'video_one'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="video_one" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+								</div>
+							</div>
+							{if condition="$info['video_one']"}
+							<div class="layui-inline thumb_list" id="video_one">
+								<span>
+									<!-- <video width="100px" height="100px" controls="controls" autoplay="autoplay"> -->
+									<video width="100px" height="100px" controls="controls">
+										<source src="{$info.video_one|get_file_path=###}" type="video/mp4">
+									</video>
+									<button type="button" filename="video_one" filevalue="{$info.video_one}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+										<i class="layui-icon">&#xe640;</i>
+									</button>
+								</span>
+							</div>
+							{else /}
+							<div class="layui-inline thumb_list" id="video_one"></div>
+							{/if}
+						</div>
+						<!-- 上传多视频 -->
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">多 视 频</label>
+								<div class="layui-input-block">
+									<input type="file" filename="video_list" filetype="videolist" isajax="1" uploadparam="name=admin" iscrop="0" class="upload-file video_list" style="display: none">
+									<input type="text" name="video_list" value="{$info.video_list|default=''}" class="layui-input" style="float:left;margin-right:-2px;width:300px;">
+									<input type="button" value="浏览..." onclick="SelectImage('video_list');" class="layui-btn layui-btn-normal">
+									<input type="button" value="站内选择" onclick="x_admin_show('站内选择','{:url('File/index',['filename'=>'video_list'])}');" class="layui-btn layui-btn-primary">
+									<input type="button" value="选择" onclick="x_admin_show('选择','{:url('Attachment/index',['filename'=>'video_list'])}')" class="layui-btn layui-btn-primary">
+									<input type="button" value="video_list" class="layui-btn layui-btn-primary" style="background: #EDF6FF;">
+									{if condition="$info['video_list']"}
+									<div class="thumb_list" id="video_list">
+										<?php foreach(explode(',',$info['video_list']) as $k=>$v):?>
+										<div class="img-div">
+											<!-- 自动播放 -->
+											<!-- <video width="100px" height="100px" controls="controls" autoplay="autoplay"> -->
+										    <!-- 不自动播放 -->
+											<video width="100px" height="100px" controls="controls">
+												<source src="{$v|get_file_path=###}" type="video/mp4">
+											</video>
+											<button type="button" filename="video_list" filevalue="{$v}" onclick="delimg(this);" class="layui-btn layui-btn-danger layui-btn-mini delimg">
+												<i class="layui-icon">&#xe640;</i>
+											</button>
+										</div>
+										<?php endforeach;?>
+									</div>
+									{else/}
+									<div class="thumb_list" id="video_list"></div>
+									{/if}
+								</div>
+							</div>
+						</div>
+						{/if}
+						{/if}
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}">
+								<!-- 方法一：使用ajax-post -->
+								<!-- <button class="layui-btn ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">确定</button> -->
+								<!-- 方法二：使用ajax-post防止回车提交表单 -->
+								<button class="layui-btn x_admin_close ajax-post" type="button" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">确定</button>
+								<!-- 方法三：使用layui监听表单提交 -->
+								<!-- <button class="layui-btn x_admin_close" lay-submit lay-filter="formDemo">提交保存</button> -->
+								<!-- <button type="reset" class="layui-btn layui-btn-danger">重置</button> -->
+								<!-- <a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	layui.use(['form', 'laydate', 'jquery'], function () {
+		var form = layui.form,
+		laydate = layui.laydate,
+		$ = layui.jquery;
+		// 日期
+		laydate.render({
+			elem: '#test1',
+			type: 'datetime',
+			trigger: 'click'
+		});
+		laydate.render({
+			elem: '#test2',
+			type: 'datetime',
+			trigger: 'click'
+		});
+		laydate.render({
+			elem: '#test3',
+			type: 'datetime',
+			trigger: 'click'
+		});
+		laydate.render({
+			elem: '#test4',
+			type: 'datetime',
+			trigger: 'click'
+		});
+		// 自定义验证规则，这个里面的title、number就写在Html 代码中lay-verify的属性值，即可 例如：lay-verify="title"
+		form.verify({
+			name: function(value, item){ //value：表单的值、item：表单的DOM对象
+				if(value.length < 3){
+					return '管理员账户至少得3个字符啊';
+				}
+			}
+		});  
+	});
+	$("input[name=status][value={$info.status|default = 1}]").attr("checked", "checked"); //设置状态选中项
+	$("input[name=sex][value={$info.sex|default = 1}]").attr("checked", "checked"); //设置性别选中项
+</script>
+{/block}

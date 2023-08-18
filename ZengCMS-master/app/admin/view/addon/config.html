@@ -1,0 +1,326 @@
+{extend name="layouts/main" /}
+{block name="css"}
+<style>
+	.layui-form-pane .layui-form-label {
+		width: 145px;
+		text-align: left;
+	}
+	.layui-form-pane .layui-input-block {
+		margin-left: 145px;
+		left: -1px;
+	}
+	.layui-body{
+		padding: 15px;
+		background-color: #F2F2F2;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+					{empty name="custom_config"}
+						{foreach name="info.config" item="vo" key="k"}
+							{switch name="vo.type"}
+								{case value="remark"}
+									{$vo.value}
+								{/case}
+								{case value="radio"}
+								<div class="layui-form-item" pane="">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-input-block">
+										{foreach name="vo.content" item="v" key="_k"}
+										<input type="radio" name="config[{$k}]" lay-verify="{$vo.rule}" value="{$_k}" title="{$v}" {eq name="vo.value" value="$_k"}checked{/eq}>
+										<div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>{$v}</div></div>
+										{/foreach}
+									</div>
+									<span class="sysval"><em class="zerocopy">{$k}</em></span>
+								</div>
+								{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								{/case}
+								{case value="text"}
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-input-block">
+										<input type="text" name="config[{$k}]" lay-verify="{$vo.rule}" placeholder="请输入{$vo.title}" autocomplete="off" class="layui-input" value="{$vo.value}">
+										<span class="sysval"><em class="zerocopy">{$k}</em></span>
+									</div>
+									{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								</div>
+								{/case}
+								{case value="textarea"}
+								<div class="layui-form-item layui-form-text">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-input-block">
+										<textarea name="config[{$k}]" placeholder="请输入{$vo.title}" lay-verify="{$vo.rule}" class="layui-textarea">{$vo.value}</textarea>
+										<span class="sysval"><em class="zerocopy">{$k}</em></span>
+										{if $vo.tips}<span class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</span>{/if}
+									</div>
+								</div>
+								{/case}
+								{case value="password"}
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-input-block">
+										<input type="password" name="config[{$k}]" lay-verify="{$vo.rule}" placeholder="请输入{$vo.title}" autocomplete="off" class="layui-input" value="{$vo.value}">
+										<span class="sysval"><em class="zerocopy">{$k}</em></span>
+									</div>
+									{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								</div>
+								{/case}
+								{case value="select"}
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-input-block">
+										<select name="config[{$k}]" lay-verify="{$vo.rule}">
+											<option value=""></option>
+											{foreach name="vo.content" item="v" key="_k"}
+											<option value="{$_k}" {eq name="vo.value" value="$_k"}selected{/eq}>{$v}</option>
+											{/foreach}
+										</select>
+										<span class="sysval"><em class="zerocopy">{$k}</em></span>
+									</div>
+									{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								</div>
+								{/case}
+								{case value="image"}
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<input type="hidden" name="config[{$k}]" imgidid="{$k}" value="{$vo.value}">
+									<div class="layui-input-inline">
+										<div class="layui-upload">
+											<button type="button" class="layui-btn layui-btn-primary uploads" filename="{$k}" data-path="{$info.name}"><i class="icon icon-upload3"></i>点击上传</button>
+											<div class="layui-upload-list" bb="66">
+												<img class="layui-upload-img" imgid="{$k}" src="__STATIC__/{$vo.value}" width="100px" height="100px">
+												<p id="notice"></p>
+											</div>
+											<span class="sysval"><em class="zerocopy">{$k}</em></span>
+										</div>
+									</div>
+									{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								</div>
+								{/case}
+								{case value="array"}
+								<!-- 方法一： start-->
+								{if condition="0"}
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-inline">
+										{php} $i=-1;{/php}
+										{foreach name="vo.content" item="v" key="_k"}
+										{php}$i++;{/php}
+										<div>
+											<div class="layui-inline">
+												<label class="layui-form-label" style="width: 45px;">键</label>
+												<div class="layui-input-inline" style="width: 350px;">
+													<input type="text" name="config[{$k}][{$i}][key]" lay-verify="{$vo.rule}" placeholder="请输入键" autocomplete="off" class="layui-input" value="{$_k}">                        
+													<span class="sysval"><em class="zerocopy">{$k}.{$_k}</em></span>
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label" style="width: 45px;">值</label>
+												<div class="layui-input-inline" style="width: 350px;">
+													<input type="text" name="config[{$k}][{$i}][value]" lay-verify="{$vo.rule}" placeholder="请输入值" autocomplete="off" class="layui-input" value="{$v}">                        
+												</div>
+											</div>
+										</div>
+										{/foreach}
+									</div>
+									{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								</div>
+								{/if}
+								<!-- 方法一： end-->
+								<!-- 方法二： start-->
+								<div class="layui-form-item">
+									<label class="layui-form-label" title="{$vo.title}">{$vo.title}</label>
+									<div class="layui-inline array-move">
+										{if condition="$vo.content"}
+										{foreach name="vo.content" item="v" key="_k"}
+										<div>
+											<div class="layui-inline">
+												<label class="layui-form-label" style="width: 45px;">键</label>
+												<div class="layui-input-inline" style="width: 350px;">
+													<input type="text" name="config[{$k}][0][]" lay-verify="{$vo.rule}" placeholder="请输入键" autocomplete="off" class="layui-input" value="{$_k}">                        
+													<span class="sysval"><em class="zerocopy">{$k}</em></span>
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label" style="width: 45px;">值</label>
+												<div class="layui-input-inline" style="width: 350px;">
+													<input type="text" name="config[{$k}][1][]" lay-verify="{$vo.rule}" placeholder="请输入值" autocomplete="off" class="layui-input" value="{$v}">                        
+													<span class="sysval"><em class="zerocopy">{$k}.{$_k}</em></span>
+												</div>
+											</div>
+											<div class="layui-inline">
+												<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="delinfo(this)">-</a></div>
+											</div>
+											<div class="layui-inline">
+												<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs"><i class="layui-icon" style="margin-right: 0px;">&#xe622;</i></a></div>
+											</div>
+										</div>
+										{/foreach}
+										{else/}
+										<div>
+											<div class="layui-inline">
+												<label class="layui-form-label" style="width: 45px;">键</label>
+												<div class="layui-input-inline" style="width: 350px;">
+													<input type="text" name="config[{$k}][0][]" lay-verify="{$vo.rule}" placeholder="请输入键" autocomplete="off" class="layui-input" value="">                        
+													<span class="sysval"><em class="zerocopy">键</em></span>
+												</div>
+											</div>
+											<div class="layui-inline">
+												<label class="layui-form-label" style="width: 45px;">值</label>
+												<div class="layui-input-inline" style="width: 350px;">
+													<input type="text" name="config[{$k}][1][]" lay-verify="{$vo.rule}" placeholder="请输入值" autocomplete="off" class="layui-input" value="">                        
+													<span class="sysval"><em class="zerocopy">值</em></span>
+												</div>
+											</div>
+											<div class="layui-inline">
+												<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs layui-btn-danger" onclick="delinfo(this)">-</a></div>
+											</div>
+											<div class="layui-inline">
+												<div class="layui-form-mid"><a href="javascript:;" class="layui-btn layui-btn-xs"><i class="layui-icon" style="margin-right: 0px;">&#xe622;</i></a></div>
+											</div>
+										</div>
+										{/if}
+									</div>
+									<button type="button" class="layui-btn btn-append" style="display: block;">追加</button>
+									{if $vo.tips}<div class="layui-form-mid layui-word-aux">[ {$vo.tips|raw} ]</div>{/if}
+								</div>
+								<!-- 方法二： end-->
+								{/case}
+							{/switch}
+						{/foreach}
+					{else /}
+						{present name="custom_config"}
+						{$custom_config|raw}
+						{/present}
+					{/empty}
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{:input('id')}" >
+            					<input type="hidden" name="name" value="{:input('name')}" >
+								<!-- 方法一：使用ajax-post -->
+								<!-- <button class="layui-btn x_admin_close ajax-post" type="submit" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button> -->
+								<!-- 方法二：使用layui监听表单提交 -->
+								<button class="layui-btn x_admin_close" lay-submit lay-filter="formDemo">提交保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script>
+	// 数组类型点击软删除
+	function delinfo(o){
+		$(o).parent().parent().parent().remove();
+	}
+	// 数组类型点击追加
+	$(".btn-append").click(function(){
+		var div = $(this).prev().children().last();
+		var newdiv=div.clone(true);
+		newdiv.find("input").val('');
+		newdiv.find(".sysval").html('');
+		$(this).prev().append(newdiv);
+	});
+	// 数组拖动
+	$(".array-move").sortable({
+		// 当排序动作开始时触发此事件
+		start: function(event, ui) {
+			// console.log(event);
+			// console.log(ui);
+		},
+		// 当排序动作结束时触发此事件
+		stop: function(event, ui) {
+			// console.log(event);
+			// console.log(ui);
+			// console.log(this);
+			// var filename = $(this).attr('id');
+			// var arr = new Array();
+			// $(this).find('button').each(function (index, el) {
+			// 	console.log($(el).attr('filevalue'));
+			// 	arr.push($(this).attr('filevalue'));
+			// });
+			// var str = arr.join(',');
+			// // console.log(str);
+			// $("input[name=" + filename + "]").val(str);
+		},
+	});
+	layui.define(['form','layer', 'table','upload'], function (exports) {
+		var $ = layui.jquery,
+		form = layui.form,
+		table = layui.table,
+		upload = layui.upload,
+		layer = layui.layer;
+		// 图片上传
+		if($('.uploads')){
+            // 普通图片上传
+            // var path = $('#uploads').attr('data-path');
+            // var type = $('#uploads').attr('data-type');
+            var uploadInt = upload.render({
+                elem: '.uploads'
+                // ,url: GV.upload_url'?path='+path+'&type='+type
+                ,url: GV.upload_url
+                ,before: function(obj){
+					var item = this.item;
+					var filename = $(item).attr('filename');
+                    // 预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result){
+						// $('#addPic').attr('src', result); //图片链接（base64）
+						$("img[imgid="+filename+"]").attr('src', result);
+                    });
+                },
+                done: function(res){
+					var item = this.item;
+					var filename = $(item).attr('filename');
+                    if(res.code>0){
+						$("input[imgidid="+filename+"]").val(res.path);
+                        return msg_error('上传成功');
+                    }else{
+                        // 如果上传失败
+                        return msg_error('上传失败');
+                    }
+                }
+                ,error: function(){
+                    // 演示失败状态，并实现重传
+                    var notice = $('#notice');
+                    notice.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                    notice.find('.demo-reload').on('click', function(){
+                        uploadInt.upload();
+                    });
+                }
+            });
+		}
+		// 自定义验证规则，这个里面的title、number就写在Html 代码中lay-verify的属性值，即可 例如：lay-verify="title"
+		form.verify({
+			/* name: function(value, item){ //value：表单的值、item：表单的DOM对象
+				if(value.length < 3){
+					return '管理员账户至少得3个字符啊';
+				}
+			} */
+		});
+	});
+	/* 成功
+	* @param title
+	* @returns {*}
+	*/
+	function msg_success (title) {
+		layer.msg(title, {icon: 1, shade: this.shade, scrollbar: false, time: 2000, shadeClose: true});
+	};
+	/**
+	 * 失败
+	 * @param title
+	 * @returns {*}
+	 */
+	function msg_error(title) {
+		layer.msg(title, {icon: 1, shade: this.shade, scrollbar: false, time: 3000, shadeClose: true});
+	};
+</script>
+{/block}

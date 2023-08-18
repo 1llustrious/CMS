@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="applicable-device" content="pc,wap" />
+    <meta name="MobileOptimized" content="width" />
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="keywords" content="{$get_config.WEB_SITE_KEYWORDS}">
+    <meta name="description" content="{$get_config.WEB_SITE_DESCRIPTION}">
+    <title>{$get_config.WEB_SITE_TITLE}_{$get_config.WEB_SITE_NAME}</title>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/cloud.js"></script>
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/cloud.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.min.css">
+    <link rel="stylesheet" href="__STATIC__/template/cloudcms/static/css/swiper.animate.min.css">
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/Superslide.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/template/cloudcms/static/js/wow.min.js"></script>
+</head>
+<body id="yunu">
+    {include file="cloudcms/z-head"}
+    <!---------- pc banner -------------->
+    <div class="yunu_banner">
+        <div class="pcbanner">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="b_bg">
+                        <img src="https://fakeimg.pl/1496x315">
+                    </div>
+                </div>
+            </div>
+            <div class="pagination"></div>
+            <div class="next"></div>
+            <div class="prev"></div>
+        </div>
+    </div>
+    </div>
+    <!---------- wap banner -------------->
+    <div class="fix_btntext">
+        <div class="fix_bg"></div>
+        <div class="box">
+            <div class="text">
+                <div class="center_text">
+                    <div class="ysdz_text qt_text">
+                        <span>获取测试账号</span>
+                        <p>第一步：关注微信公众号</p>
+                        <img src="https://fakeimg.pl/150x112">
+                        <p>第二步：在公众号内回复：<i>城市分站</i>，即可获得演示地址</p>
+                        <div class="sure"><a href="javascript:;">确定</a></div>
+                        <div class="close"></div>
+                    </div>
+                    <div class="ysdz_text ht_text">
+                        <span>获取测试账号</span>
+                        <p>第一步：关注微信公众号</p>
+                        <img src="https://fakeimg.pl/150x112">
+                        <p>第二步：在公众号内回复：<i>城市分站</i>，即可获得演示地址</p>
+                        <div class="sure"><a href="javascript:;">确定</a></div>
+                        <div class="close"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="yunu_m_banner clearfix">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img src="https://fakeimg.pl/1469x315">
+            </div>
+        </div>
+        <div class="pagination"></div>
+    </div>
+    <script type="text/javascript">
+        $('.pub_btn').click(function () {
+            $('.fix_btntext').show();
+        })
+        $('.qt_btn').click(function () {
+            $('.qt_text').show();
+        })
+        $('.ht_btn').click(function () {
+            $('.ht_text').show();
+        })
+        $('.close,.sure a,.fix_btntext .fix_bg').click(function () {
+            $('.fix_btntext').hide();
+            $('.ysdz_text').hide();
+            $('.xzym_text').hide();
+            $('.public_text').hide();
+        })
+        var mySwiper = new Swiper('.yunu_m_banner', {
+            loop: true,
+            preventIntercationOnTransition: true,
+            speed: 600,
+            pagination: {
+                el: '.yunu_m_banner .pagination',
+                type: 'bullets',
+                clickable: true,
+            },
+        })
+    </script>
+    <div class="yunu_main">
+        <div class="yunu_box3 clearfix">
+            <div class="center">
+                <div class="box_tit wow fadeInUp">
+                    <span>优质模板</span>
+                    <p>每月更新精美模板，官方技术团队纯手工打造</p>
+                </div>
+                <div class="box clearfix wow fadeInUp">
+                    <div class="yunu_case_list clearfix" id="yunu_list">
+                        <div class="swiper_container">
+                            <div class="clearfix swiper-wrapper" id="box">
+                                {volist name=":tag_doc(3,10)" id="vo"}
+                                <div class="swiper-slide">
+                                    <div class="li_text">
+                                        <div class="n_case scroll_pic">
+                                            <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">
+                                                <img src="https://fakeimg.pl/362x1852">
+                                            </a>
+                                        </div>
+                                        <div class="text clearfix">
+                                            <h3 title="{$vo.title}">{$vo.title|cut_str=20}</h3>
+                                        </div>
+                                        <div class="text2 clearfix">
+                                            <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">查看详情</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/volist}
+                            </div>
+                        </div>
+                        <div class="pagination"></div>
+                        <div class="next"></div>
+                        <div class="prev"></div>
+                    </div>
+                    <script type="text/javascript">
+                        var mySwiper = new Swiper('.yunu_case_list .swiper_container', {
+                            slidesPerView: 3,
+                            slidesPerGroup: 1,
+                            spaceBetween: 30,
+                            navigation: {
+                                nextEl: '.yunu_case_list .next',
+                                prevEl: '.yunu_case_list .prev',
+                                disabledClass: 'my-button-disabled',
+                            },
+                            pagination: {
+                                el: '.yunu_case_list .pagination',
+                                type: 'bullets',
+                                clickable: true,
+                            },
+                            breakpoints: {
+                                1024: {
+                                    slidesPerView: 2,
+                                    spaceBetween: 10
+                                },
+                                768: {
+                                    slidesPerView: 1,
+                                    spaceBetween: 10
+                                },
+                            }
+                        })
+                        function scroll_pic() {
+                            $(".scroll_pic").on("mouseenter", "img", function () {
+                                var t = $(this),
+                                    n = t.height() - t.closest(".scroll_pic").height();
+                                console.log(n);
+                                t.stop(!0).animate({
+                                    top: -n
+                                }, 10 * n, "linear")
+                            }).on("mouseleave", "img", function () {
+                                $(this).stop(!0).animate({
+                                    top: 0
+                                }, "fast")
+                            })
+                        }
+                        scroll_pic();
+                    </script>
+                </div>
+                <div class="m_more">
+                    <a href="{:get_nav('theme','typeurl')}">全部模板</a>
+                </div>
+            </div>
+        </div>
+        <div class="yunu_box4 clearfix">
+            <div class="center">
+                <div class="box_tit wow fadeInUp">
+                    <span>ZengCMS</span>
+                    <p>汇聚最新产品资讯，掌握营销干货知识</p>
+                </div>
+                <div class="box clearfix">
+                    <ul class="wow fadeInLeft">
+                        <h4>{:get_nav('companynews','typename')}</h4>
+                        <img src="https://fakeimg.pl/372x178">
+                        {volist name=":tag_doc($typeid='companynews',$limit='2',$where='',$flags='a',$field='title,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                        <li><a style="color:red;" href="{$arturl}" target="{$target}" rel="{$vo.rel}">[{$create_time|date="m-d"}] {$title}</a></li>
+                        {/volist}
+                        {volist name=":tag_doc($typeid='companynews',$limit='6',$where='',$flags='',$field='title,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                        <li><a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">[{$vo.create_time|date="m-d"}] {$vo.title}</a></li>
+                        {/volist}
+                        <div class="more clearfix">
+                            <a href="{:get_nav('companynews','typeurl')}">查看更多</a>
+                        </div>
+                    </ul>
+                    <ul class="wow fadeInUp">
+                        <h4>{:get_nav('freetheme','typename')}</h4>
+                        <img src="https://fakeimg.pl/372x178">
+                        {volist name=":tag_doc($typeid='freetheme',$limit='8',$where='',$flags='',$field='title,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                        <li><a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">[{$vo.create_time|date="m-d"}] {$vo.title}</a></li>
+                        {/volist}
+                        <div class="more clearfix">
+                            <a target="_blank" href="{:get_nav('freetheme','typeurl')}">查看更多</a>
+                        </div>
+                    </ul>
+                    <ul class="wow fadeInRight">
+                        <h4>{:get_nav('technology','typename')}</h4>
+                        <img src="https://fakeimg.pl/372x178">
+                        {volist name=":tag_doc($typeid='technology',$limit='8',$where='',$flags='',$field='title,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                        <li><a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">[{$vo.create_time|date="m-d"}] {$vo.title}</a></li>
+                        {/volist}
+                        <div class="more clearfix">
+                            <a href="{:get_nav('technology','typeurl')}">查看更多</a>
+                        </div>
+                    </ul>
+                </div>
+                <div class="m_box">
+                    <div class="yunu_box4_mnewjs yunu_box4_mjs clearfix wow fadeIn">
+                        <div class="pagination"></div>
+                        <div class="swiper-container bd">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <ul>
+                                        {volist name=":tag_doc($typeid='companynews',$limit='3',$where='',$flags='',$field='title,description,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                                        <li>
+                                            <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">{$vo.title}</a>
+                                            <p>{$vo.description}</p>
+                                            <span>{$vo.create_time|date="Y-m-d"}</span>
+                                        </li>
+                                        {/volist}
+                                    </ul>
+                                </div>
+                                <div class="swiper-slide">
+                                    <ul>
+                                        {volist name=":tag_doc($typeid='freetheme',$limit='3',$where='',$flags='',$field='title,description,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                                        <li>
+                                            <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">{$vo.title}</a>
+                                            <p>{$vo.description}</p>
+                                            <span>{$vo.create_time|date="Y-m-d"}</span>
+                                        </li>
+                                        {/volist}
+                                    </ul>
+                                </div>
+                                <div class="swiper-slide">
+                                    <ul>
+                                        {volist name=":tag_doc($typeid='technology',$limit='3',$where='',$flags='',$field='title,description,arturl,target,rel,create_time',$order='sort desc,id desc',$titlelen='10',$desclen ='10')" id="vo"}
+                                        <li>
+                                            <a href="{$vo.arturl}" target="{$vo.target}" rel="{$vo.rel}">{$vo.title}</a>
+                                            <p>{$vo.description}</p>
+                                            <span>{$vo.create_time|date="Y-m-d"}</span>
+                                        </li>
+                                        {/volist}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yunu_link clearfix">
+            <div class="center">
+                <div class="box clearfix wow fadeInUp">
+                    <span>友情链接：</span>
+                    <div class="list">
+                        {volist name=":tag_links(10)" id="vo" key="k"}
+                        <a href="{$vo.url}" target="_blank" rel="nofollow">{$vo.name}</a>
+                        {/volist}
+                    </div>
+                </div>
+                <div class="box clearfix wow fadeInUp">
+                    <span>TAG标签：</span>
+                    <div class="list">
+                        {volist name=":tag_tag(10)" id="vo" key="k"}
+                        <a href="{$vo.tagurl}" target="{$vo.target}" rel="{$vo.rel}">{$vo.name}</a>
+                        {/volist}
+                        <a href="{:tag_all_tag()}">更多</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="cloudcms/z-footer"}
+</body>
+</html>

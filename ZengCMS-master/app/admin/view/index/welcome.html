@@ -1,0 +1,254 @@
+{extend name="layouts/main" /}
+{block name="link"}
+<link rel="stylesheet" href="__STATIC__/admin/css/index.css" media="all">
+<link rel="stylesheet" href="__STATIC__/admin/layuimini/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+{/block}
+{block name="css"}
+<style>
+	.layui-table td, .layui-table th {
+		width: 130px;
+	}
+	.iconfont {
+		font-size: 36px;
+		color: #fff;
+	}
+</style>
+{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body" style="top: 0px;left: 0px;">
+		<!-- 内容主体区域 -->
+		<div style="padding: 6px;">
+			{if condition="env('APP_DEBUG')"}
+			<blockquote class="layui-elem-quote layui-bg-red" style="border-left: 5px solid #d4491d;">
+				安全提示：当前网站【调试模式】开启中，强烈建议在正式部署后关闭调试模式
+			</blockquote>
+			{/if}
+			<?php if(is_dir(PROJECT_PATH.'/public/install')):?>
+			<blockquote class="layui-elem-quote layui-bg-red" style="border-left: 5px solid #d4491d;">
+				安全提示：强烈建议在正式部署后删除install目录
+			</blockquote>
+			<?php endif;?>
+			<blockquote class="layui-elem-quote layui-bg-green">
+				<div id="nowTime"></div>
+			</blockquote>
+			<blockquote class="layui-elem-quote layui-text">
+				<i class="fa fa-home"></i> {:lang('System Home Page')}
+			</blockquote>
+			<div class="panel_box row">
+				<div class="panel col">
+					<a target="_blank" href="https://gitee.com/ZengCMS/ZengCMS">
+						<div class="panel_icon huo-bg-red">
+							<span class="iconfont icongitee-fill-round"></span>
+						</div>
+						<div class="panel_word userAll">
+							<span>码云</span>
+							<cite>下载链接</cite>
+						</div>
+					</a>
+				</div>
+				<div class="panel col max_panel">
+					<a target="_blank" href="https://www.kancloud.cn/zengcms/zengcms">
+						<div class="panel_icon huo-bg-blue">
+							<span class="iconfont iconshouce"></span>
+						</div>
+						<div class="panel_word userAll">
+							<span>文档</span>
+							<cite>使用手册</cite>
+						</div>
+					</a>
+				</div>
+				<div class="panel col">
+					<a target="_blank" href="http://bbs.zengcms.cn">
+						<div class="panel_icon huo-bg-green">
+							<span class="iconfont icon_shequluntan"></span>
+						</div>
+						<div class="panel_word">
+							<span>论坛</span>
+							<cite>交流社区</cite>
+						</div>
+					</a>
+				</div>
+				<div class="panel col">
+					<a target="_blank" href="javascript:;">
+						<div class="panel_icon huo-bg-purple">
+							<span class="iconfont iconshijian"></span>
+						</div>
+						<div class="panel_word">
+							<span style="font-size: 15px;color: #1E9FFF;line-height: 34px;">{:date('Y-m-d H:i:s',session('admin_auth')['last_login_time'])}</span>
+							<cite>上次登陆时间</cite>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="row" style="display: none">
+				<div class="sysNotice col">
+					<blockquote class="layui-elem-quote title">{:lang('Basic parameters of the system')}</blockquote>
+					<table class="layui-table">
+						<colgroup>
+							<col width="150">
+							<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>上传附件限制</td>
+								<td>100M</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="sysNotice col">
+					<blockquote class="layui-elem-quote title">{:lang('Latest Documents')}</blockquote>
+					<table class="layui-table" lay-skin="line">
+						<colgroup><col><col width="110"></colgroup>
+						<tbody class="hot_news">
+							<tr>
+								<td align="left">
+									<a href="javascript:;">PHP对文件夹递归执行chmod命令的方法</a>
+								</td>
+								<td>2020-11-28</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-lg12 layui-col-md12">
+					<div class="layui-card">
+						<!-- <div class="layui-card-header" style="border-bottom: 1px solid #eee;">版本信息</div> -->
+						<blockquote class="layui-elem-quote title">{:lang('Basic parameters of the system')}</blockquote>
+						<div class="layui-card-body" style="padding: 0px 0px;">
+							<table class="layui-table magt0" lay-even="">
+								<colgroup>
+									<col width="10%">
+									<col width="40%">
+									<col width="10%">
+									<col width="40%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td>{:lang('ZengCMS Version')}</td>
+										<td class="version">{$serverinfo.zengcms_ver}</td>
+										<td>{:lang('Layui Version')}</td>
+										<td class="version" id="layui_version"></td>
+									</tr>
+									<tr>
+										<td>{:lang('PHP Version')}</td>
+										<td>{$serverinfo.php_ver}</td>
+										<td>{:lang('ThinkPHP Version')}</td>
+										<td>{$serverinfo.tp_ver}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Database version')}</td>
+										<td>{$serverinfo.mysql_ver}</td>
+										<td>{:lang('Database name')}</td>
+										<td>{$serverinfo.db_name}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Server Domain Name')}</td>
+										<td>{$serverinfo.host}</td>
+										<td>{:lang('Server IP')}</td>
+										<td>{$serverinfo.ip}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Program directory')}</td>
+										<td>{$serverinfo.program_dir}</td>
+										<td>{:lang('Operating system')}</td>
+										<td>{$serverinfo.system}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Service Time')}</td>
+										<td>{$serverinfo.time}</td>
+										<td>{:lang('Beijing Time')}</td>
+										<td>{$serverinfo.beijing_time}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Service Engine')}</td>
+										<td colspan="3">{$serverinfo.server}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Service Port')}</td>
+										<td>{$serverinfo.port}</td>
+										<td>{:lang('Remaining Space')}</td>
+										<td>{$serverinfo.remaining_space}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Memory Limit')}</td>
+										<td>{$serverinfo.memory_limit}</td>
+										<td>{:lang('Upload Attachment Limitation')}</td>
+										<td>{$serverinfo.upload_max_filesize}</td>
+									</tr>
+									<tr>
+										<td>{:lang('Execution time limit')}</td>
+										<td>{$serverinfo.max_execution_time}</td>
+										<td>{:lang('GD library support')}</td>
+										<td><i class="layui-icon"><?php echo (gd_info() ? '&#xe605;' : '&#x1006;');?></i></td>
+									</tr>
+									<tr>
+										<td>{:lang('Safe mode')}</td>
+										<td><i class="layui-icon"><?php echo (ini_get('safe_mode') ? '&#xe605;' : '&#x1006;');?></i></td>
+										<td>{:lang('Fsockopen')}</td>
+										<td><i class="layui-icon"><?php echo function_exists("fsockopen") ? '&#xe605;' : '&#x1006;';?></i></td>
+									</tr>
+									<tr>
+										<td>{:lang('Magic function')}</td>
+										<td><i class="layui-icon"><?php echo (get_magic_quotes_gpc() ? '&#xe605;' : '&#x1006;');?></i></td>
+										<td>{:lang('Other necessary functions')}</td>
+										<td>
+											<?php
+												$needfunc = array('dir','phpinfo');
+												$n = 0;
+												foreach($needfunc as $k) {
+													if(!function_exists($k)){
+														echo "<font color='red'>[{$k}×]</font> ";
+														$n++;
+													}
+												}
+												if($n==0) {
+													echo '<i class="layui-icon">&#xe605;</i>';
+												} else {
+													echo '<i class="layui-icon">&#x1006;</i>';
+												}
+											?>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$('#layui_version').html(layui.v);
+	// 获取系统时间
+	var newDate = '';
+	getLangDate();
+	// 值小于10时，在前面补0
+	function dateFilter(date) {
+		if (date < 10) { return "0" + date; }
+		return date;
+	}
+	function getLangDate() 
+	{
+		var dateObj = new Date(); //表示当前系统时间的Date对象
+		var year = dateObj.getFullYear(); //当前系统时间的完整年份值
+		var month = dateObj.getMonth() + 1; //当前系统时间的月份值
+		var date = dateObj.getDate(); //当前系统时间的月份中的日
+		var day = dateObj.getDay(); //当前系统时间中的星期值
+		var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+		var week = weeks[day]; //根据星期值，从数组中获取对应的星期字符串
+		var hour = dateObj.getHours(); //当前系统时间的小时值
+		var minute = dateObj.getMinutes(); //当前系统时间的分钟值
+		var second = dateObj.getSeconds(); //当前系统时间的秒钟值
+		var timeValue = "" + ((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午"); //当前时间属于上午、晚上还是下午
+		newDate = dateFilter(year) + "年" + dateFilter(month) + "月" + dateFilter(date) + "日 " + " " + dateFilter(hour) + ":" + dateFilter(minute) + ":" + dateFilter(second);
+		document.getElementById("nowTime").innerHTML = "亲爱的{:session('admin_auth')['username']}，" + timeValue + "好！ 欢迎使用ZengCMS v<?=ZENGCMS_VERSION;?>,当前时间为： " + newDate + "　" + week + "，上次登陆时间：" + "{:date('Y-m-d H:i:s',session('admin_auth')['last_login_time'])}";
+		setTimeout("getLangDate()", 1000);
+	}
+</script>
+{/block}

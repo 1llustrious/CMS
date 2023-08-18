@@ -1,0 +1,101 @@
+{extend name="layouts/main" /}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<!-- <blockquote class="layui-elem-quote layui-text">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a><cite>栏目优化</cite></a>
+							<a><cite>{$meta_title}</cite></a>
+						</span>
+						<a href="javascript:;" onclick="javascript:history.back(-1);return false;" class="head-a" style="margin-left: 10px;" title="返回"><i class="fa fa-home fa-reply"></i></a>
+					</blockquote> -->
+					<form class="layui-form layui-form-pane form-horizontal" action="{:url('')}" method="post">
+						<div class="layui-form-item">
+							<label class="layui-form-label">栏目名称</label>
+							<div class="layui-input-block">
+								<input type="text" value="{$info.typename}" disabled placeholder="" autocomplete="off" class="layui-input">
+								<input type="hidden" name="typename"  value="{$info.typename}" class="layui-input">
+								<span class="sysval"><em class="zerocopy">typename</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">SEO标题</label>
+							<div class="layui-input-block">
+								<input type="text" name="seotitle" value="{$info.seotitle}" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(SEO标题)
+								</span>
+								<span class="sysval"><em class="zerocopy">seotitle</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">英文SEO标题</label>
+							<div class="layui-input-block">
+								<input type="text" name="seotitle_en"  value="{$info.seotitle_en}" class="layui-input">
+								<span class="layui-form-mid layui-word-aux">
+									(英文SEO标题)
+								</span>
+								<span class="sysval"><em class="zerocopy">seotitle_en</em></span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">关键词<span class="sysval"><em class="zerocopy">keywords</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="keywords" placeholder="请输入内容" class="layui-textarea">{$info.keywords|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(关键词)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">英文关键词<span class="sysval"><em class="zerocopy">keywords_en</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="keywords_en" placeholder="请输入内容" class="layui-textarea">{$info.keywords_en|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(英文关键词)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">栏目描述<span class="sysval"><em class="zerocopy">description</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="description" placeholder="请输入内容" class="layui-textarea">{$info.description|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(栏目描述)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item layui-form-text">
+							<label class="layui-form-label">英文栏目描述<span class="sysval"><em class="zerocopy">description_en</em></span></label>
+							<div class="layui-input-block">
+								<textarea name="description_en" placeholder="请输入内容" class="layui-textarea">{$info.description_en|default=''}</textarea>
+								<span class="layui-form-mid layui-word-aux">
+									(英文栏目描述)
+								</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<input type="hidden" name="id" value="{$info.id|default=''}">
+								<button class="layui-btn x_admin_close ajax-post" type="submit" data-reload="false" target-form="form-horizontal" lay-submit="" lay-filter="formDemo">提交保存</button>
+								<button type="reset" class="layui-btn layui-btn-danger">重置</button>
+								<!-- <a class="layui-btn layui-btn-primary" href="javascript:;" onclick="history.go(-1);">返回</a> -->
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $("input[name=status][value={$info.status|default = 1}]").attr("checked","checked");//设置选中项
+</script>
+{/block}

@@ -1,0 +1,95 @@
+<footer class="container-fluid black-home">
+	<div class="container footer">
+		<div class="row">
+			<div class="col-md-5">
+				<h3>ZengCMS</h3>
+				<p>ZengCMS内容管理系统是快速建站神器</p>
+				<address>
+					<strong>{$get_config.WEB_SITE_POWERBY}</strong><br>
+					<a href="http://www.beian.miit.gov.cn/" target="_blank" rel="nofollow">{$get_config.WEB_SITE_ICP}</a>
+					<a href="http://{$get_config.SITE_DOMAIN}/sitemap.html" target="_blank">网站地图</a>
+					<a href="http://{$get_config.SITE_DOMAIN}/sitemap.xml" target="_blank">XML地图</a>
+                    <br>服务：网站建设
+					<br>友情链接：
+                        {volist name=":tag_links(8)" id="vo" key="k"}
+                        {if condition="$k neq 1"}|{/if} <a href="{$vo.url}" target="_blank" rel="nofollow">{$vo.name}</a>
+                        {/volist}
+                    <br/>{:tag_seomenu()}<br />
+				</address>
+			</div>
+			<div class="col-md-4 footer-contact">
+				<h3>联系方式</h3>
+				<address>
+					<strong>地 址 ：</strong>{$get_config.WEB_ADDRESS}<br>
+					<strong>手 机 ：</strong>{$get_config.WEB_SITE_PHONE}<br>
+					<strong>Q  Q：</strong>{$get_config.QQ}<br>
+					<strong>邮 箱 ：</strong>{$get_config.WEB_SITE_EMAIL}<br>
+				</address>
+			</div>
+			<div class="col-md-3 text-center">
+				<h3>扫码联系客服</h3>
+				<img src="https://fakeimg.pl/115x115" alt="扫码联系客服" width="115" height="115" />
+			</div>
+        </div>
+        <p style="color: red;">【本站素材及资源全来源于互联网,非商业性质,仅供演示和学习,不承担任何版权问题,如果我们侵犯了您的权益,请来信告知,我们会在第一时间处理！】</p>
+	</div>
+</footer>
+{:hook('PageFooter')}
+<div class="container">
+    <link href="__TEMPLATE__/static/css/kefu.css" type="text/css" rel="stylesheet"/>
+    <div id="rightArrow"><a href="javascript:;" title="在线客户"></a></div>
+    <div id="floatDivBoxs">
+        <div class="floatDtt" id="floatDtt">在线客服</div>
+        <div class="floatShadow">
+            <ul class="floatDqq">
+                <li>
+                    <a target="_blank" href="tencent://message/?uin={$get_config.QQ}&Site={$get_config.SITE_DOMAIN}&Menu=yes" rel="nofollow">
+                       <img src="__TEMPLATE__/static/images/qq.png" align="absmiddle">在线客服1号
+                   </a>
+                </li>
+                <li>
+                    <a target="_blank" href="tencent://message/?uin={$get_config.QQ}&Site={$get_config.SITE_DOMAIN}&Menu=yes" rel="nofollow">
+                        <img src="__TEMPLATE__/static/images/qq.png" align="absmiddle">在线客服2号
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="tencent://message/?uin={$get_config.QQ}&Site={$get_config.SITE_DOMAIN}&Menu=yes" rel="nofollow">
+                        <img src="__TEMPLATE__/static/images/qq.png" align="absmiddle">在线客服3号
+                    </a>
+                </li>
+            </ul>
+            <div class="floatDtxt">优化热线电话</div>
+            <div class="floatDtel"><p>{$get_config.WEB_TEL}</p></div>
+            <div class="floatImg"><img src="https://fakeimg.pl/150x112" width="100%">扫码联系客服</div>
+        </div>
+        <div class="floatDbg"></div>
+    </div>
+    <script>
+        $(function () {
+            $('#rightArrow').on("click", function () {
+                $(this).animate({right: '-175px'}, 300);
+                $("#floatDivBoxs").animate({right: '0'}, 300);
+            });
+            $('#floatDtt').on("click", function () {
+                $('#rightArrow').animate({right: '0px'}, 300);
+                $("#floatDivBoxs").animate({right: '-175px'}, 300);
+            });
+            $(".show-btn").on("click", function () {
+                $(this).animate({left: "-150px"}, 300, function () {
+                    $(this).hide();
+                    $(".footer-gd").show().animate({width: "100%", left: "0px"}, 300);
+                });
+            });
+            $(".close-btn").on("click", function () {
+                $(".footer-gd").animate({width: "0px", left: "-100px"}, 300, function () {
+                    $(this).hide();
+                    $(".show-btn").show().animate({left: "0px"}, 300);
+                });
+            });
+            $(document).ready(function () {
+                // 
+            });
+        });
+        $(".footer-gd").hide().animate({width: "0px"});
+    </script>
+</div>

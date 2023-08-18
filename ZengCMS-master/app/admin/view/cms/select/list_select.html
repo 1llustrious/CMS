@@ -1,0 +1,107 @@
+{extend name="layouts/main" /}
+{block name="link"}{/block}
+{block name="content"}
+<div class="layui-tab layui-tab-brief" lay-filter="demoTitle">
+	<div class="layui-body layui-tab-content site-demo site-demo-body" style="top: 0px;left: 0px;">
+		<div class="layui-tab-item layui-show">
+			<div class="layui-main">
+				<div id="LAY_preview">
+					<blockquote class="layui-elem-quote layui-text" style="margin-bottom: 10px;">
+						<i class="fa fa-home"></i>
+						<span class="layui-breadcrumb">
+							<a><cite>系统主页</cite></a>
+							<a href="{:url('admin/Select/index')}">联动类别</a>
+							<a><cite>查看子分类</cite></a>
+						</span>
+					</blockquote>
+					<div class="layui-fluid" style="position: relative;margin: 0 auto;padding: 0 0px;">
+						<div class="layui-set">
+							<div class="layui-set-from search-form">
+								<form class="layui-form" action="">
+									<div class="layui-form-item" style="margin-bottom: -8px;">
+										<div class="layui-input-inline" style="width:80px;padding-right: 5px;">
+											<a class="layui-btn" href="{:url('add',array('tid'=>input('tid',0),'pid'=>input('pid',0)))}">新增类别</a>
+										</div>
+										<!-- <div class="layui-input-inline">
+											<select name="status" id="status" lay-verify="required">
+												<option value="" selected="selected">全部</option>
+												<option value="1">显示</option>
+												<option value="0">隐藏</option>
+											</select>
+										</div> -->
+										<div class="layui-input-inline" style="margin-right: 5px;">
+											<input type="text" name="title" value="{:input('title')}"  placeholder="搜索关键词" autocomplete="off" class="layui-input search-input">
+										</div>
+										<div class="layui-input-inline" style="width:80px">
+											<button class="layui-btn" id="search"><i class="layui-icon"></i></button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="layui-card" style="overflow-y: hidden;float: left;width: 100%;">
+							<form class="layui-form" action="">
+								<table class="layui-table" lay-filter="tableEvent">
+									<colgroup>
+										<col width="1">
+										<col>
+										<col>
+										<col>
+										<col width="8%">
+										<col width="20%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>名称</th>
+											<th>上级</th>
+											<th>等级</th>
+											<th>排序</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody>
+										{volist name="list" id="info"}
+										<tr>
+											<td>{$info.id}</td>
+											<td><a href="{:url('list_select',array('tid'=>$info['tid'],'pid'=>$info['id']))}"><p class="text-success">{$info.title}</p></a></td>
+											<td>{$info.up_title|default='无'}</</td>
+											<td>
+												{notempty name="info.level"}
+												{$info.level|ToChinaseNum}级选择
+												{else /}
+												无
+												{/notempty}
+											</td>
+											<td>{$info.sort}</td>
+											<td>
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs " href="{:url('edit',array('id'=>$info['id'],'tid'=>$info['tid']))}"><i class="layui-icon layui-icon-edit"></i> 编辑</a></div>
+												<div class="layui-inline"><a class="layui-btn layui-btn-xs layui-btn-danger confirm ajax-get" url="{:url('del?id='.$info['id'])}"><i class="layui-icon layui-icon-delete"></i> 删除</a></div>
+											</td>
+										</tr>
+										{/volist}
+									</tbody>
+								</table>
+							</form>
+							<div id="page">
+								<div class="layui-box layui-laypage layui-laypage-default">
+									<div class="pagelistbox">
+										{$page|raw}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+	$(function() {
+        $("select[name='status']").val({$status|default = ''});
+    });
+</script>
+{/block}
